@@ -73,6 +73,10 @@ export const fetchResearchSignals = async (): Promise<ResearchSignal[]> => {
       title: "Ética de investigación",
       endpoint: "/analytics/research/ethics-readiness-preview",
     },
+    {
+      title: "Validación por expertos",
+      endpoint: "/analytics/research/expert-validation-preview",
+    },
   ];
 
   const responses = await Promise.all(
@@ -84,4 +88,5 @@ export const fetchResearchSignals = async (): Promise<ResearchSignal[]> => {
 
   return responses;
 };
+
 
