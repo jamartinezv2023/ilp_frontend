@@ -34,6 +34,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import ScienceIcon from "@mui/icons-material/Science";
 import { AppRoutes } from "../routes/AppRoutes";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../features/auth/store/authSlice";
@@ -46,6 +47,7 @@ const navigationItems = [
   { text: "Roles", icon: <AdminPanelSettingsIcon />, path: "/roles" },
   { text: "Permissions", icon: <VpnKeyIcon />, path: "/permissions" },
   { text: "Security Center", icon: <SecurityIcon />, path: "/security/mfa" },
+  { text: "Research Center", icon: <ScienceIcon />, path: "/research" },
 ];
 
 export const AppShell = () => {
@@ -196,3 +198,6 @@ export const AppShell = () => {
     </Box>
   );
 };
+
+
+
