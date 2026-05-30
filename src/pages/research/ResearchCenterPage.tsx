@@ -17,13 +17,15 @@ import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
-import type { ResearchSignal } from "../../types/research";
+import type { ResearchCategory, ResearchSignal } from "../../types/research";
 import { fetchResearchSignals } from "../../services/researchApi";
 
 export const ResearchCenterPage = () => {
   const [signals, setSignals] = useState<ResearchSignal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeCategory, setActiveCategory] =
+    useState<ResearchCategory>("all");
 
   const loadSignals = async () => {
     try {
@@ -43,6 +45,21 @@ export const ResearchCenterPage = () => {
   useEffect(() => {
     void loadSignals();
   }, []);
+
+  const categories: { label: string; value: ResearchCategory }[] = [
+    { label: "All", value: "all" },
+    { label: "Governance", value: "governance" },
+    { label: "Trustworthiness", value: "trustworthiness" },
+    { label: "Ethics", value: "ethics" },
+    { label: "Architecture", value: "architecture" },
+    { label: "Deployment", value: "deployment" },
+    { label: "Research", value: "research" },
+  ];
+
+  const filteredSignals =
+    activeCategory === "all"
+      ? signals
+      : signals.filter((signal) => signal.category === activeCategory);
 
   const totalSignals = signals.length;
   const validatedSignals = signals.filter((signal) => signal.status).length;
@@ -162,7 +179,22 @@ export const ResearchCenterPage = () => {
       {error && <Alert severity="error">{error}</Alert>}
 
       {!loading && !error && (
-        <Box
+        <>
+          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 3 }}>
+            {categories.map((category) => (
+              <Chip
+                key={category.value}
+                label={category.label}
+                clickable
+                color={activeCategory === category.value ? "primary" : "default"}
+                variant={activeCategory === category.value ? "filled" : "outlined"}
+                onClick={() => setActiveCategory(category.value)}
+                sx={{ fontWeight: 800, mb: 1 }}
+              />
+            ))}
+          </Stack>
+
+          <Box
           sx={{
             display: "grid",
             gridTemplateColumns: {
@@ -173,7 +205,7 @@ export const ResearchCenterPage = () => {
             gap: 3,
           }}
         >
-          {signals.map((signal) => (
+          {filteredSignals.map((signal) => (
             <Box key={signal.endpoint}>
               <Card
                 sx={{
@@ -226,7 +258,10 @@ export const ResearchCenterPage = () => {
             </Box>
           ))}
         </Box>
+        </>
       )}
     </Box>
   );
 };
+
+

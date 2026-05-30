@@ -80,6 +80,7 @@ const stringifyValue = (value: unknown): string => {
 const normalizeSignal = (
   title: string,
   endpoint: string,
+  category: ResearchSignal["category"],
   data: ApiRecord
 ): ResearchSignal => {
   const entries = Object.entries(data);
@@ -98,6 +99,7 @@ const normalizeSignal = (
   return {
     title,
     endpoint,
+    category,
     status: statusEntry ? stringifyValue(statusEntry[1]) : "Validado",
     summary:
       entries
@@ -117,43 +119,52 @@ export const fetchResearchSignals = async (): Promise<ResearchSignal[]> => {
     {
       title: "Gobernanza de IA educativa",
       endpoint: "/analytics/governance/policy-preview",
+      category: "governance" as const,
     },
     {
       title: "Confiabilidad institucional",
       endpoint: "/analytics/trustworthiness/assessment-preview",
+      category: "trustworthiness" as const,
     },
     {
       title: "Equidad y sesgo",
       endpoint: "/analytics/fairness/bias-assessment-preview",
+      category: "trustworthiness" as const,
     },
     {
       title: "Gobernanza arquitectónica",
       endpoint: "/analytics/architecture/governance-preview",
+      category: "architecture" as const,
     },
     {
       title: "Preparación Kubernetes",
       endpoint: "/analytics/deployment/kubernetes-readiness-preview",
+      category: "deployment" as const,
     },
     {
       title: "Ética de investigación",
       endpoint: "/analytics/research/ethics-readiness-preview",
+      category: "ethics" as const,
     },
     {
       title: "Validación por expertos",
       endpoint: "/analytics/research/expert-validation-preview",
+      category: "research" as const,
     },
     {
       title: "Instrumentos de investigación",
       endpoint: "/analytics/research/instruments-validation-preview",
+      category: "research" as const,
     },
   ];
 
   const responses = await Promise.all(
     endpoints.map(async (item) => {
       const response = await client.get<ApiRecord>(item.endpoint);
-      return normalizeSignal(item.title, item.endpoint, response.data);
+      return normalizeSignal(item.title, item.endpoint, item.category, response.data);
     })
   );
 
   return responses;
 };
+
