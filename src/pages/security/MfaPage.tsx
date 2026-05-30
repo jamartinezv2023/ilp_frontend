@@ -1,70 +1,144 @@
-import {
+﻿import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
+  Chip,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import SecurityIcon from "@mui/icons-material/Security";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+
+const qrCells = Array.from({ length: 121 }, (_, index) => index);
 
 export const MfaPage = () => {
   return (
     <Box>
-      <Typography variant="h3" fontWeight={900} mb={4}>
-        MFA Security Center
-      </Typography>
+      <Box
+        sx={{
+          mb: 4,
+          p: { xs: 3, md: 5 },
+          borderRadius: 6,
+          background:
+            "linear-gradient(135deg, rgba(37,99,235,.14), rgba(124,58,237,.16), rgba(14,165,233,.12))",
+          border: "1px solid rgba(148,163,184,.25)",
+        }}
+      >
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+          <SecurityIcon color="primary" sx={{ fontSize: 42 }} />
+          <Chip
+            icon={<VerifiedUserIcon />}
+            label="Secure Research Access"
+            color="primary"
+            variant="outlined"
+          />
+        </Stack>
+
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
+          Security & Research Access Center
+        </Typography>
+
+        <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 900 }}>
+          Protección de acceso para la plataforma de investigación doctoral en
+          inteligencia artificial educativa inclusiva.
+        </Typography>
+      </Box>
 
       <Card
         sx={{
+          maxWidth: 720,
           borderRadius: 6,
-          maxWidth: 520,
-          background: "rgba(255,255,255,.82)",
-          backdropFilter: "blur(16px)",
+          boxShadow: "0 24px 70px rgba(15,23,42,.14)",
+          border: "1px solid rgba(148,163,184,.28)",
         }}
       >
-        <CardContent>
-          <Stack spacing={3}>
-            <Typography variant="h5" fontWeight={800}>
-              Google Authenticator
+        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1 }}>
+            <QrCode2Icon color="primary" />
+            <Typography variant="h4" fontWeight={900}>
+              Multi-Factor Authentication
             </Typography>
+          </Stack>
 
-            <Typography color="text.secondary">
-              Configure multi-factor authentication for your account.
-            </Typography>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Configure Google Authenticator or a compatible MFA application to
+            protect access to the ILP Research Platform.
+          </Typography>
 
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 5,
+              background:
+                "linear-gradient(135deg, rgba(219,234,254,.9), rgba(245,208,254,.75))",
+              display: "flex",
+              justifyContent: "center",
+              mb: 3,
+            }}
+          >
             <Box
               sx={{
-                height: 240,
-                borderRadius: 5,
-                display: "grid",
-                placeItems: "center",
-                background:
-                  "linear-gradient(135deg,#dbeafe,#ede9fe,#fce7f3)",
-              }}
-            >
-              QR CODE PLACEHOLDER
-            </Box>
-
-            <TextField
-              label="Authentication Code"
-              placeholder="123456"
-              fullWidth
-            />
-
-            <Button
-              variant="contained"
-              size="large"
-              sx={{
+                width: 230,
+                height: 230,
+                p: 2,
                 borderRadius: 4,
-                py: 1.5,
-                background:
-                  "linear-gradient(135deg,#2563eb,#7c3aed)",
+                background: "white",
+                boxShadow: "inset 0 0 0 1px rgba(15,23,42,.10)",
+                display: "grid",
+                gridTemplateColumns: "repeat(11, 1fr)",
+                gap: "4px",
               }}
+              aria-label="MFA QR preview"
             >
-              Verify MFA
-            </Button>
-          </Stack>
+              {qrCells.map((cell) => {
+                const active =
+                  cell % 2 === 0 ||
+                  cell % 7 === 0 ||
+                  [0, 1, 2, 11, 22, 98, 108, 120].includes(cell);
+
+                return (
+                  <Box
+                    key={cell}
+                    sx={{
+                      borderRadius: "3px",
+                      background: active ? "#0f172a" : "#e2e8f0",
+                    }}
+                  />
+                );
+              })}
+            </Box>
+          </Box>
+
+          <Alert severity="info" sx={{ mb: 3 }}>
+            QR enrollment preview. In production, this area must be generated by
+            the authentication service using a temporary MFA secret.
+          </Alert>
+
+          <TextField
+            fullWidth
+            label="Authentication Code"
+            placeholder="Enter the 6-digit code"
+            sx={{ mb: 3 }}
+          />
+
+          <Button
+            fullWidth
+            size="large"
+            variant="contained"
+            startIcon={<VerifiedUserIcon />}
+            sx={{
+              py: 1.4,
+              borderRadius: 4,
+              fontWeight: 900,
+              background: "linear-gradient(135deg,#2563eb,#7c3aed)",
+            }}
+          >
+            Verify MFA
+          </Button>
         </CardContent>
       </Card>
     </Box>

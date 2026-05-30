@@ -64,8 +64,8 @@ export const AppShell = () => {
             ILP
           </Avatar>
           <Box>
-            <Typography variant="h5" fontWeight={900}>ILP Platform</Typography>
-            <Typography variant="caption" sx={{ color: "rgba(255,255,255,.7)" }}>Premium Workspace</Typography>
+            <Typography variant="h5" fontWeight={900}>ILP Research Platform</Typography>
+            <Typography variant="caption" sx={{ color: "rgba(255,255,255,.7)" }}>Inclusive Educational AI Workspace</Typography>
           </Box>
         </Stack>
 
@@ -135,7 +135,7 @@ export const AppShell = () => {
           </IconButton>
 
           <Typography variant="h6" fontWeight={900} sx={{ display: { xs: "none", md: "block" } }}>
-            Authenticated Workspace
+            Research & Governance Workspace
           </Typography>
 
           <TextField
@@ -192,12 +192,13 @@ export const AppShell = () => {
         <Toolbar />
         <AppRoutes />
         <Box component="footer" sx={{ mt: 6, py: 3, textAlign: "center", color: "text.secondary" }}>
-          <Typography variant="body2">ILP Backend Platform 2026 - Inclusive - Secure - Accessible</Typography>
+          <Typography variant="body2">Inclusive Learning Platform 2026 · Educational AI · Inclusion · Ethics · Research Validation</Typography>
         </Box>
       </Box>
     </Box>
   );
 };
+
 
 
 
