@@ -4,6 +4,7 @@
   Card,
   CardContent,
   Chip,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,25 +19,29 @@ import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 const metrics = [
   {
     title: "Research Readiness",
-    value: "HIGH",
+    value: "92%",
+    score: 92,
     description: "Scientific validation pathway is active.",
     icon: <ScienceIcon color="primary" />,
   },
   {
     title: "Ethics Readiness",
-    value: "PREPARATION",
+    value: "88%",
+    score: 88,
     description: "Human oversight and consent planning enabled.",
     icon: <GppGoodIcon color="success" />,
   },
   {
-    title: "AI Governance",
-    value: "ACTIVE",
+    title: "Trustworthiness",
+    value: "94%",
+    score: 94,
     description: "Responsible educational AI policies available.",
     icon: <PsychologyIcon color="secondary" />,
   },
   {
     title: "Deployment Readiness",
-    value: "CLOUD-NATIVE",
+    value: "96%",
+    score: 96,
     description: "Docker, health checks and Kubernetes readiness validated.",
     icon: <CloudDoneIcon color="info" />,
   },
@@ -58,16 +63,16 @@ export const DashboardPage = () => {
     <Box>
       <Box
         sx={{
-          mb: 4,
-          p: { xs: 3, md: 5 },
-          borderRadius: 6,
+          mb: 3,
+          p: { xs: 3, md: 4 },
+          borderRadius: 5,
           background:
             "linear-gradient(135deg, rgba(37,99,235,.14), rgba(124,58,237,.16), rgba(14,165,233,.12))",
           border: "1px solid rgba(148,163,184,.25)",
         }}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <DashboardIcon color="primary" sx={{ fontSize: 42 }} />
+          <DashboardIcon color="primary" sx={{ fontSize: 38 }} />
           <Chip
             icon={<VerifiedUserIcon />}
             label="Doctoral Research Executive View"
@@ -80,10 +85,9 @@ export const DashboardPage = () => {
           Executive Research Dashboard
         </Typography>
 
-        <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Vista ejecutiva de la plataforma ILP para seguimiento de madurez
-          científica, ética, tecnológica y de despliegue en el marco de la
-          investigación doctoral sobre inteligencia artificial educativa inclusiva.
+        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
+          Executive overview of scientific, ethical, technological and deployment
+          maturity for the ILP doctoral research platform.
         </Typography>
       </Box>
 
@@ -93,32 +97,47 @@ export const DashboardPage = () => {
           gridTemplateColumns: {
             xs: "1fr",
             md: "repeat(2, 1fr)",
-            xl: "repeat(4, 1fr)",
+            lg: "repeat(4, 1fr)",
           },
-          gap: 3,
-          mb: 4,
+          gap: 2.5,
+          mb: 3,
         }}
       >
         {metrics.map((metric) => (
           <Card
             key={metric.title}
             sx={{
-              borderRadius: 5,
-              boxShadow: "0 18px 45px rgba(15,23,42,.10)",
+              height: "100%",
+              minHeight: 168,
+              borderRadius: 4,
+              boxShadow: "0 16px 36px rgba(15,23,42,.09)",
               border: "1px solid rgba(148,163,184,.22)",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <CardContent sx={{ p: 3 }}>
+            <CardContent sx={{ p: 2.5, flexGrow: 1 }}>
               <Stack direction="row" spacing={1.5} alignItems="center">
                 {metric.icon}
                 <Typography fontWeight={900}>{metric.title}</Typography>
               </Stack>
 
-              <Typography variant="h4" fontWeight={950} sx={{ mt: 2 }}>
+              <Typography variant="h4" fontWeight={950} sx={{ mt: 1.5 }}>
                 {metric.value}
               </Typography>
 
-              <Typography color="text.secondary" sx={{ mt: 1 }}>
+              <LinearProgress
+                variant="determinate"
+                value={metric.score}
+                sx={{
+                  mt: 1.5,
+                  height: 9,
+                  borderRadius: 8,
+                  backgroundColor: "rgba(148,163,184,.25)",
+                }}
+              />
+
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
                 {metric.description}
               </Typography>
             </CardContent>
@@ -133,17 +152,18 @@ export const DashboardPage = () => {
             xs: "1fr",
             lg: "1.25fr .75fr",
           },
-          gap: 3,
+          gap: 2.5,
         }}
       >
         <Card
           sx={{
-            borderRadius: 6,
-            boxShadow: "0 24px 70px rgba(15,23,42,.12)",
+            height: "100%",
+            borderRadius: 5,
+            boxShadow: "0 20px 55px rgba(15,23,42,.10)",
             border: "1px solid rgba(148,163,184,.24)",
           }}
         >
-          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+          <CardContent sx={{ p: { xs: 3, md: 3.5 } }}>
             <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
               <ScienceIcon color="primary" />
               <Typography variant="h5" fontWeight={950}>
@@ -151,11 +171,10 @@ export const DashboardPage = () => {
               </Typography>
             </Stack>
 
-            <Typography color="text.secondary" sx={{ mb: 3 }}>
-              La plataforma ha evolucionado desde un sistema funcional hacia un
-              entorno de investigación validable, con evidencias de gobernanza,
-              explicabilidad, equidad, seguridad, arquitectura y preparación para
-              pilotaje.
+            <Typography color="text.secondary" sx={{ mb: 2.5 }}>
+              The platform has evolved into a research validation environment
+              with governance, explainability, fairness, security, architecture
+              and pilot readiness evidence.
             </Typography>
 
             <Box
@@ -165,7 +184,7 @@ export const DashboardPage = () => {
                   xs: "1fr",
                   md: "repeat(2, 1fr)",
                 },
-                gap: 2,
+                gap: 1.5,
               }}
             >
               {evidenceAreas.map((area) => (
@@ -179,12 +198,13 @@ export const DashboardPage = () => {
 
         <Card
           sx={{
-            borderRadius: 6,
-            boxShadow: "0 24px 70px rgba(15,23,42,.12)",
+            height: "100%",
+            borderRadius: 5,
+            boxShadow: "0 20px 55px rgba(15,23,42,.10)",
             border: "1px solid rgba(148,163,184,.24)",
           }}
         >
-          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+          <CardContent sx={{ p: { xs: 3, md: 3.5 } }}>
             <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
               <SecurityIcon color="primary" />
               <Typography variant="h5" fontWeight={950}>
@@ -192,7 +212,7 @@ export const DashboardPage = () => {
               </Typography>
             </Stack>
 
-            <Stack spacing={2}>
+            <Stack spacing={1.5}>
               <Alert severity="success" variant="filled">
                 Backend validated with PostgreSQL runtime.
               </Alert>
@@ -216,22 +236,21 @@ export const DashboardPage = () => {
 
       <Box
         sx={{
-          mt: 4,
-          p: 3,
-          borderRadius: 5,
+          mt: 3,
+          p: 2.5,
+          borderRadius: 4,
           background: "rgba(255,255,255,.72)",
           border: "1px solid rgba(148,163,184,.22)",
         }}
       >
-        <Typography variant="h6" fontWeight={900}>
+        <Typography variant="subtitle1" fontWeight={900}>
           Inclusive Learning Platform (ILP)
         </Typography>
-        <Typography color="text.secondary">
-          Artificial Intelligence for Inclusive Education · Doctoral Research
-          Validation Environment · Educational Technology Research · 2026
+        <Typography variant="body2" color="text.secondary">
+          Doctoral Research Validation Environment · Educational Technology ·
+          Explainable AI · Inclusive Education · 2026
         </Typography>
       </Box>
     </Box>
   );
 };
-
