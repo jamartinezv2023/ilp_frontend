@@ -38,6 +38,7 @@ import ScienceIcon from "@mui/icons-material/Science";
 import { AppRoutes } from "../routes/AppRoutes";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../features/auth/store/authSlice";
+import { researchIdentity } from "../shared/theme/researchIdentity";
 
 const drawerWidth = 310;
 
@@ -64,8 +65,8 @@ export const AppShell = () => {
             ILP
           </Avatar>
           <Box>
-            <Typography variant="h5" fontWeight={900}>ILP Research Platform</Typography>
-            <Typography variant="caption" sx={{ color: "rgba(255,255,255,.7)" }}>Inclusive Educational AI Workspace</Typography>
+            <Typography variant="h5" fontWeight={900}>{researchIdentity.platformName}</Typography>
+            <Typography variant="caption" sx={{ color: "rgba(255,255,255,.7)" }}>{researchIdentity.subtitle}</Typography>
           </Box>
         </Stack>
 
@@ -135,7 +136,7 @@ export const AppShell = () => {
           </IconButton>
 
           <Typography variant="h6" fontWeight={900} sx={{ display: { xs: "none", md: "block" } }}>
-            Research & Governance Workspace
+            {researchIdentity.environment}
           </Typography>
 
           <TextField
@@ -192,12 +193,13 @@ export const AppShell = () => {
         <Toolbar />
         <AppRoutes />
         <Box component="footer" sx={{ mt: 6, py: 3, textAlign: "center", color: "text.secondary" }}>
-          <Typography variant="body2">Inclusive Learning Platform 2026 · Educational AI · Inclusion · Ethics · Research Validation</Typography>
+          <Typography variant="body2">{researchIdentity.footer}</Typography>
         </Box>
       </Box>
     </Box>
   );
 };
+
 
 
 
