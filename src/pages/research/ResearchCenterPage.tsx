@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+ï»¿import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -30,7 +30,7 @@ export const ResearchCenterPage = () => {
       setSignals(data);
     } catch {
       setError(
-        "No fue posible conectar con el backend. Verifique que el servicio esté activo en http://localhost:8083."
+        "No fue posible conectar con el backend. Verifique que el servicio estÃ© activo en http://localhost:8083."
       );
     } finally {
       setLoading(false);
@@ -68,7 +68,7 @@ export const ResearchCenterPage = () => {
         </Typography>
 
         <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Centro ejecutivo para visualizar, en lenguaje académico y no técnico,
+          Centro ejecutivo para visualizar, en lenguaje acadÃ©mico y no tÃ©cnico,
           el estado de gobernanza, confiabilidad, equidad, arquitectura y
           despliegue de la plataforma ILP.
         </Typography>
@@ -157,5 +157,7 @@ export const ResearchCenterPage = () => {
     </Box>
   );
 };
+
+
 
 

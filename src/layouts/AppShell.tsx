@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -84,7 +84,7 @@ export const AppShell = () => {
         {navigationItems.map((item) => (
           <ListItemButton
             key={item.text}
-            selected={location.pathname === item.path}
+            selected={location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)}
             onClick={() => {
               navigate(item.path);
               setMobileOpen(false);
@@ -140,7 +140,7 @@ export const AppShell = () => {
 
           <TextField
             size="small"
-            placeholder="Search users, roles, permissions..."
+            placeholder="Search users, roles, permissions, research evidence..."
             sx={{ flexGrow: 1, maxWidth: 520, bgcolor: "white", borderRadius: 3 }}
             InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment> }}
           />
@@ -198,6 +198,8 @@ export const AppShell = () => {
     </Box>
   );
 };
+
+
 
 
 
