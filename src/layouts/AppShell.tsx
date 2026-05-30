@@ -42,12 +42,12 @@ import { logout } from "../features/auth/store/authSlice";
 const drawerWidth = 310;
 
 const navigationItems = [
-  { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  { text: "Users", icon: <PeopleIcon />, path: "/users" },
-  { text: "Roles", icon: <AdminPanelSettingsIcon />, path: "/roles" },
-  { text: "Permissions", icon: <VpnKeyIcon />, path: "/permissions" },
-  { text: "Security Center", icon: <SecurityIcon />, path: "/security/mfa" },
-  { text: "Research Center", icon: <ScienceIcon />, path: "/research" },
+  { text: "Executive Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+  { text: "User Management", icon: <PeopleIcon />, path: "/users" },
+  { text: "Role Governance", icon: <AdminPanelSettingsIcon />, path: "/roles" },
+  { text: "Access Governance", icon: <VpnKeyIcon />, path: "/permissions" },
+  { text: "Security & Privacy", icon: <SecurityIcon />, path: "/security/mfa" },
+  { text: "Research Validation Center", icon: <ScienceIcon />, path: "/research" },
 ];
 
 export const AppShell = () => {
@@ -140,7 +140,7 @@ export const AppShell = () => {
 
           <TextField
             size="small"
-            placeholder="Search users, roles, permissions, research evidence..."
+            placeholder="Search governance, research evidence, users, roles or access rules..."
             sx={{ flexGrow: 1, maxWidth: 520, bgcolor: "white", borderRadius: 3 }}
             InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment> }}
           />
@@ -198,6 +198,10 @@ export const AppShell = () => {
     </Box>
   );
 };
+
+
+
+
 
 
 
