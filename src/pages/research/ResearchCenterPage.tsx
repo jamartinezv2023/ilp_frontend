@@ -5,6 +5,9 @@ import {
   Button,
   Card,
   CardContent,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Chip,
   CircularProgress,
   LinearProgress,
@@ -18,6 +21,7 @@ import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import InsightsIcon from "@mui/icons-material/Insights";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -317,10 +321,10 @@ export const ResearchCenterPage = () => {
                 key={item.label}
                 label={`${
                   item.status === "Completed"
-                    ? "✓"
+                    ? "?"
                     : item.status === "In preparation"
-                      ? "◐"
-                      : "○"
+                      ? "?"
+                      : "?"
                 } ${item.label}`}
                 color={
                   item.status === "Completed"
@@ -455,88 +459,95 @@ export const ResearchCenterPage = () => {
             ))}
           </Stack>
 
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "repeat(2, 1fr)",
-                xl: "repeat(3, 1fr)",
-              },
-              gap: 2.5,
-            }}
-          >
+          <Stack spacing={1.5}>
             {filteredSignals.map((signal) => (
-              <Box key={signal.endpoint}>
-                <Card
+              <Accordion
+                key={signal.endpoint}
+                disableGutters
+                sx={{
+                  borderRadius: 4,
+                  border: "1px solid rgba(148,163,184,.24)",
+                  boxShadow: "0 12px 30px rgba(15,23,42,.07)",
+                  overflow: "hidden",
+                  "&:before": { display: "none" },
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`${signal.endpoint}-content`}
+                  id={`${signal.endpoint}-header`}
                   sx={{
-                    height: "100%",
-                    minHeight: 360,
-                    borderRadius: 5,
-                    boxShadow: "0 18px 45px rgba(15,23,42,.09)",
-                    border: "1px solid rgba(148,163,184,.22)",
-                    display: "flex",
-                    flexDirection: "column",
+                    px: 2.5,
+                    py: 1.2,
+                    "& .MuiAccordionSummary-content": {
+                      alignItems: "center",
+                      gap: 2,
+                    },
                   }}
                 >
-                  <CardContent sx={{ p: 3, flexGrow: 1 }}>
-                    <Stack
-                      direction="row"
-                      spacing={1.5}
-                      alignItems="center"
-                      sx={{ mb: 2 }}
-                    >
-                      <AccountTreeIcon color="primary" />
-                      <Typography variant="h6" fontWeight={900}>
-                        {signal.title}
-                      </Typography>
-                    </Stack>
+                  <AccountTreeIcon color="primary" />
 
-                    <Chip
-                      label={signal.status}
-                      color="success"
-                      variant="outlined"
-                      sx={{ mb: 2, fontWeight: 800 }}
-                    />
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      {signal.summary}
+                  <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Typography fontWeight={950}>
+                      {signal.title}
                     </Typography>
-
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight={900}
-                      sx={{ mb: 1 }}
-                    >
-                      Visible evidence
-                    </Typography>
-
-                    <Stack spacing={1}>
-                      {signal.evidence.slice(0, 4).map((item) => (
-                        <Alert severity="info" variant="outlined" key={item}>
-                          {item}
-                        </Alert>
-                      ))}
-                    </Stack>
 
                     <Typography
                       variant="caption"
                       color="text.secondary"
-                      sx={{ display: "block", mt: 2 }}
+                      sx={{
+                        display: "block",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: "100%",
+                      }}
                     >
-                      Endpoint: {signal.endpoint}
+                      {signal.summary}
                     </Typography>
-                  </CardContent>
-                </Card>
-              </Box>
+                  </Box>
+
+                  <Chip
+                    label={signal.status}
+                    color="success"
+                    variant="outlined"
+                    size="small"
+                    sx={{ fontWeight: 800 }}
+                  />
+                </AccordionSummary>
+
+                <AccordionDetails sx={{ px: 3, pb: 3 }}>
+                  <Typography
+                    variant="subtitle2"
+                    fontWeight={900}
+                    sx={{ mb: 1 }}
+                  >
+                    Visible evidence
+                  </Typography>
+
+                  <Stack spacing={1}>
+                    {signal.evidence.slice(0, 5).map((item) => (
+                      <Alert severity="info" variant="outlined" key={item}>
+                        {item}
+                      </Alert>
+                    ))}
+                  </Stack>
+
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block", mt: 2 }}
+                  >
+                    Endpoint: {signal.endpoint}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
             ))}
-          </Box>
+          </Stack>
         </>
       )}
     </Box>
   );
 };
+
+
