@@ -14,6 +14,7 @@ import ScienceIcon from "@mui/icons-material/Science";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import TimelineIcon from "@mui/icons-material/Timeline";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
@@ -60,6 +61,19 @@ export const ResearchCenterPage = () => {
     activeCategory === "all"
       ? signals
       : signals.filter((signal) => signal.category === activeCategory);
+
+  const roadmapItems = [
+    { label: "Governance", status: "Completed" },
+    { label: "Trustworthiness", status: "Completed" },
+    { label: "Fairness", status: "Completed" },
+    { label: "Architecture", status: "Completed" },
+    { label: "Deployment", status: "Completed" },
+    { label: "Ethics", status: "Completed" },
+    { label: "Expert Validation", status: "In preparation" },
+    { label: "Research Instruments", status: "In preparation" },
+    { label: "Pilot Study", status: "Pending" },
+    { label: "Scientific Publications", status: "Pending" },
+  ];
 
   const totalSignals = signals.length;
   const validatedSignals = signals.filter((signal) => signal.status).length;
@@ -180,6 +194,55 @@ export const ResearchCenterPage = () => {
 
       {!loading && !error && (
         <>
+          <Card
+            sx={{
+              mb: 3,
+              borderRadius: 5,
+              boxShadow: "0 18px 45px rgba(15,23,42,.10)",
+              border: "1px solid rgba(148,163,184,.22)",
+            }}
+          >
+            <CardContent sx={{ p: 3 }}>
+              <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
+                <TimelineIcon color="primary" />
+                <Typography variant="h5" fontWeight={950}>
+                  Doctoral Research Roadmap
+                </Typography>
+              </Stack>
+
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "repeat(2, 1fr)",
+                    lg: "repeat(5, 1fr)",
+                  },
+                  gap: 1.5,
+                }}
+              >
+                {roadmapItems.map((item) => (
+                  <Chip
+                    key={item.label}
+                    label={`${item.status === "Completed" ? "✓" : item.status === "In preparation" ? "◐" : "○"} ${item.label}`}
+                    color={
+                      item.status === "Completed"
+                        ? "success"
+                        : item.status === "In preparation"
+                          ? "warning"
+                          : "default"
+                    }
+                    variant={item.status === "Completed" ? "filled" : "outlined"}
+                    sx={{
+                      justifyContent: "flex-start",
+                      fontWeight: 800,
+                      px: 1,
+                    }}
+                  />
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
           <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 3 }}>
             {categories.map((category) => (
               <Chip
@@ -263,5 +326,6 @@ export const ResearchCenterPage = () => {
     </Box>
   );
 };
+
 
 
