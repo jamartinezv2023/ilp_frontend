@@ -14,6 +14,9 @@ import ScienceIcon from "@mui/icons-material/Science";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import PsychologyIcon from "@mui/icons-material/Psychology";
+import GppGoodIcon from "@mui/icons-material/GppGood";
+import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import type { ResearchSignal } from "../../types/research";
 import { fetchResearchSignals } from "../../services/researchApi";
 
@@ -41,6 +44,13 @@ export const ResearchCenterPage = () => {
     void loadSignals();
   }, []);
 
+  const totalSignals = signals.length;
+  const validatedSignals = signals.filter((signal) => signal.status).length;
+  const evidenceItems = signals.reduce(
+    (total, signal) => total + signal.evidence.length,
+    0
+  );
+
   return (
     <Box>
       <Box
@@ -64,13 +74,13 @@ export const ResearchCenterPage = () => {
         </Stack>
 
         <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Research Validation Center
+          Inclusive Educational AI Research Center
         </Typography>
 
         <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Centro ejecutivo para visualizar, en lenguaje académico y no técnico,
-          el estado de gobernanza, confiabilidad, equidad, arquitectura y
-          despliegue de la plataforma ILP.
+          Tablero ejecutivo para visualizar la madurez científica, ética,
+          arquitectónica y tecnológica de la plataforma ILP como evidencia de
+          investigación doctoral aplicada a la educación inclusiva.
         </Typography>
 
         <Button
@@ -83,10 +93,69 @@ export const ResearchCenterPage = () => {
         </Button>
       </Box>
 
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: "repeat(3, 1fr)",
+          },
+          gap: 3,
+          mb: 4,
+        }}
+      >
+        <Card sx={{ borderRadius: 5, boxShadow: "0 18px 45px rgba(15,23,42,.10)" }}>
+          <CardContent sx={{ p: 3 }}>
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <PsychologyIcon color="primary" />
+              <Typography fontWeight={900}>Evidencias activas</Typography>
+            </Stack>
+            <Typography variant="h3" fontWeight={950} sx={{ mt: 2 }}>
+              {loading ? "..." : totalSignals}
+            </Typography>
+            <Typography color="text.secondary">
+              Áreas de investigación y gobernanza conectadas al backend.
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ borderRadius: 5, boxShadow: "0 18px 45px rgba(15,23,42,.10)" }}>
+          <CardContent sx={{ p: 3 }}>
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <GppGoodIcon color="success" />
+              <Typography fontWeight={900}>Estado validado</Typography>
+            </Stack>
+            <Typography variant="h3" fontWeight={950} sx={{ mt: 2 }}>
+              {loading ? "..." : validatedSignals}
+            </Typography>
+            <Typography color="text.secondary">
+              Señales con respuesta real desde servicios activos.
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ borderRadius: 5, boxShadow: "0 18px 45px rgba(15,23,42,.10)" }}>
+          <CardContent sx={{ p: 3 }}>
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <CloudDoneIcon color="info" />
+              <Typography fontWeight={900}>Ítems de evidencia</Typography>
+            </Stack>
+            <Typography variant="h3" fontWeight={950} sx={{ mt: 2 }}>
+              {loading ? "..." : evidenceItems}
+            </Typography>
+            <Typography color="text.secondary">
+              Indicadores visibles para seguimiento doctoral.
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Consultando endpoints del backend...</Typography>
+          <Typography sx={{ mt: 2 }}>
+            Consultando evidencia científica y tecnológica...
+          </Typography>
         </Stack>
       )}
 
@@ -145,7 +214,11 @@ export const ResearchCenterPage = () => {
                     ))}
                   </Stack>
 
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block", mt: 2 }}
+                  >
                     Endpoint: {signal.endpoint}
                   </Typography>
                 </CardContent>
@@ -157,7 +230,3 @@ export const ResearchCenterPage = () => {
     </Box>
   );
 };
-
-
-
-
