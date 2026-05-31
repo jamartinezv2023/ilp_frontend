@@ -24,18 +24,19 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import SchoolIcon from "@mui/icons-material/School";
+import GroupsIcon from "@mui/icons-material/Groups";
+import PsychologyIcon from "@mui/icons-material/Psychology";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
+import ScienceIcon from "@mui/icons-material/Science";
 import SecurityIcon from "@mui/icons-material/Security";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import ScienceIcon from "@mui/icons-material/Science";
 import { AppRoutes } from "../routes/AppRoutes";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../features/auth/store/authSlice";
@@ -45,12 +46,14 @@ const drawerExpandedWidth = 310;
 const drawerCollapsedWidth = 88;
 
 const navigationItems = [
-  { text: "Executive Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  { text: "User Management", icon: <PeopleIcon />, path: "/users" },
-  { text: "Role Governance", icon: <AdminPanelSettingsIcon />, path: "/roles" },
-  { text: "Access Governance", icon: <VpnKeyIcon />, path: "/permissions" },
+  { text: "Institutional Overview", icon: <SchoolIcon />, path: "/institutional" },
+  { text: "Teacher Workspace", icon: <GroupsIcon />, path: "/teacher" },
+  { text: "Student Support", icon: <PsychologyIcon />, path: "/students" },
+  { text: "Inclusion & PIAR", icon: <Diversity3Icon />, path: "/inclusion" },
+  { text: "Family Engagement", icon: <FamilyRestroomIcon />, path: "/family" },
+  { text: "Research & Evaluation", icon: <ScienceIcon />, path: "/research" },
   { text: "Security & Privacy", icon: <SecurityIcon />, path: "/security/mfa" },
-  { text: "Research Validation Center", icon: <ScienceIcon />, path: "/research" },
+  { text: "Administration", icon: <AdminPanelSettingsIcon />, path: "/administration" },
 ];
 
 export const AppShell = () => {
@@ -109,8 +112,7 @@ export const AppShell = () => {
 
         {!collapsed && (
           <Chip
-            icon={<AutoAwesomeIcon />}
-            label="Secure MFA Enabled"
+            label="Educational Support Platform"
             size="small"
             variant="outlined"
             sx={{
@@ -247,15 +249,15 @@ export const AppShell = () => {
             fontWeight={900}
             sx={{ display: { xs: "none", lg: "block" }, whiteSpace: "nowrap" }}
           >
-            {researchIdentity.environment}
+            Inclusive Educational Support Environment
           </Typography>
 
           <TextField
             size="small"
-            placeholder="Search governance, research evidence, users, roles or access rules..."
+            placeholder="Search students, supports, teachers, families or institutional evidence..."
             sx={{
               flexGrow: 1,
-              maxWidth: 620,
+              maxWidth: 650,
               bgcolor: "white",
               borderRadius: 3,
             }}
@@ -350,7 +352,9 @@ export const AppShell = () => {
             color: "text.secondary",
           }}
         >
-          <Typography variant="body2">{researchIdentity.footer}</Typography>
+          <Typography variant="body2">
+            Inclusive Learning Platform (ILP) · Educational Support · Inclusive Education · Research Validation · © 2026
+          </Typography>
         </Box>
       </Box>
     </Box>
