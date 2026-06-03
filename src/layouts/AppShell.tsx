@@ -30,6 +30,7 @@ import PsychologyIcon from "@mui/icons-material/Psychology";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import ScienceIcon from "@mui/icons-material/Science";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SecurityIcon from "@mui/icons-material/Security";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -51,6 +52,7 @@ const navigationItems = [
   { text: "Student Support", icon: <PsychologyIcon />, path: "/students" },
   { text: "Inclusion & PIAR", icon: <Diversity3Icon />, path: "/inclusion" },
   { text: "Family Engagement", icon: <FamilyRestroomIcon />, path: "/family" },
+  { text: "Adaptive Intelligence", icon: <AutoAwesomeIcon />, path: "/adaptive" },
   { text: "Research & Evaluation", icon: <ScienceIcon />, path: "/research" },
   { text: "Security & Privacy", icon: <SecurityIcon />, path: "/security/mfa" },
   { text: "Administration", icon: <AdminPanelSettingsIcon />, path: "/administration" },
@@ -360,3 +362,4 @@ export const AppShell = () => {
     </Box>
   );
 };
+

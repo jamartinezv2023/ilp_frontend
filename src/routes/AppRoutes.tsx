@@ -11,6 +11,7 @@ import { StudentSupportPage } from "../pages/students/StudentSupportPage";
 import { InclusionPiarPage } from "../pages/inclusion/InclusionPiarPage";
 import { FamilyEngagementPage } from "../pages/family/FamilyEngagementPage";
 import { AdministrationPage } from "../pages/administration/AdministrationPage";
+import { AdaptiveIntelligencePage } from "../pages/adaptive/AdaptiveIntelligencePage";
 
 export const AppRoutes = () => {
   return (
@@ -21,6 +22,7 @@ export const AppRoutes = () => {
       <Route path="/students" element={<StudentSupportPage />} />
       <Route path="/inclusion" element={<InclusionPiarPage />} />
       <Route path="/family" element={<FamilyEngagementPage />} />
+      <Route path="/adaptive" element={<AdaptiveIntelligencePage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/research" element={<ResearchCenterPage />} />
       <Route path="/security/mfa" element={<MfaPage />} />
@@ -31,3 +33,4 @@ export const AppRoutes = () => {
     </Routes>
   );
 };
+
