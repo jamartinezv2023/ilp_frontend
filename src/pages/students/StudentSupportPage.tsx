@@ -16,6 +16,8 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
 import type { StudentProfile } from "../../types/student";
 import { fetchStudents } from "../../services/studentApi";
+import { fetchStudentRecommendations } from "../../services/recommendationApi";
+import type { StudentRecommendation } from "../../types/recommendation";
 
 const supportColor = (level: string): "success" | "warning" | "error" | "default" => {
   if (level === "LOW") return "success";
@@ -29,6 +31,8 @@ export const StudentSupportPage = () => {
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [recommendation, setRecommendation] =
+    useState<StudentRecommendation | null>(null);
 
   const loadStudents = async () => {
     try {
@@ -37,6 +41,10 @@ export const StudentSupportPage = () => {
       const data = await fetchStudents();
       setStudents(data);
       setSelectedStudent(data[0] ?? null);
+      if (data[0]) {
+        const recommendationData = await fetchStudentRecommendations(data[0].id);
+        setRecommendation(recommendationData);
+      }
     } catch {
       setError("No fue posible cargar los perfiles estudiantiles desde el backend.");
     } finally {
@@ -106,7 +114,11 @@ export const StudentSupportPage = () => {
                 {students.map((student) => (
                   <Box
                     key={student.id}
-                    onClick={() => setSelectedStudent(student)}
+                    onClick={async () => {
+                      setSelectedStudent(student);
+                      const data = await fetchStudentRecommendations(student.id);
+                      setRecommendation(data);
+                    }}
                     sx={{
                       p: 2,
                       borderRadius: 4,
@@ -222,13 +234,25 @@ export const StudentSupportPage = () => {
                 </Stack>
 
                 <Typography variant="h6" fontWeight={950} sx={{ mt: 4, mb: 2 }}>
-                  Recomendaciones pedagógicas
+                  Recomendaciones inteligentes
                 </Typography>
 
                 <Stack spacing={1}>
-                  {selectedStudent.pedagogicalRecommendations.map((recommendation) => (
-                    <Alert key={recommendation} severity="info" variant="outlined">
-                      {recommendation}
+                  {(recommendation?.teacherRecommendations ?? selectedStudent.pedagogicalRecommendations).map((item) => (
+                    <Alert key={item} severity="info" variant="outlined">
+                      {item}
+                    </Alert>
+                  ))}
+                </Stack>
+
+                <Typography variant="h6" fontWeight={950} sx={{ mt: 4, mb: 2 }}>
+                  Próximas acciones
+                </Typography>
+
+                <Stack spacing={1}>
+                  {(recommendation?.nextActions ?? []).map((item) => (
+                    <Alert key={item} severity="warning" variant="outlined">
+                      {item}
                     </Alert>
                   ))}
                 </Stack>
@@ -240,3 +264,4 @@ export const StudentSupportPage = () => {
     </Box>
   );
 };
+
