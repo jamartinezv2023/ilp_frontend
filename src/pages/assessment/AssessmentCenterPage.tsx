@@ -21,7 +21,9 @@ import type {
   KolbAssessmentResponse,
   KuderAssessmentResponse,
 } from "../../types/assessment";
-import { fetchStudents } from "../../services/studentApi";
+import { fetchStudents, fetchStudentById } from "../../services/studentApi";
+import { generateAdaptivePlan } from "../../services/adaptiveApi";
+import type { AdaptiveLearningPlan } from "../../types/adaptive";
 import {
   submitFelderSilvermanAssessment,
   submitKolbAssessment,
@@ -35,6 +37,7 @@ export const AssessmentCenterPage = () => {
   const [felderResult, setFelderResult] =
     useState<FelderSilvermanAssessmentResponse | null>(null);
   const [kuderResult, setKuderResult] = useState<KuderAssessmentResponse | null>(null);
+  const [adaptivePlan, setAdaptivePlan] = useState<AdaptiveLearningPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState("");
   const [error, setError] = useState("");
@@ -59,6 +62,7 @@ export const AssessmentCenterPage = () => {
     try {
       setRunning("kolb");
       setKolbResult(await submitKolbAssessment(selectedStudent.id));
+      setSelectedStudent(await fetchStudentById(selectedStudent.id));
     } catch {
       setError("No fue posible aplicar Kolb.");
     } finally {
@@ -72,6 +76,7 @@ export const AssessmentCenterPage = () => {
     try {
       setRunning("felder");
       setFelderResult(await submitFelderSilvermanAssessment(selectedStudent.id));
+      setSelectedStudent(await fetchStudentById(selectedStudent.id));
     } catch {
       setError("No fue posible aplicar Felder-Silverman.");
     } finally {
@@ -85,8 +90,22 @@ export const AssessmentCenterPage = () => {
     try {
       setRunning("kuder");
       setKuderResult(await submitKuderAssessment(selectedStudent.id));
+      setSelectedStudent(await fetchStudentById(selectedStudent.id));
     } catch {
       setError("No fue posible aplicar Kuder.");
+    } finally {
+      setRunning("");
+    }
+  };
+
+  const runAdaptivePlan = async () => {
+    if (!selectedStudent) return;
+
+    try {
+      setRunning("adaptive");
+      setAdaptivePlan(await generateAdaptivePlan(selectedStudent.id));
+    } catch {
+      setError("No fue posible generar el plan adaptativo.");
     } finally {
       setRunning("");
     }
@@ -158,6 +177,7 @@ export const AssessmentCenterPage = () => {
                       setKolbResult(null);
                       setFelderResult(null);
                       setKuderResult(null);
+                      setAdaptivePlan(null);
                     }}
                     sx={{
                       p: 2,
@@ -304,6 +324,37 @@ export const AssessmentCenterPage = () => {
                       </CardContent>
                     </Card>
                   </Box>
+
+                  <Card variant="outlined" sx={{ borderRadius: 4, mt: 3 }}>
+                    <CardContent>
+                      <Typography variant="h5" fontWeight={950}>
+                        Perfil actualizado del estudiante
+                      </Typography>
+
+                      <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 2 }}>
+                        <Chip label={`Kolb: ${selectedStudent.learningProfile}`} color="primary" />
+                        <Chip label={`Vocacional: ${selectedStudent.vocationalInterest}`} color="secondary" />
+                        <Chip label={`Apoyo: ${selectedStudent.supportLevel}`} variant="outlined" />
+                      </Stack>
+
+                      <Button
+                        variant="contained"
+                        disabled={running === "adaptive"}
+                        onClick={() => void runAdaptivePlan()}
+                        sx={{ mt: 3, borderRadius: 3, fontWeight: 900 }}
+                      >
+                        {running === "adaptive"
+                          ? "Generando plan..."
+                          : "Generar plan adaptativo actualizado"}
+                      </Button>
+
+                      {adaptivePlan && (
+                        <Alert severity="success" sx={{ mt: 3 }}>
+                          Plan generado: {adaptivePlan.recommendedMethodology.replaceAll("_", " ")} · Riesgo: {adaptivePlan.riskLevel}
+                        </Alert>
+                      )}
+                    </CardContent>
+                  </Card>
                 </>
               )}
             </CardContent>
@@ -313,3 +364,4 @@ export const AssessmentCenterPage = () => {
     </Box>
   );
 };
+
