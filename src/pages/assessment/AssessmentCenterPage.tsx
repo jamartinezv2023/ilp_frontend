@@ -26,9 +26,9 @@ import { generateAdaptivePlan } from "../../services/adaptiveApi";
 import type { AdaptiveLearningPlan } from "../../types/adaptive";
 import {
   submitFelderSilvermanAssessment,
-  submitKolbAssessment,
   submitKuderAssessment,
 } from "../../services/assessmentApi";
+import { KolbRealForm } from "./components/KolbRealForm";
 
 export const AssessmentCenterPage = () => {
   const [students, setStudents] = useState<StudentProfile[]>([]);
@@ -53,20 +53,6 @@ export const AssessmentCenterPage = () => {
       setError("No fue posible cargar estudiantes desde el backend.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const runKolb = async () => {
-    if (!selectedStudent) return;
-
-    try {
-      setRunning("kolb");
-      setKolbResult(await submitKolbAssessment(selectedStudent.id));
-      setSelectedStudent(await fetchStudentById(selectedStudent.id));
-    } catch {
-      setError("No fue posible aplicar Kolb.");
-    } finally {
-      setRunning("");
     }
   };
 
@@ -246,19 +232,18 @@ export const AssessmentCenterPage = () => {
                           Identifica el estilo de aprendizaje experiencial.
                         </Typography>
 
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          disabled={running === "kolb"}
-                          onClick={() => void runKolb()}
-                          sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
-                        >
-                          {running === "kolb" ? "Aplicando..." : "Aplicar Kolb"}
-                        </Button>
+                        {selectedStudent && (
+                          <Box sx={{ mt: 2 }}>
+                            <KolbRealForm
+                              studentId={selectedStudent.id}
+                              onCompleted={(result) => setKolbResult(result)}
+                            />
+                          </Box>
+                        )}
 
                         {kolbResult && (
                           <Alert severity="success" sx={{ mt: 2 }}>
-                            Resultado: {kolbResult.learningStyle}
+                            Resultado real: {kolbResult.learningStyle}
                           </Alert>
                         )}
                       </CardContent>
@@ -364,4 +349,6 @@ export const AssessmentCenterPage = () => {
     </Box>
   );
 };
+
+
 
