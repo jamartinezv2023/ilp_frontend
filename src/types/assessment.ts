@@ -1,4 +1,14 @@
-﻿export type KolbAssessmentResponse = {
+﻿export type InstrumentQuestion = {
+  id: string;
+  instrument: string;
+  dimension: string;
+  questionOrder: number;
+  text: string;
+  options: string[];
+  instrumentVersion: string;
+};
+
+export type KolbAssessmentResponse = {
   assessmentId: string;
   studentId: string;
   scoreCE: number;

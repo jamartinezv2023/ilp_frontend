@@ -1,6 +1,7 @@
 ﻿import axios from "axios";
 import type {
   FelderSilvermanAssessmentResponse,
+  InstrumentQuestion,
   KolbAssessmentResponse,
   KuderAssessmentResponse,
 } from "../types/assessment";
@@ -13,17 +14,32 @@ const client = axios.create({
   timeout: 8000,
 });
 
-export const submitKolbAssessment = async (
-  studentId: string
-): Promise<KolbAssessmentResponse> => {
-  const answers = Array.from({ length: 12 }).flatMap(() => [4, 4, 1, 1]);
+export const fetchKolbQuestions = async (): Promise<InstrumentQuestion[]> => {
+  const response = await client.get<InstrumentQuestion[]>(
+    "/api/v1/instruments/kolb/questions"
+  );
 
+  return response.data;
+};
+
+export const submitKolbAssessmentWithAnswers = async (
+  studentId: string,
+  answers: number[]
+): Promise<KolbAssessmentResponse> => {
   const response = await client.post<KolbAssessmentResponse>(
     "/api/v1/assessments/kolb",
     { studentId, answers }
   );
 
   return response.data;
+};
+
+export const submitKolbAssessment = async (
+  studentId: string
+): Promise<KolbAssessmentResponse> => {
+  const answers = Array.from({ length: 12 }).flatMap(() => [4, 4, 1, 1]);
+
+  return submitKolbAssessmentWithAnswers(studentId, answers);
 };
 
 export const submitFelderSilvermanAssessment = async (

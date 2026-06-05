@@ -32,6 +32,7 @@ import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import ScienceIcon from "@mui/icons-material/Science";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import DynamicFormIcon from "@mui/icons-material/DynamicForm";
 import SecurityIcon from "@mui/icons-material/Security";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -54,6 +55,7 @@ const navigationItems = [
   { text: "Inclusion & PIAR", icon: <Diversity3Icon />, path: "/inclusion" },
   { text: "Family Engagement", icon: <FamilyRestroomIcon />, path: "/family" },
   { text: "Assessment Center", icon: <AssignmentTurnedInIcon />, path: "/assessments" },
+  { text: "Form Engine Preview", icon: <DynamicFormIcon />, path: "/assessment-definition-preview" },
   { text: "Adaptive Intelligence", icon: <AutoAwesomeIcon />, path: "/adaptive" },
   { text: "Research & Evaluation", icon: <ScienceIcon />, path: "/research" },
   { text: "Security & Privacy", icon: <SecurityIcon />, path: "/security/mfa" },
@@ -364,5 +366,6 @@ export const AppShell = () => {
     </Box>
   );
 };
+
 
 
