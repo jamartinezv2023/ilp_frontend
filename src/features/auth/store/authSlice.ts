@@ -1,5 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+﻿import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface LoginRequest {
   email: string;
@@ -8,52 +7,51 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  accessToken: string | null;
-  refreshToken: string | null;
+  accessToken: string;
+  refreshToken: string;
+  email: string;
+  password: string;
   mfaRequired: boolean;
 }
 
 interface AuthState {
-  loading: boolean;
-  error: string | null;
   accessToken: string | null;
   refreshToken: string | null;
-  mfaRequired: boolean;
   email: string | null;
   password: string | null;
+  mfaRequired: boolean;
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: AuthState = {
-  loading: false,
-  error: null,
-  accessToken: localStorage.getItem("accessToken"),
-  refreshToken: localStorage.getItem("refreshToken"),
-  mfaRequired: false,
+  accessToken: null,
+  refreshToken: null,
   email: null,
   password: null,
+  mfaRequired: false,
+  loading: false,
+  error: null,
 };
-
-const API_BASE_URL = import.meta.env.VITE_AUTH_API_BASE_URL;
-const TENANT_ID = import.meta.env.VITE_TENANT_ID;
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
-  async (credentials: LoginRequest) => {
-    const response = await axios.post<LoginResponse>(
-      `${API_BASE_URL}/auth/login`,
-      credentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Tenant-Id": TENANT_ID,
-        },
-      }
-    );
+  async (credentials: LoginRequest): Promise<LoginResponse> => {
+    const validEmail = credentials.email === "admin@demo.com";
+    const validPassword =
+      credentials.password === "Admin123*" ||
+      credentials.password === "password";
+
+    if (!validEmail || !validPassword) {
+      throw new Error("Invalid MVP-21A local credentials");
+    }
 
     return {
-      ...response.data,
+      accessToken: "mvp21a-local-access-token",
+      refreshToken: "mvp21a-local-refresh-token",
       email: credentials.email,
       password: credentials.password,
+      mfaRequired: false,
     };
   }
 );
@@ -62,16 +60,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout(state) {
+    logout: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
-      state.mfaRequired = false;
       state.email = null;
       state.password = null;
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      state.mfaRequired = false;
+      state.error = null;
     },
-    clearError(state) {
+    clearError: (state) => {
       state.error = null;
     },
   },
@@ -83,29 +80,20 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.mfaRequired = action.payload.mfaRequired;
-
-        if (action.payload.mfaRequired) {
-          state.email = action.payload.email;
-          state.password = action.payload.password;
-          return;
-        }
-
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
-        state.email = null;
-        state.password = null;
-
-        if (action.payload.accessToken) {
-          localStorage.setItem("accessToken", action.payload.accessToken);
-        }
-
-        if (action.payload.refreshToken) {
-          localStorage.setItem("refreshToken", action.payload.refreshToken);
-        }
+        state.email = action.payload.email;
+        state.password = action.payload.password;
+        state.mfaRequired = action.payload.mfaRequired;
+        state.error = null;
       })
       .addCase(loginThunk.rejected, (state) => {
         state.loading = false;
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.email = null;
+        state.password = null;
+        state.mfaRequired = false;
         state.error = "Login failed";
       });
   },

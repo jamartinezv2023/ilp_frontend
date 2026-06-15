@@ -1,0 +1,4 @@
+"IgnoreCase","LineNumber","Line","Filename","Path","Pattern","Context","Matches"
+"True","44","import { useAppDispatch } from ""../store/hooks"";","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","dispatch|useDispatch|loginSuccess|setAuthenticated",,"System.Text.RegularExpressions.Match[]"
+"True","68","  const dispatch = useAppDispatch();","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","dispatch|useDispatch|loginSuccess|setAuthenticated",,"System.Text.RegularExpressions.Match[]"
+"True","198","            onClick={() => dispatch(logout())}","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","dispatch|useDispatch|loginSuccess|setAuthenticated",,"System.Text.RegularExpressions.Match[]"

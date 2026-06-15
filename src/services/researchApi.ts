@@ -2,7 +2,7 @@
 import type { ApiRecord, ResearchSignal } from "../types/research";
 
 const API_BASE_URL =
-  import.meta.env.VITE_AUTH_API_BASE_URL ?? "http://localhost:8083";
+  import.meta.env.VITE_AUTH_API_BASE_URL || "";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
