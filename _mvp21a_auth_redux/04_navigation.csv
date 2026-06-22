@@ -1,0 +1,6 @@
+"IgnoreCase","LineNumber","Line","Filename","Path","Pattern","Context","Matches"
+"True","2","import { useLocation, useNavigate } from ""react-router-dom"";","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","/login|Navigate|Research Platform Access",,"System.Text.RegularExpressions.Match[]"
+"True","69","  const navigate = useNavigate();","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","/login|Navigate|Research Platform Access",,"System.Text.RegularExpressions.Match[]"
+"True","154","                  navigate(item.path);","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","/login|Navigate|Research Platform Access",,"System.Text.RegularExpressions.Match[]"
+"True","1","import { Routes, Route, Navigate } from ""react-router-dom"";","AppRoutes.tsx","C:\TEAC2026\ilp_frontend\src\routes\AppRoutes.tsx","/login|Navigate|Research Platform Access",,"System.Text.RegularExpressions.Match[]"
+"True","21","      <Route path=""/"" element={<Navigate to=""/institutional"" replace />} />","AppRoutes.tsx","C:\TEAC2026\ilp_frontend\src\routes\AppRoutes.tsx","/login|Navigate|Research Platform Access",,"System.Text.RegularExpressions.Match[]"

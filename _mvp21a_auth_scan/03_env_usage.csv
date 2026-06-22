@@ -1,0 +1,7 @@
+"IgnoreCase","LineNumber","Line","Filename","Path","Pattern","Context","Matches"
+"True","5","  import.meta.env.VITE_AUTH_API_BASE_URL ?? ""http://localhost:8083"";","adaptiveApi.ts","C:\TEAC2026\ilp_frontend\src\services\adaptiveApi.ts","VITE_.*API",,"System.Text.RegularExpressions.Match[]"
+"True","10","  import.meta.env.VITE_AUTH_API_BASE_URL ?? ""http://localhost:8083"";","assessmentApi.ts","C:\TEAC2026\ilp_frontend\src\services\assessmentApi.ts","VITE_.*API",,"System.Text.RegularExpressions.Match[]"
+"True","5","  import.meta.env.VITE_AUTH_API_BASE_URL ?? ""http://localhost:8083"";","assessmentDefinitionApi.ts","C:\TEAC2026\ilp_frontend\src\services\assessmentDefinitionApi.ts","VITE_.*API",,"System.Text.RegularExpressions.Match[]"
+"True","5","  import.meta.env.VITE_AUTH_API_BASE_URL ?? ""http://localhost:8083"";","recommendationApi.ts","C:\TEAC2026\ilp_frontend\src\services\recommendationApi.ts","VITE_.*API",,"System.Text.RegularExpressions.Match[]"
+"True","5","  import.meta.env.VITE_AUTH_API_BASE_URL ?? ""http://localhost:8083"";","researchApi.ts","C:\TEAC2026\ilp_frontend\src\services\researchApi.ts","VITE_.*API",,"System.Text.RegularExpressions.Match[]"
+"True","5","  import.meta.env.VITE_AUTH_API_BASE_URL ?? ""http://localhost:8083"";","studentApi.ts","C:\TEAC2026\ilp_frontend\src\services\studentApi.ts","VITE_.*API",,"System.Text.RegularExpressions.Match[]"

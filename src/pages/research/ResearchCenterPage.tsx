@@ -104,7 +104,7 @@ export const ResearchCenterPage = () => {
       setSignals(data);
     } catch {
       setError(
-        "No fue posible conectar con el backend. Verifique que el servicio esté activo en http://localhost:8083."
+        "No fue posible conectar con el backend. Verifique que el servicio esté activo en http://localhost:9080."
       );
     } finally {
       setLoading(false);

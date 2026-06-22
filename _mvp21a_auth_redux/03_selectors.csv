@@ -1,0 +1,2 @@
+"IgnoreCase","LineNumber","Line","Filename","Path","Pattern","Context","Matches"
+"True","45","import { logout } from ""../features/auth/store/authSlice"";","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","useSelector|isAuthenticated|auth.",,"System.Text.RegularExpressions.Match[]"

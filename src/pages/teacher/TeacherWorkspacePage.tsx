@@ -36,7 +36,7 @@ export const TeacherWorkspacePage = () => {
       setStudents(data);
     } catch {
       setError(
-        "No fue posible cargar los estudiantes. Verifique que el backend esté activo en http://localhost:8083."
+        "No fue posible cargar los estudiantes. Verifique que el backend esté activo en http://localhost:9080."
       );
     } finally {
       setLoading(false);

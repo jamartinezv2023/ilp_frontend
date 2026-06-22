@@ -1,0 +1,4 @@
+"IgnoreCase","LineNumber","Line","Filename","Path","Pattern","Context","Matches"
+"True","2","import { useLocation, useNavigate } from ""react-router-dom"";","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","navigate\(|useNavigate|onSubmit|handleLogin",,"System.Text.RegularExpressions.Match[]"
+"True","69","  const navigate = useNavigate();","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","navigate\(|useNavigate|onSubmit|handleLogin",,"System.Text.RegularExpressions.Match[]"
+"True","154","                  navigate(item.path);","AppShell.tsx","C:\TEAC2026\ilp_frontend\src\layouts\AppShell.tsx","navigate\(|useNavigate|onSubmit|handleLogin",,"System.Text.RegularExpressions.Match[]"

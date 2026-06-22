@@ -5,6 +5,7 @@ import type {
   KolbAssessmentResponse,
   KuderAssessmentResponse,
 } from "../types/assessment";
+import type { AssessmentDefinition } from "../types/assessmentDefinition";
 
 const API_BASE_URL =
   import.meta.env.VITE_AUTH_API_BASE_URL ?? "http://localhost:8083";
@@ -14,12 +15,39 @@ const client = axios.create({
   timeout: 8000,
 });
 
+const normalizeKolbHistory = (
+  payload: KolbAssessmentResponse[] | KolbAssessmentResponse | null
+): KolbAssessmentResponse[] => {
+  if (!payload) return [];
+  return Array.isArray(payload) ? payload : [payload];
+};
+
 export const fetchKolbQuestions = async (): Promise<InstrumentQuestion[]> => {
-  const response = await client.get<InstrumentQuestion[]>(
-    "/api/v1/instruments/kolb/questions"
+  const response = await client.get<AssessmentDefinition>(
+    "/api/v1/assessment-definitions/KOLB_V1"
   );
 
-  return response.data;
+  const questions = Array.isArray(response.data.questions)
+    ? response.data.questions
+    : [];
+
+  return questions.map((question) => ({
+    id: String(question.id),
+    questionOrder: Number(question.questionNumber ?? question.displayOrder ?? 0),
+    text: String(question.text ?? ""),
+    dimension: String(question.dimension ?? "CE_RO_AC_AE"),
+    instrument: "KOLB",
+    instrumentVersion: "KOLB_V1",
+    options: Array.isArray(question.options)
+      ? [...question.options]
+          .sort(
+            (a, b) =>
+              Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0)
+          )
+          .map((option) => String(option.label ?? option.value ?? ""))
+          .filter(Boolean)
+      : [],
+  }));
 };
 
 export const submitKolbAssessmentWithAnswers = async (
@@ -34,11 +62,20 @@ export const submitKolbAssessmentWithAnswers = async (
   return response.data;
 };
 
+export const fetchKolbAssessmentHistory = async (
+  studentId: string
+): Promise<KolbAssessmentResponse[]> => {
+  const response = await client.get<
+    KolbAssessmentResponse[] | KolbAssessmentResponse | null
+  >(`/api/v1/assessments/kolb/students/${studentId}`);
+
+  return normalizeKolbHistory(response.data);
+};
+
 export const submitKolbAssessment = async (
   studentId: string
 ): Promise<KolbAssessmentResponse> => {
-  const answers = Array.from({ length: 12 }).flatMap(() => [4, 4, 1, 1]);
-
+  const answers = Array.from({ length: 12 }).flatMap(() => [4, 3, 2, 1]);
   return submitKolbAssessmentWithAnswers(studentId, answers);
 };
 

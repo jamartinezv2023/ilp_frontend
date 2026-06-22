@@ -14,6 +14,7 @@ import { AdministrationPage } from "../pages/administration/AdministrationPage";
 import { AdaptiveIntelligencePage } from "../pages/adaptive/AdaptiveIntelligencePage";
 import { AssessmentCenterPage } from "../pages/assessment/AssessmentCenterPage";
 import { AssessmentDefinitionPreviewPage } from "../pages/assessment-definition-preview/AssessmentDefinitionPreviewPage";
+import { FieldworkDemoPage } from "../features/fieldwork/pages/FieldworkDemoPage";
 
 export const AppRoutes = () => {
   return (
@@ -34,9 +35,7 @@ export const AppRoutes = () => {
       <Route path="/users" element={<UsersPage />} />
       <Route path="/roles" element={<RolesPage />} />
       <Route path="/permissions" element={<PermissionsPage />} />
+      <Route path="/fieldwork-demo" element={<FieldworkDemoPage />} />
     </Routes>
   );
 };
-
-
-
