@@ -14,10 +14,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import type { AssessmentDefinition } from "../../../types/assessmentDefinition";
-import {
-  IpsativeRankingQuestion,
-  validateIpsativeAnswer,
-} from "./IpsativeRankingQuestion";
+import { IpsativeRankingQuestion } from "./IpsativeRankingQuestion";
+import { validateIpsativeAnswer } from "./ipsativeValidation";
 
 type IpsativeAnswer = Record<string, number>;
 type AssessmentAnswers = Record<string, IpsativeAnswer>;
@@ -223,3 +221,8 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
     </Stack>
   );
 };
+
+
+
+
+
