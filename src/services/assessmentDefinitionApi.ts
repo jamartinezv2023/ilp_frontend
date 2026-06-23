@@ -2,7 +2,7 @@
 import type { AssessmentDefinition } from "../types/assessmentDefinition";
 
 const API_BASE_URL =
-  import.meta.env.VITE_AUTH_API_BASE_URL || "";
+  import.meta.env.VITE_ADAPTIVE_API_BASE_URL || "";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
@@ -18,3 +18,4 @@ export const fetchAssessmentDefinition = async (
 
   return response.data;
 };
+

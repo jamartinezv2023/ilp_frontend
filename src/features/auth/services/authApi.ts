@@ -1,8 +1,9 @@
-import axios from "axios";
+﻿import axios from "axios";
 
 export const authApi = axios.create({
-  baseURL: "http://localhost:8080/api", // 🔴 ajusta si tu auth-service usa otro puerto
+  baseURL: "https://ilp-adaptive-education-service.onrender.com/api", // ðŸ”´ ajusta si tu auth-service usa otro puerto
   headers: {
     "Content-Type": "application/json",
   },
 });
+

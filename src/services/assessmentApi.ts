@@ -8,7 +8,7 @@ import type {
 import type { AssessmentDefinition } from "../types/assessmentDefinition";
 
 const API_BASE_URL =
-  import.meta.env.VITE_AUTH_API_BASE_URL ?? "http://localhost:8083";
+  import.meta.env.VITE_ADAPTIVE_API_BASE_URL ?? "https://ilp-adaptive-education-service.onrender.com";
 
 const client = axios.create({
   baseURL: API_BASE_URL,
@@ -110,3 +110,4 @@ export const submitKuderAssessment = async (
 
   return response.data;
 };
+

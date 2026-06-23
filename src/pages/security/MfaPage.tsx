@@ -144,3 +144,4 @@ export const MfaPage = () => {
     </Box>
   );
 };
+

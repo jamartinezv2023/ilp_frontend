@@ -14,3 +14,4 @@ export const researchStatusColors = {
   preparation: "warning",
   security: "info",
 } as const;
+

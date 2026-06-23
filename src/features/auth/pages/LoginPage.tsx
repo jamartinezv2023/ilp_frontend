@@ -1,4 +1,4 @@
-import { LoginForm } from "../components/LoginForm";
+﻿import { LoginForm } from "../components/LoginForm";
 
 export const LoginPage = () => {
   return (
@@ -7,3 +7,4 @@ export const LoginPage = () => {
     </div>
   );
 };
+

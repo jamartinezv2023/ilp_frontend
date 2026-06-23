@@ -12,3 +12,4 @@ export const AdministrationPage = () => (
     </Card>
   </Box>
 );
+

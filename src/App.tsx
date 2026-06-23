@@ -1,4 +1,4 @@
-import { LoginPage } from "./features/auth/pages/LoginPage";
+﻿import { LoginPage } from "./features/auth/pages/LoginPage";
 import { AppShell } from "./layouts/AppShell";
 import { useAppSelector } from "./store/hooks";
 
@@ -9,3 +9,4 @@ function App() {
 }
 
 export default App;
+

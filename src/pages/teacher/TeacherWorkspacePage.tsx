@@ -36,7 +36,7 @@ export const TeacherWorkspacePage = () => {
       setStudents(data);
     } catch {
       setError(
-        "No fue posible cargar los estudiantes. Verifique que el backend esté activo en http://localhost:9080."
+        "No fue posible cargar los estudiantes. Verifique que el backend esté activo en https://ilp-adaptive-education-service.onrender.com."
       );
     } finally {
       setLoading(false);
@@ -199,3 +199,4 @@ export const TeacherWorkspacePage = () => {
     </Box>
   );
 };
+

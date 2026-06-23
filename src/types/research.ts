@@ -17,3 +17,4 @@ export type ResearchSignal = {
 };
 
 export type ApiRecord = Record<string, unknown>;
+

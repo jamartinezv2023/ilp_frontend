@@ -46,3 +46,4 @@ export type KuderAssessmentResponse = {
   instrumentVersion: string;
   createdAt: string;
 };
+

@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+﻿import { Typography } from "@mui/material";
 
 export const RolesPage = () => {
   return (
@@ -7,3 +7,4 @@ export const RolesPage = () => {
     </Typography>
   );
 };
+
