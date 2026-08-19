@@ -1,19 +1,33 @@
-import { test, expect } from "@playwright/test";
+﻿import { test, expect } from "@playwright/test";
 
-test("enterprise login form flow", async ({ page }) => {
+test("valid local MVP credentials grant access to the institutional workspace", async ({ page }) => {
   await page.goto("/");
 
+  const email =
+    page.getByLabel("Institutional Email");
+
+  const password =
+    page.getByLabel("Password");
+
+  await expect(email).toBeVisible();
+  await expect(password).toBeVisible();
+
+  await email.fill("admin@demo.com");
+  await password.fill("Admin123*");
+
+  await page
+    .getByRole("button", {
+      name: "Access Platform",
+    })
+    .click();
+
   await expect(
-    page.getByText(/ILP Login/i)
-  ).toBeVisible();
+    page.getByRole("heading", {
+      name: "Research Platform Access",
+    })
+  ).not.toBeVisible();
 
-  await page.getByLabel(/Email/i)
-    .fill("admin@ilp.com");
-
-  await page.getByLabel(/Password/i)
-    .fill("Admin123*");
-
-  await expect(
-    page.getByRole("button")
-  ).toBeVisible();
+  await expect(page).toHaveURL(
+    /\/institutional\/?$/
+  );
 });
