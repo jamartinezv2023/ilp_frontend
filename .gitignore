@@ -7,3 +7,6 @@ playwright-report/
 dist/
 test-results/
 playwright-report/
+_master_audit_2026_2028/
+build/audit/
+ILP_FRONTEND_RADIOGRAPHY_2026_2028.zip
