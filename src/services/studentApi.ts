@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+import axios from "axios";
 import type { StudentProfile } from "../types/student";
 
 const API_BASE_URL =
@@ -6,7 +6,7 @@ const API_BASE_URL =
 
 const client = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 8000,
+  timeout: 45_000,
 });
 
 type BackendStudent = {
