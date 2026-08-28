@@ -1,11 +1,10 @@
-﻿import axios from "axios";
+import axios from "axios";
 import type { AssessmentDefinition } from "../types/assessmentDefinition";
 
-const API_BASE_URL =
-  import.meta.env.VITE_ADAPTIVE_API_BASE_URL || "";
+import { ADAPTIVE_API_BASE_URL } from "../config/apiConfig";
 
 const client = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: ADAPTIVE_API_BASE_URL,
   timeout: 10000,
 });
 
