@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -10,7 +10,6 @@ import {
   AccordionDetails,
   Chip,
   CircularProgress,
-  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -22,9 +21,6 @@ import PsychologyIcon from "@mui/icons-material/Psychology";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import InsightsIcon from "@mui/icons-material/Insights";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import type { ResearchCategory, ResearchSignal } from "../../types/research";
 import { fetchResearchSignals } from "../../services/researchApi";
 
@@ -36,57 +32,6 @@ const categories: { label: string; value: ResearchCategory }[] = [
   { label: "Architecture", value: "architecture" },
   { label: "Deployment", value: "deployment" },
   { label: "Research", value: "research" },
-];
-
-const readinessScores = [
-  {
-    label: "Research readiness",
-    score: 86,
-    icon: <ScienceIcon color="primary" />,
-    detail: "Scientific validation pathway is progressing.",
-  },
-  {
-    label: "Ethics readiness",
-    score: 82,
-    icon: <GppGoodIcon color="success" />,
-    detail: "Ethics submission preparation is active.",
-  },
-  {
-    label: "Pilot readiness",
-    score: 64,
-    icon: <PsychologyIcon color="secondary" />,
-    detail: "Expert validation and instruments are in preparation.",
-  },
-  {
-    label: "Publication readiness",
-    score: 48,
-    icon: <EmojiEventsIcon color="warning" />,
-    detail: "Empirical evidence is still required.",
-  },
-];
-
-const roadmapItems = [
-  { label: "Governance", status: "Completed" },
-  { label: "Trustworthiness", status: "Completed" },
-  { label: "Fairness", status: "Completed" },
-  { label: "Architecture", status: "Completed" },
-  { label: "Deployment", status: "Completed" },
-  { label: "Ethics", status: "Completed" },
-  { label: "Expert Validation", status: "In preparation" },
-  { label: "Research Instruments", status: "In preparation" },
-  { label: "Pilot Study", status: "Pending" },
-  { label: "Scientific Publications", status: "Pending" },
-];
-
-const maturityDimensions = [
-  { label: "Governance", score: 100 },
-  { label: "Trustworthiness", score: 94 },
-  { label: "Architecture", score: 96 },
-  { label: "Deployment", score: 92 },
-  { label: "Ethics", score: 82 },
-  { label: "Expert validation", score: 58 },
-  { label: "Research instruments", score: 58 },
-  { label: "Pilot study", score: 25 },
 ];
 
 export const ResearchCenterPage = () => {
@@ -121,20 +66,14 @@ export const ResearchCenterPage = () => {
       : signals.filter((signal) => signal.category === activeCategory);
 
   const totalSignals = signals.length;
-  const validatedSignals = signals.filter((signal) => signal.status).length;
+  const availableSignals = signals.filter(
+    (signal) => signal.status !== "NO DISPONIBLE"
+  ).length;
+  const unavailableSignals = totalSignals - availableSignals;
   const evidenceItems = signals.reduce(
     (total, signal) => total + signal.evidence.length,
     0
   );
-
-  const maturityIndex = useMemo(() => {
-    const total = maturityDimensions.reduce(
-      (sum, item) => sum + item.score,
-      0
-    );
-
-    return Math.round(total / maturityDimensions.length);
-  }, []);
 
   return (
     <Box>
@@ -183,173 +122,6 @@ export const ResearchCenterPage = () => {
           display: "grid",
           gridTemplateColumns: {
             xs: "1fr",
-            lg: "360px 1fr",
-          },
-          gap: 2.5,
-          mb: 3,
-        }}
-      >
-        <Card
-          sx={{
-            borderRadius: 5,
-            boxShadow: "0 20px 55px rgba(15,23,42,.10)",
-            border: "1px solid rgba(148,163,184,.24)",
-          }}
-        >
-          <CardContent sx={{ p: 3 }}>
-            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
-              <InsightsIcon color="primary" />
-              <Typography variant="h5" fontWeight={950}>
-                Research Maturity Index
-              </Typography>
-            </Stack>
-
-            <Typography variant="h2" fontWeight={950}>
-              {maturityIndex}%
-            </Typography>
-
-            <LinearProgress
-              variant="determinate"
-              value={maturityIndex}
-              sx={{
-                mt: 2,
-                height: 12,
-                borderRadius: 8,
-                backgroundColor: "rgba(148,163,184,.25)",
-              }}
-            />
-
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              Overall maturity based on governance, trustworthiness,
-              architecture, deployment, ethics, expert validation, instruments
-              and pilot readiness.
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card
-          sx={{
-            borderRadius: 5,
-            boxShadow: "0 20px 55px rgba(15,23,42,.10)",
-            border: "1px solid rgba(148,163,184,.24)",
-          }}
-        >
-          <CardContent sx={{ p: 3 }}>
-            <Typography variant="h5" fontWeight={950} sx={{ mb: 2 }}>
-              Readiness Scores
-            </Typography>
-
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  md: "repeat(2, 1fr)",
-                },
-                gap: 2,
-              }}
-            >
-              {readinessScores.map((item) => (
-                <Box
-                  key={item.label}
-                  sx={{
-                    p: 2,
-                    borderRadius: 4,
-                    background: "rgba(248,250,252,.92)",
-                    border: "1px solid rgba(148,163,184,.22)",
-                  }}
-                >
-                  <Stack direction="row" spacing={1.5} alignItems="center">
-                    {item.icon}
-                    <Typography fontWeight={900}>{item.label}</Typography>
-                  </Stack>
-
-                  <Typography variant="h5" fontWeight={950} sx={{ mt: 1 }}>
-                    {item.score}%
-                  </Typography>
-
-                  <LinearProgress
-                    variant="determinate"
-                    value={item.score}
-                    sx={{
-                      mt: 1,
-                      height: 8,
-                      borderRadius: 8,
-                      backgroundColor: "rgba(148,163,184,.25)",
-                    }}
-                  />
-
-                  <Typography variant="caption" color="text.secondary">
-                    {item.detail}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
-
-      <Card
-        sx={{
-          mb: 3,
-          borderRadius: 5,
-          boxShadow: "0 18px 45px rgba(15,23,42,.10)",
-          border: "1px solid rgba(148,163,184,.22)",
-        }}
-      >
-        <CardContent sx={{ p: 3 }}>
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
-            <TimelineIcon color="primary" />
-            <Typography variant="h5" fontWeight={950}>
-              Doctoral Research Roadmap
-            </Typography>
-          </Stack>
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(2, 1fr)",
-                lg: "repeat(5, 1fr)",
-              },
-              gap: 1.5,
-            }}
-          >
-            {roadmapItems.map((item) => (
-              <Chip
-                key={item.label}
-                label={`${
-                  item.status === "Completed"
-                    ? "?"
-                    : item.status === "In preparation"
-                      ? "?"
-                      : "?"
-                } ${item.label}`}
-                color={
-                  item.status === "Completed"
-                    ? "success"
-                    : item.status === "In preparation"
-                      ? "warning"
-                      : "default"
-                }
-                variant={item.status === "Completed" ? "filled" : "outlined"}
-                sx={{
-                  justifyContent: "flex-start",
-                  fontWeight: 800,
-                  px: 1,
-                }}
-              />
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
-
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
             md: "repeat(3, 1fr)",
           },
           gap: 2.5,
@@ -360,13 +132,13 @@ export const ResearchCenterPage = () => {
           <CardContent sx={{ p: 2.5 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <PsychologyIcon color="primary" />
-              <Typography fontWeight={900}>Active evidence</Typography>
+              <Typography fontWeight={900}>Contratos consultados</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950} sx={{ mt: 1 }}>
               {loading ? "..." : totalSignals}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              Research and governance areas connected to backend services.
+              Endpoints de Research consultados por el cliente.
             </Typography>
           </CardContent>
         </Card>
@@ -375,13 +147,13 @@ export const ResearchCenterPage = () => {
           <CardContent sx={{ p: 2.5 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <GppGoodIcon color="success" />
-              <Typography fontWeight={900}>Validated status</Typography>
+              <Typography fontWeight={900}>Respuestas backend</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950} sx={{ mt: 1 }}>
-              {loading ? "..." : validatedSignals}
+              {loading ? "..." : availableSignals}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              Signals receiving real responses from active services.
+              Señales construidas únicamente desde respuestas disponibles.
             </Typography>
           </CardContent>
         </Card>
@@ -390,47 +162,24 @@ export const ResearchCenterPage = () => {
           <CardContent sx={{ p: 2.5 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <CloudDoneIcon color="info" />
-              <Typography fontWeight={900}>Evidence items</Typography>
+              <Typography fontWeight={900}>No disponibles</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950} sx={{ mt: 1 }}>
-              {loading ? "..." : evidenceItems}
+              {loading ? "..." : unavailableSignals}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              Visible indicators for doctoral monitoring and review.
+              Endpoints sin respuesta; no se aplicaron valores fallback.
             </Typography>
           </CardContent>
         </Card>
       </Box>
 
-      <Card
-        sx={{
-          mb: 3,
-          borderRadius: 5,
-          boxShadow: "0 18px 45px rgba(15,23,42,.10)",
-          border: "1px solid rgba(148,163,184,.22)",
-        }}
-      >
-        <CardContent sx={{ p: 3 }}>
-          <Typography variant="h5" fontWeight={950} sx={{ mb: 1 }}>
-            Executive Summary
-          </Typography>
-
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
-            The ILP platform demonstrates strong maturity in governance,
-            trustworthiness, architecture, deployment and responsible educational
-            AI. The next doctoral priorities are expert validation, research
-            instruments, pilot execution and scientific dissemination.
-          </Typography>
-
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            <Chip label="Governance strong" color="success" />
-            <Chip label="Architecture validated" color="success" />
-            <Chip label="Ethics in preparation" color="warning" />
-            <Chip label="Pilot pending" variant="outlined" />
-            <Chip label="Publication pending" variant="outlined" />
-          </Stack>
-        </CardContent>
-      </Card>
+      <Alert severity="info" sx={{ mb: 3 }}>
+        Los porcentajes de madurez y readiness se muestran como no calculados:
+        los contratos backend actuales no entregan métricas cuantitativas
+        certificadas. La interfaz no infiere ni sustituye esos valores.
+        Evidencias backend visibles: {evidenceItems}.
+      </Alert>
 
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
@@ -509,7 +258,9 @@ export const ResearchCenterPage = () => {
 
                   <Chip
                     label={signal.status}
-                    color="success"
+                    color={
+                      signal.status === "NO DISPONIBLE" ? "error" : "success"
+                    }
                     variant="outlined"
                     size="small"
                     sx={{ fontWeight: 800 }}
@@ -538,7 +289,10 @@ export const ResearchCenterPage = () => {
                     color="text.secondary"
                     sx={{ display: "block", mt: 2 }}
                   >
-                    Endpoint: {signal.endpoint}
+                    Origen: {signal.status === "NO DISPONIBLE"
+                      ? "sin respuesta backend"
+                      : "respuesta backend"}
+                    {" · "}Endpoint: {signal.endpoint}
                   </Typography>
                 </AccordionDetails>
               </Accordion>

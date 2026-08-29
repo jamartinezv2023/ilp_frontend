@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+import axios from "axios";
 import type {
   FelderSilvermanAssessmentResponse,
   InstrumentQuestion,
@@ -6,6 +6,7 @@ import type {
   KuderAssessmentResponse,
 } from "../types/assessment";
 import type { AssessmentDefinition } from "../types/assessmentDefinition";
+import { repairUtf8Mojibake } from "../utils/utf8Text";
 
 const API_BASE_URL =
   import.meta.env.VITE_ADAPTIVE_API_BASE_URL ?? "https://ilp-adaptive-education-service.onrender.com";
@@ -34,8 +35,10 @@ export const fetchKolbQuestions = async (): Promise<InstrumentQuestion[]> => {
   return questions.map((question) => ({
     id: String(question.id),
     questionOrder: Number(question.questionNumber ?? question.displayOrder ?? 0),
-    text: String(question.text ?? ""),
-    dimension: String(question.dimension ?? "CE_RO_AC_AE"),
+    text: repairUtf8Mojibake(String(question.text ?? "")),
+    dimension: repairUtf8Mojibake(
+      String(question.dimension ?? "CE_RO_AC_AE")
+    ),
     instrument: "KOLB",
     instrumentVersion: "KOLB_V1",
     options: Array.isArray(question.options)
@@ -44,7 +47,9 @@ export const fetchKolbQuestions = async (): Promise<InstrumentQuestion[]> => {
             (a, b) =>
               Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0)
           )
-          .map((option) => String(option.label ?? option.value ?? ""))
+          .map((option) =>
+            repairUtf8Mojibake(String(option.label ?? option.value ?? ""))
+          )
           .filter(Boolean)
       : [],
   }));

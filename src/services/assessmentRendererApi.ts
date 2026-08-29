@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { AssessmentRendererModel } from "../types/assessmentRenderer";
+import { normalizeUtf8Text } from "../utils/utf8Text";
 
 const API_BASE_URL =
   import.meta.env.VITE_ADAPTIVE_API_BASE_URL ??
@@ -26,7 +27,7 @@ export const fetchAssessmentRenderer = async (
     `/api/v1/assessment-renderer/${encodeURIComponent(normalizedCode)}`
   );
 
-  return response.data;
+  return normalizeUtf8Text(response.data);
 };
 
 export const fetchActiveAssessmentRenderers = async (): Promise<
@@ -36,5 +37,5 @@ export const fetchActiveAssessmentRenderers = async (): Promise<
     "/api/v1/assessment-renderer"
   );
 
-  return response.data;
+  return normalizeUtf8Text(response.data);
 };

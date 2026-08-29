@@ -2,6 +2,7 @@ import axios from "axios";
 import type { AssessmentDefinition } from "../types/assessmentDefinition";
 
 import { ADAPTIVE_API_BASE_URL } from "../config/apiConfig";
+import { normalizeUtf8Text } from "../utils/utf8Text";
 
 const client = axios.create({
   baseURL: ADAPTIVE_API_BASE_URL,
@@ -15,6 +16,6 @@ export const fetchAssessmentDefinition = async (
     `/api/v1/assessment-definitions/${code}`
   );
 
-  return response.data;
+  return normalizeUtf8Text(response.data);
 };
 
