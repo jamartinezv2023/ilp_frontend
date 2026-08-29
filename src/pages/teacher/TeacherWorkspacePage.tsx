@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from "react";
+import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -52,6 +53,7 @@ export const TeacherWorkspacePage = () => {
 
   return (
     <Box>
+      <StudentServiceStatusAlert />
       <Box
         sx={{
           mb: 3,

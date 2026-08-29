@@ -1,4 +1,4 @@
-﻿import {
+import {
   Alert,
   Box,
   Card,
@@ -69,7 +69,7 @@ export const IpsativeRankingQuestion = ({
           </Box>
 
           <Alert severity="info" variant="outlined">
-            Asigne 4 a la opciÃ³n que mÃ¡s lo representa y 1 a la que menos lo
+            Asigne 4 a la opción que más lo representa y 1 a la que menos lo
             representa. No repita valores.
           </Alert>
 
@@ -102,7 +102,7 @@ export const IpsativeRankingQuestion = ({
                       <Box>
                         <Typography fontWeight={900}>{option.label}</Typography>
                         <Typography variant="caption" color="text.secondary">
-                          DimensiÃ³n: {option.value}
+                          Dimensión: {option.value}
                         </Typography>
                       </Box>
 
@@ -138,7 +138,7 @@ export const IpsativeRankingQuestion = ({
 
           {valid && (
             <Alert severity="success" variant="outlined">
-              Respuesta vÃ¡lida para esta pregunta.
+              Respuesta válida para esta pregunta.
             </Alert>
           )}
         </Stack>

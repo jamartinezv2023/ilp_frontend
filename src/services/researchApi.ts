@@ -1,11 +1,10 @@
 import axios from "axios";
 import type { ApiRecord, ResearchSignal } from "../types/research";
 
-const API_BASE_URL =
-  import.meta.env.VITE_ADAPTIVE_API_BASE_URL || "";
+import { ADAPTIVE_API_BASE_URL } from "../config/apiConfig";
 
 const client = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: ADAPTIVE_API_BASE_URL,
   timeout: 45_000,
 });
 
@@ -160,8 +159,32 @@ export const fetchResearchSignals = async (): Promise<ResearchSignal[]> => {
 
   const responses = await Promise.all(
     endpoints.map(async (item) => {
-      const response = await client.get<ApiRecord>(item.endpoint);
-      return normalizeSignal(item.title, item.endpoint, item.category, response.data);
+      try {
+        const response = await client.get<ApiRecord>(item.endpoint);
+        return normalizeSignal(
+          item.title,
+          item.endpoint,
+          item.category,
+          response.data
+        );
+      } catch (error) {
+        const httpStatus = axios.isAxiosError(error)
+          ? error.response?.status
+          : undefined;
+
+        return {
+          title: item.title,
+          endpoint: item.endpoint,
+          category: item.category,
+          status: "NO DISPONIBLE",
+          summary: httpStatus
+            ? `El backend respondió HTTP ${httpStatus}.`
+            : "No fue posible establecer comunicación con el backend.",
+          evidence: [
+            "No se sustituyó la respuesta por datos estáticos ni de demostración.",
+          ],
+        } satisfies ResearchSignal;
+      }
     })
   );
 

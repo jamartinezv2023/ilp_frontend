@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from "react";
+import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -44,11 +45,24 @@ export const AdaptiveIntelligencePage = () => {
     }
   };
 
-  const handleGeneratePlan = async (studentId: string) => {
+  const handleGeneratePlan = async (student: StudentProfile) => {
     try {
       setGenerating(true);
       setError("");
-      const data = await generateAdaptivePlan(studentId);
+      const data = await generateAdaptivePlan(student.id);
+
+      const sameStudent = data.studentId === student.id;
+      const sameSupportLevel = data.supportLevel === student.supportLevel;
+
+      if (!sameStudent || !sameSupportLevel) {
+        setPlan(null);
+        setError(
+          "El plan adaptativo no coincide con el estudiante seleccionado. " +
+            "Se preservó la sesión y no se mostraron datos inconsistentes."
+        );
+        return;
+      }
+
       setPlan(data);
     } catch {
       setError("No fue posible generar el plan adaptativo.");
@@ -63,12 +77,13 @@ export const AdaptiveIntelligencePage = () => {
 
   useEffect(() => {
     if (selectedStudent) {
-      void handleGeneratePlan(selectedStudent.id);
+      void handleGeneratePlan(selectedStudent);
     }
   }, [selectedStudent]);
 
   return (
     <Box>
+      <StudentServiceStatusAlert />
       <Box
         sx={{
           mb: 3,
@@ -188,17 +203,24 @@ export const AdaptiveIntelligencePage = () => {
                       </Typography>
                     </Box>
 
-                    <Chip
-                      label={plan.riskLevel}
-                      color={
-                        plan.riskLevel.includes("HIGH")
-                          ? "error"
-                          : plan.riskLevel.includes("MODERATE")
-                            ? "warning"
-                            : "success"
-                      }
-                      sx={{ fontWeight: 900 }}
-                    />
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                      <Chip
+                        label={`Nivel de apoyo: ${plan.supportLevel}`}
+                        variant="outlined"
+                        sx={{ fontWeight: 900 }}
+                      />
+                      <Chip
+                        label={`Riesgo adaptativo: ${plan.riskLevel}`}
+                        color={
+                          plan.riskLevel.includes("HIGH")
+                            ? "error"
+                            : plan.riskLevel.includes("MODERATE")
+                              ? "warning"
+                              : "success"
+                        }
+                        sx={{ fontWeight: 900 }}
+                      />
+                    </Stack>
                   </Stack>
 
                   <Divider sx={{ mb: 3 }} />
@@ -317,7 +339,12 @@ export const AdaptiveIntelligencePage = () => {
                   <Button
                     variant="contained"
                     startIcon={<AutoAwesomeIcon />}
-                    onClick={() => void handleGeneratePlan(plan.studentId)}
+                    onClick={() => {
+                      if (selectedStudent) {
+                        void handleGeneratePlan(selectedStudent);
+                      }
+                    }}
+                    disabled={!selectedStudent || generating}
                     sx={{ mt: 3, borderRadius: 4, fontWeight: 900 }}
                   >
                     Regenerar plan adaptativo
