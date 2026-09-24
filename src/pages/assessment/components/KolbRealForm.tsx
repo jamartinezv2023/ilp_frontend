@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Box,
@@ -22,7 +22,7 @@ import type {
 import {
   fetchKolbAssessmentHistory,
   fetchKolbQuestions,
-  submitKolbAssessmentWithAnswers,
+  submitKolbAssessmentWithConfirmation,
 } from "../../../services/assessmentApi";
 
 type KolbRealFormProps = {
@@ -44,7 +44,11 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [pendingResult, setPendingResult] = useState<KolbAssessmentResponse | null>(null);
+  const [submissionUncertain, setSubmissionUncertain] = useState(false);
   const [error, setError] = useState("");
+  const currentStudentId = useRef(studentId);
+  currentStudentId.current = studentId;
 
   const loadQuestions = async () => {
     try {
@@ -76,6 +80,8 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   useEffect(() => {
     setAnswers({});
     setLatestResult(null);
+    setPendingResult(null);
+    setSubmissionUncertain(false);
     void loadHistory();
   }, [studentId]);
 
@@ -152,18 +158,64 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
         return;
       }
 
-      const result = await submitKolbAssessmentWithAnswers(
-        studentId,
-        buildPayload()
-      );
+      const submittedStudentId = studentId;
+      const { result, history: persistedHistory, confirmed } =
+        await submitKolbAssessmentWithConfirmation(
+          submittedStudentId,
+          buildPayload()
+        );
 
+      if (currentStudentId.current !== submittedStudentId) return;
+
+      if (!confirmed) {
+        setPendingResult(result);
+        setError(
+          `El servidor recibió la evaluación ${result.assessmentId || "(sin ID)"}, pero no fue posible confirmarla en el historial. No la envíe de nuevo; consulte el historial antes de repetirla.`
+        );
+        return;
+      }
+
+      setHistory(persistedHistory);
+      setPendingResult(null);
       setLatestResult(result);
       onCompleted(result);
-      await loadHistory();
     } catch {
-      setError("No fue posible enviar el formulario Kolb.");
+      setSubmissionUncertain(true);
+      setError("El estado del envío es incierto. Consulte el historial antes de intentar enviarlo de nuevo.");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const checkPendingHistory = async () => {
+    if (!pendingResult) return;
+    const submittedStudentId = studentId;
+    try {
+      setHistoryLoading(true);
+      const persistedHistory = await fetchKolbAssessmentHistory(submittedStudentId);
+      if (currentStudentId.current !== submittedStudentId) return;
+      setHistory(persistedHistory);
+      const confirmed = persistedHistory.some(
+        (item) =>
+          item.assessmentId === pendingResult.assessmentId &&
+          item.studentId === submittedStudentId &&
+          item.instrumentVersion === pendingResult.instrumentVersion &&
+          item.createdAt === pendingResult.createdAt
+      );
+      if (confirmed) {
+        setLatestResult(pendingResult);
+        setPendingResult(null);
+        setError("");
+        onCompleted(pendingResult);
+      } else {
+        setError("El registro aún no aparece en el historial. No lo envíe de nuevo.");
+      }
+    } catch {
+      setError("No fue posible consultar el historial. No envíe otra evaluación.");
+    } finally {
+      if (currentStudentId.current === submittedStudentId) {
+        setHistoryLoading(false);
+      }
     }
   };
 
@@ -200,7 +252,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
 
           {latestResult && (
             <Alert severity="success" sx={{ mb: 2 }}>
-              Resultado registrado: {latestResult.learningStyle}. CE:{" "}
+              Registro confirmado en historial: {latestResult.assessmentId} · Kolb {latestResult.instrumentVersion} · {latestResult.learningStyle}. CE:{" "}
               {latestResult.scoreCE}, RO: {latestResult.scoreRO}, AC:{" "}
               {latestResult.scoreAC}, AE: {latestResult.scoreAE}.
             </Alert>
@@ -281,10 +333,32 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
             })}
           </Stack>
 
+          {submissionUncertain && (
+            <Button
+              variant="outlined"
+              disabled={historyLoading}
+              onClick={() => void loadHistory()}
+              sx={{ mb: 2 }}
+            >
+              Consultar historial sin volver a enviar
+            </Button>
+          )}
+
+          {pendingResult && (
+            <Button
+              variant="outlined"
+              disabled={historyLoading}
+              onClick={() => void checkPendingHistory()}
+              sx={{ mb: 2 }}
+            >
+              Comprobar historial sin volver a enviar
+            </Button>
+          )}
+
           <Button
             fullWidth
             variant="contained"
-            disabled={submitting || !allQuestionsComplete}
+            disabled={submitting || !!pendingResult || submissionUncertain || !allQuestionsComplete}
             onClick={() => void submit()}
             sx={{ mt: 3, borderRadius: 3, fontWeight: 900 }}
           >
