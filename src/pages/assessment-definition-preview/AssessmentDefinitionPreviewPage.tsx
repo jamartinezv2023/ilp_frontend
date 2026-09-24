@@ -71,7 +71,7 @@ export const AssessmentDefinitionPreviewPage = () => {
           </Typography>
 
           <Typography color="text.secondary">
-            Definición dinámica proporcionada por el backend.
+            Vista previa de la definición dinámica. Las respuestas no se guardan.
           </Typography>
         </Box>
 
