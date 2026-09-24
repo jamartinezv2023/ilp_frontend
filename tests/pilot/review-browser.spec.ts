@@ -25,6 +25,12 @@ test("la actividad funciona tras recargar sin conexión y no contacta al backend
     return entries.every(Boolean);
   });
 
+  // La primera navegación puede recibir el control tras cargar el grafo de módulos.
+  // Una recarga en línea asegura que el grafo ya pase por el service worker.
+  await page.reload();
+  await expect(page.locator("#network")).toContainText("En línea");
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator("#network")).toContainText("Sin conexión");
