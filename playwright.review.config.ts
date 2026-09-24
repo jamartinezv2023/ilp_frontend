@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const remoteBaseURL = process.env.ILP_REVIEW_BASE_URL;
+
 export default defineConfig({
   testDir: "./tests/pilot",
   testMatch: "review-browser.spec.ts",
@@ -7,7 +9,7 @@ export default defineConfig({
   workers: 1,
   use: {
     ...devices["Desktop Chrome"],
-    baseURL: "http://localhost:5173",
+    baseURL: remoteBaseURL ?? "http://localhost:5173",
     serviceWorkers: "allow",
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
@@ -17,7 +19,7 @@ export default defineConfig({
     ["json", { outputFile: process.env.ILP_REVIEW_REPORT_FILE ?? "review-browser-results.json" }],
   ],
   outputDir: process.env.ILP_REVIEW_ARTIFACTS_DIR ?? "review-browser-artifacts",
-  webServer: {
+  webServer: remoteBaseURL ? undefined : {
     command: "npm run preview -- --host localhost --port 5173 --strictPort",
     url: "http://localhost:5173/review/index.html",
     reuseExistingServer: false,
