@@ -1,5 +1,5 @@
-const CACHE = "ilp-review-v1";
-const ASSETS = ["./index.html", "./app.mjs", "./model.mjs", "./style.css", "./manifest.webmanifest", "../brand/ILP_horizontal.svg", "../favicon-32x32.png", "../android-chrome-192x192.png", "../android-chrome-512x512.png"];
+const CACHE = "ilp-review-v2";
+const ASSETS = ["./index.html", "./style.css", "./manifest.webmanifest", "../brand/ILP_horizontal.svg", "../favicon-32x32.png", "../android-chrome-192x192.png", "../android-chrome-512x512.png"];
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

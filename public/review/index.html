@@ -24,6 +24,84 @@
     <section aria-labelledby="review-title"><h2 id="review-title">Qué revisar con los expertos</h2><ul><li>Claridad de preguntas y retroalimentación.</li><li>Accesibilidad con teclado, lector de pantalla y pantalla pequeña.</li><li>Utilidad de los apoyos propuestos para la enseñanza.</li><li>Diseño del protocolo de evaluación, antes de recolectar datos escolares.</li></ul></section>
   </main>
   <footer>ILP · Demostración sin autenticación ni conexión con bases de datos · Los resultados no constituyen evidencia de eficacia.</footer>
-  <script type="module" src="./app.mjs"></script>
+  <script id="review-code">
+// Instrumento demostrativo de Física. No es Kolb ni una medición validada.
+const items = Object.freeze([
+  { id: "F1", prompt: "Si duplicamos la fuerza aplicada a un objeto y su masa no cambia, ¿qué ocurre con la aceleración?", options: ["Se duplica", "Se reduce a la mitad", "No cambia"], correct: 0, explanation: "La segunda ley de Newton relaciona fuerza, masa y aceleración: a = F/m." },
+  { id: "F2", prompt: "Un automóvil frena. ¿Hacia dónde tiende a moverse su contenido si no está sujeto?", options: ["Hacia adelante", "Hacia atrás", "Permanece inmóvil respecto del auto"], correct: 0, explanation: "Por inercia, el contenido tiende a conservar su movimiento hacia adelante." },
+  { id: "F3", prompt: "Dos estudiantes empujan una caja con fuerzas iguales en sentidos contrarios. ¿Cuál es la fuerza neta?", options: ["Cero", "El doble de una fuerza", "Siempre hacia la derecha"], correct: 0, explanation: "Las fuerzas opuestas de igual magnitud se cancelan." },
+]);
+
+function summarize(responses) {
+  const valid = items.filter((item) => Number.isInteger(responses[item.id]) && responses[item.id] >= 0 && responses[item.id] < item.options.length);
+  const correct = valid.filter((item) => responses[item.id] === item.correct).length;
+  return { answered: valid.length, correct, total: items.length, support: correct < 2 ? "Reforzar con ejemplo guiado y retroalimentación" : "Profundizar con transferencia a otro contexto" };
+}
+
+
+// Los intentos viven solamente en memoria; no se usa almacenamiento persistente ni red.
+let attempts = [];
+const quiz = document.querySelector("#quiz");
+const result = document.querySelector("#result");
+const history = document.querySelector("#history");
+const network = document.querySelector("#network");
+
+function element(tag, value) {
+  const node = document.createElement(tag);
+  node.textContent = value;
+  return node;
+}
+
+for (const item of items) {
+  const group = document.createElement("fieldset");
+  group.append(element("legend", `${item.id}: ${item.prompt}`));
+  item.options.forEach((option, position) => {
+    const label = document.createElement("label");
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = item.id;
+    radio.value = String(position);
+    label.append(radio, document.createTextNode(option));
+    group.append(label);
+  });
+  quiz.append(group);
+}
+
+document.querySelector("#finish").addEventListener("click", () => {
+  const form = new FormData(quiz);
+  const answers = Object.fromEntries(items.filter((item) => form.has(item.id)).map((item) => [item.id, Number(form.get(item.id))]));
+  const summary = summarize(answers);
+  if (summary.answered !== summary.total) {
+    result.replaceChildren(element("p", `Faltan ${summary.total - summary.answered} preguntas. Complete todas antes de evaluar.`));
+    return;
+  }
+  attempts = [...attempts, { number: attempts.length + 1, summary }];
+  result.replaceChildren(element("p", `Resultado: ${summary.correct} de ${summary.total}. Apoyo sugerido: ${summary.support}.`));
+  for (const item of items) {
+    const feedback = element("p", `${item.id}: ${answers[item.id] === item.correct ? "Correcto" : "Por revisar"}. ${item.explanation}`);
+    feedback.className = "feedback";
+    result.append(feedback);
+  }
+  history.replaceChildren(...attempts.map(({ number, summary: item }) => element("li", `Intento ${number}: ${item.correct} de ${item.total}. ${item.support}.`)));
+});
+
+document.querySelector("#reset").addEventListener("click", () => {
+  attempts = [];
+  quiz.reset();
+  result.replaceChildren(element("p", "Sesión reiniciada. No se conservaron respuestas."));
+  history.replaceChildren(element("li", "Todavía no hay intentos en esta sesión."));
+});
+
+function updateNetwork() { network.textContent = navigator.onLine ? "En línea" : "Sin conexión · demostración disponible"; }
+window.addEventListener("online", updateNetwork);
+window.addEventListener("offline", updateNetwork);
+updateNetwork();
+
+if ("serviceWorker" in navigator && window.isSecureContext) {
+  navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {
+    network.textContent += " · La instalación offline no está disponible";
+  });
+}
+  </script>
 </body>
 </html>

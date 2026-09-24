@@ -16,3 +16,19 @@ test("respuestas inválidas o incompletas no se cuentan", () => {
   assert.equal(summarize({ F1: -1, F2: 100, F3: 0 }).answered, 1);
   assert.equal(summarize({}).answered, 0);
 });
+
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+
+test("el código offline incrustado coincide exactamente con las fuentes revisadas", () => {
+  const directory = resolve(dirname(fileURLToPath(import.meta.url)), "../../public/review");
+  const html = readFileSync(resolve(directory, "index.html"), "utf8");
+  const model = readFileSync(resolve(directory, "model.mjs"), "utf8");
+  const app = readFileSync(resolve(directory, "app.mjs"), "utf8");
+  const inline = html.match(/<script id="review-code">\n([\s\S]*?)\n  <\/script>/)?.[1];
+  const expected = (model.replace("export const items", "const items")
+    .replace("export function summarize", "function summarize") + "\n" +
+    app.replace('import { items, summarize } from "./model.mjs";\n', "")).trimEnd();
+  assert.equal(inline, expected);
+});
