@@ -167,7 +167,7 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
                 onClick={finish}
                 sx={{ borderRadius: 4, fontWeight: 900 }}
               >
-                Finalizar instrumento
+                Validar vista previa
               </Button>
             )}
           </Stack>
@@ -187,18 +187,18 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <CheckCircleIcon color="success" />
                 <Typography variant="h5" fontWeight={950}>
-                  Instrumento completado correctamente
+                  Vista previa validada; respuestas sin guardar
                 </Typography>
               </Stack>
 
               <Typography color="text.secondary">
-                Las respuestas ipsativas son válidas. En el siguiente ciclo se
-                conectarán con el Assessment Response Engine para persistencia,
-                histórico longitudinal y dataset ML/DL.
+                Las respuestas ipsativas tienen el formato esperado. Esta vista previa
+                no envía respuestas al servidor ni crea un registro longitudinal.
+                Para aplicar Kolb a un estudiante, use el formulario del Centro de Evaluación.
               </Typography>
 
               <Alert severity="success">
-                Total de respuestas generadas: {flattenedAnswers.length}
+                Valores preparados en memoria: {flattenedAnswers.length}. No se han guardado.
               </Alert>
 
               <Box
