@@ -81,17 +81,20 @@ export const fetchKolbAssessmentHistory = async (
 export const submitKolbAssessment = async (
   _studentId: string
 ): Promise<KolbAssessmentResponse> => {
+  void _studentId;
   throw new Error("Kolb requires participant answers. Use submitKolbAssessmentWithAnswers.");
 };
 
 export const submitFelderSilvermanAssessment = async (
   _studentId: string
 ): Promise<FelderSilvermanAssessmentResponse> => {
+  void _studentId;
   throw new Error("Felder-Silverman requires a real response form.");
 };
 
 export const submitKuderAssessment = async (
   _studentId: string
 ): Promise<KuderAssessmentResponse> => {
+  void _studentId;
   throw new Error("Kuder requires a real response form.");
 };
