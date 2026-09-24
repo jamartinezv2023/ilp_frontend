@@ -44,6 +44,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [pendingResult, setPendingResult] = useState<KolbAssessmentResponse | null>(null);
   const [error, setError] = useState("");
   const currentStudentId = useRef(studentId);
   currentStudentId.current = studentId;
@@ -78,6 +79,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   useEffect(() => {
     setAnswers({});
     setLatestResult(null);
+    setPendingResult(null);
     void loadHistory();
   }, [studentId]);
 
@@ -164,6 +166,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
       if (currentStudentId.current !== submittedStudentId) return;
 
       if (!confirmed) {
+        setPendingResult(result);
         setError(
           `El servidor recibió la evaluación ${result.assessmentId || "(sin ID)"}, pero no fue posible confirmarla en el historial. No la envíe de nuevo; consulte el historial antes de repetirla.`
         );
@@ -171,12 +174,45 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
       }
 
       setHistory(persistedHistory);
+      setPendingResult(null);
       setLatestResult(result);
       onCompleted(result);
     } catch {
       setError("No se pudo confirmar el envío Kolb. Consulte el historial antes de intentar enviarlo de nuevo.");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const checkPendingHistory = async () => {
+    if (!pendingResult) return;
+    const submittedStudentId = studentId;
+    try {
+      setHistoryLoading(true);
+      const persistedHistory = await fetchKolbAssessmentHistory(submittedStudentId);
+      if (currentStudentId.current !== submittedStudentId) return;
+      setHistory(persistedHistory);
+      const confirmed = persistedHistory.some(
+        (item) =>
+          item.assessmentId === pendingResult.assessmentId &&
+          item.studentId === submittedStudentId &&
+          item.instrumentVersion === pendingResult.instrumentVersion &&
+          item.createdAt === pendingResult.createdAt
+      );
+      if (confirmed) {
+        setLatestResult(pendingResult);
+        setPendingResult(null);
+        setError("");
+        onCompleted(pendingResult);
+      } else {
+        setError("El registro aún no aparece en el historial. No lo envíe de nuevo.");
+      }
+    } catch {
+      setError("No fue posible consultar el historial. No envíe otra evaluación.");
+    } finally {
+      if (currentStudentId.current === submittedStudentId) {
+        setHistoryLoading(false);
+      }
     }
   };
 
@@ -294,10 +330,21 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
             })}
           </Stack>
 
+          {pendingResult && (
+            <Button
+              variant="outlined"
+              disabled={historyLoading}
+              onClick={() => void checkPendingHistory()}
+              sx={{ mb: 2 }}
+            >
+              Comprobar historial sin volver a enviar
+            </Button>
+          )}
+
           <Button
             fullWidth
             variant="contained"
-            disabled={submitting || !allQuestionsComplete}
+            disabled={submitting || !!pendingResult || !allQuestionsComplete}
             onClick={() => void submit()}
             sx={{ mt: 3, borderRadius: 3, fontWeight: 900 }}
           >
