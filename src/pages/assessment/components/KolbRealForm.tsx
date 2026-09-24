@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Box,
@@ -22,7 +22,7 @@ import type {
 import {
   fetchKolbAssessmentHistory,
   fetchKolbQuestions,
-  submitKolbAssessmentWithAnswers,
+  submitKolbAssessmentWithConfirmation,
 } from "../../../services/assessmentApi";
 
 type KolbRealFormProps = {
@@ -45,6 +45,8 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const currentStudentId = useRef(studentId);
+  currentStudentId.current = studentId;
 
   const loadQuestions = async () => {
     try {
@@ -152,16 +154,27 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
         return;
       }
 
-      const result = await submitKolbAssessmentWithAnswers(
-        studentId,
-        buildPayload()
-      );
+      const submittedStudentId = studentId;
+      const { result, history: persistedHistory, confirmed } =
+        await submitKolbAssessmentWithConfirmation(
+          submittedStudentId,
+          buildPayload()
+        );
 
+      if (currentStudentId.current !== submittedStudentId) return;
+
+      if (!confirmed) {
+        setError(
+          `El servidor recibió la evaluación ${result.assessmentId || "(sin ID)"}, pero no fue posible confirmarla en el historial. No la envíe de nuevo; consulte el historial antes de repetirla.`
+        );
+        return;
+      }
+
+      setHistory(persistedHistory);
       setLatestResult(result);
       onCompleted(result);
-      await loadHistory();
     } catch {
-      setError("No fue posible enviar el formulario Kolb.");
+      setError("No se pudo confirmar el envío Kolb. Consulte el historial antes de intentar enviarlo de nuevo.");
     } finally {
       setSubmitting(false);
     }
@@ -200,7 +213,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
 
           {latestResult && (
             <Alert severity="success" sx={{ mb: 2 }}>
-              Resultado registrado: {latestResult.learningStyle}. CE:{" "}
+              Registro confirmado en historial: {latestResult.assessmentId} · Kolb {latestResult.instrumentVersion} · {latestResult.learningStyle}. CE:{" "}
               {latestResult.scoreCE}, RO: {latestResult.scoreRO}, AC:{" "}
               {latestResult.scoreAC}, AE: {latestResult.scoreAE}.
             </Alert>
