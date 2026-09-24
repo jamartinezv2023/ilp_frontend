@@ -77,42 +77,24 @@ export const fetchKolbAssessmentHistory = async (
   return normalizeKolbHistory(response.data);
 };
 
+// Pilot safeguard: these instruments require recorded participant responses.
 export const submitKolbAssessment = async (
-  studentId: string
+  _studentId: string
 ): Promise<KolbAssessmentResponse> => {
-  const answers = Array.from({ length: 12 }).flatMap(() => [4, 3, 2, 1]);
-  return submitKolbAssessmentWithAnswers(studentId, answers);
+  void _studentId;
+  throw new Error("Kolb requires participant answers. Use submitKolbAssessmentWithAnswers.");
 };
 
 export const submitFelderSilvermanAssessment = async (
-  studentId: string
+  _studentId: string
 ): Promise<FelderSilvermanAssessmentResponse> => {
-  const answers = Array.from({ length: 44 }).map(() => "A");
-
-  const response = await client.post<FelderSilvermanAssessmentResponse>(
-    "/api/v1/assessments/felder-silverman",
-    { studentId, answers }
-  );
-
-  return response.data;
+  void _studentId;
+  throw new Error("Felder-Silverman requires a real response form.");
 };
 
 export const submitKuderAssessment = async (
-  studentId: string
+  _studentId: string
 ): Promise<KuderAssessmentResponse> => {
-  const answers = [
-    ...Array.from({ length: 15 }).map(() => "SCIENTIFIC"),
-    ...Array.from({ length: 5 }).map(() => "SOCIAL"),
-    ...Array.from({ length: 5 }).map(() => "ARTISTIC"),
-    ...Array.from({ length: 3 }).map(() => "ADMINISTRATIVE"),
-    ...Array.from({ length: 2 }).map(() => "MECHANICAL"),
-  ];
-
-  const response = await client.post<KuderAssessmentResponse>(
-    "/api/v1/assessments/kuder",
-    { studentId, answers }
-  );
-
-  return response.data;
+  void _studentId;
+  throw new Error("Kuder requires a real response form.");
 };
-

@@ -265,14 +265,16 @@ export const AssessmentCenterPage = () => {
                         <Button
                           fullWidth
                           variant="contained"
-                          disabled={running === "felder"}
+                          disabled
                           onClick={() => void runFelder()}
                           sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
                         >
-                          {running === "felder"
-                            ? "Aplicando..."
-                            : "Aplicar Felder"}
+                          Felder-Silverman: pendiente de formulario real
                         </Button>
+
+                        <Alert severity="warning" sx={{ mt: 2 }}>
+                          Instrumento deshabilitado para el piloto hasta registrar respuestas reales.
+                        </Alert>
 
                         {felderResult && (
                           <Alert severity="success" sx={{ mt: 2 }}>
@@ -296,12 +298,16 @@ export const AssessmentCenterPage = () => {
                         <Button
                           fullWidth
                           variant="contained"
-                          disabled={running === "kuder"}
+                          disabled
                           onClick={() => void runKuder()}
                           sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
                         >
-                          {running === "kuder" ? "Aplicando..." : "Aplicar Kuder"}
+                          Kuder: pendiente de formulario real
                         </Button>
+
+                        <Alert severity="warning" sx={{ mt: 2 }}>
+                          Instrumento deshabilitado para el piloto hasta registrar respuestas reales.
+                        </Alert>
 
                         {kuderResult && (
                           <Alert severity="success" sx={{ mt: 2 }}>
