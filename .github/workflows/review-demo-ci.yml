@@ -61,9 +61,13 @@ jobs:
           for (let attempt = 1; attempt <= 3; attempt++) {
             try {
               const [page, worker] = await Promise.all([
-                fetch(base + "/review/index.html", { redirect: "follow", cache: "no-store" }),
+                fetch(base + "/review/index.html", { redirect: "manual", cache: "no-store" }),
                 fetch(base + "/review/sw.js", { redirect: "follow", cache: "no-store" }),
               ]);
+              if ([page.status, worker.status].some((status) => status >= 300 && status < 400)) {
+                console.error("Preview protected by Vercel SSO; use an authorized shareable link or authenticated browser session before testing HTTPS.");
+                process.exit(1);
+              }
               const html = await page.text();
               const sw = await worker.text();
               if (page.ok && worker.ok &&
@@ -74,7 +78,7 @@ jobs:
                 console.log("Published review assets available over HTTPS");
                 process.exit(0);
               }
-              console.log(`Attempt ${attempt}: HTML ${page.status} ${page.url} marker=${html.includes('id="review-code"')} bytes=${html.length}; worker ${worker.status} ${worker.url} marker=${sw.includes("ilp-review-v2")} type=${worker.headers.get("content-type")} bytes=${sw.length}`);
+              console.log(`Attempt ${attempt}: HTML ${page.status} marker=${html.includes('id="review-code"')}; worker ${worker.status} marker=${sw.includes("ilp-review-v2")} type=${worker.headers.get("content-type")}`);
             } catch (error) {
               console.log(`Attempt ${attempt}: ${String(error)}`);
             }
