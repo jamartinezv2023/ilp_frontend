@@ -45,6 +45,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [pendingResult, setPendingResult] = useState<KolbAssessmentResponse | null>(null);
+  const [submissionUncertain, setSubmissionUncertain] = useState(false);
   const [error, setError] = useState("");
   const currentStudentId = useRef(studentId);
   currentStudentId.current = studentId;
@@ -80,6 +81,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
     setAnswers({});
     setLatestResult(null);
     setPendingResult(null);
+    setSubmissionUncertain(false);
     void loadHistory();
   }, [studentId]);
 
@@ -178,7 +180,8 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
       setLatestResult(result);
       onCompleted(result);
     } catch {
-      setError("No se pudo confirmar el envío Kolb. Consulte el historial antes de intentar enviarlo de nuevo.");
+      setSubmissionUncertain(true);
+      setError("El estado del envío es incierto. Consulte el historial antes de intentar enviarlo de nuevo.");
     } finally {
       setSubmitting(false);
     }
@@ -330,6 +333,17 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
             })}
           </Stack>
 
+          {submissionUncertain && (
+            <Button
+              variant="outlined"
+              disabled={historyLoading}
+              onClick={() => void loadHistory()}
+              sx={{ mb: 2 }}
+            >
+              Consultar historial sin volver a enviar
+            </Button>
+          )}
+
           {pendingResult && (
             <Button
               variant="outlined"
@@ -344,7 +358,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
           <Button
             fullWidth
             variant="contained"
-            disabled={submitting || !!pendingResult || !allQuestionsComplete}
+            disabled={submitting || !!pendingResult || submissionUncertain || !allQuestionsComplete}
             onClick={() => void submit()}
             sx={{ mt: 3, borderRadius: 3, fontWeight: 900 }}
           >
