@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#14376a">
+  <meta name="description" content="Recorrido de revisión ILP con datos ficticios, disponible sin conexión tras su primera visita.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="../favicon-32x32.png">
+  <link rel="stylesheet" href="./style.css">
+  <title>ILP · Demostración para revisión académica</title>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <header><img src="../brand/ILP_horizontal.svg" alt="ILP" width="190"><span id="network" role="status" aria-live="polite"></span></header>
+  <main id="main">
+    <p class="eyebrow">Revisión académica · Versión demostrativa</p>
+    <h1>Aprendizaje inclusivo: recorrido de evaluación formativa</h1>
+    <p class="lead">Explore una actividad de Física, reciba una sugerencia didáctica y consulte el historial de esta sesión. Todo el contenido y los resultados son ficticios.</p>
+    <div class="notice" role="note"><strong>Entorno sin participantes reales.</strong> No introduce datos personales, no solicita consentimiento, no administra inventarios Kolb, Felder o Kuder, y no envía respuestas a servidores. Cierre o recargue para borrar el historial temporal.</div>
+    <section aria-labelledby="activity-title"><h2 id="activity-title">Actividad: fuerzas y movimiento</h2><p>Seleccione una respuesta por pregunta. Puede cambiarla antes de finalizar.</p><form id="quiz"></form><button id="finish" type="button">Evaluar esta sesión</button> <button id="reset" class="secondary" type="button">Reiniciar sesión</button></section>
+    <section aria-labelledby="result-title"><h2 id="result-title">Retroalimentación y apoyo</h2><div id="result" role="status" aria-live="polite">Complete las preguntas para ver la retroalimentación.</div></section>
+    <section aria-labelledby="history-title"><h2 id="history-title">Historial temporal</h2><ol id="history"><li>Todavía no hay intentos en esta sesión.</li></ol></section>
+    <section aria-labelledby="review-title"><h2 id="review-title">Qué revisar con los expertos</h2><ul><li>Claridad de preguntas y retroalimentación.</li><li>Accesibilidad con teclado, lector de pantalla y pantalla pequeña.</li><li>Utilidad de los apoyos propuestos para la enseñanza.</li><li>Diseño del protocolo de evaluación, antes de recolectar datos escolares.</li></ul></section>
+  </main>
+  <footer>ILP · Demostración sin autenticación ni conexión con bases de datos · Los resultados no constituyen evidencia de eficacia.</footer>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
