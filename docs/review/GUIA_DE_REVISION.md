@@ -4,10 +4,10 @@ Este cambio agrega una demostración independiente al frontend en `/review/index
 
 ## Revisión local
 
-1. Ejecute `npm ci` y `npm run dev`.
-2. Abra `http://localhost:5173/review/index.html`.
+1. Ejecute `npm ci`, `npm run lint` y `npm run build`.
+2. Para explorar, ejecute `npm run preview -- --host localhost --port 5173 --strictPort` y abra `http://localhost:5173/review/index.html`.
 3. Ejecute `node --test tests/pilot/review-model.test.mjs`.
-4. Ejecute `./node_modules/.bin/playwright test --config playwright.review.config.ts` (en Windows, `playwright.cmd`).
+4. Detenga el servidor de vista previa y ejecute `./node_modules/.bin/playwright test --config playwright.review.config.ts` (en Windows, `playwright.cmd`). La prueba inicia su propio servidor sobre el build generado; requiere el puerto 5173 libre.
 
 El sistema de CI existente debe ejecutar los tests de navegador explícitamente si se desea convertirlos en condición de integración. El material publicado en GitHub se añadirá al build de Vite dentro de `dist/review/`; cualquier vista previa remota requiere verificación de rutas, HTTPS, service worker y acceso.
 
