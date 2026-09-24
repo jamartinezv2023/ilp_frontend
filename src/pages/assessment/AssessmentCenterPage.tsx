@@ -269,7 +269,7 @@ export const AssessmentCenterPage = () => {
                           onClick={() => void runFelder()}
                           sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
                         >
-                          "Felder-Silverman: pendiente de formulario real"
+                          Felder-Silverman: pendiente de formulario real
                         </Button>
 
                         <Alert severity="warning" sx={{ mt: 2 }}>
@@ -302,7 +302,7 @@ export const AssessmentCenterPage = () => {
                           onClick={() => void runKuder()}
                           sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
                         >
-                          "Kuder: pendiente de formulario real"
+                          Kuder: pendiente de formulario real
                         </Button>
 
                         <Alert severity="warning" sx={{ mt: 2 }}>
