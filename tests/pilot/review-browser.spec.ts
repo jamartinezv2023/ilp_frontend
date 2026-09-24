@@ -15,6 +15,16 @@ test("la actividad funciona tras recargar sin conexión y no contacta al backend
     return Boolean(registration.active && navigator.serviceWorker.controller);
   });
 
+  // Esperar todos los recursos necesarios antes de desconectar la red.
+  await page.waitForFunction(async () => {
+    const cache = await caches.open("ilp-review-v1");
+    const paths = ["index.html", "app.mjs", "model.mjs", "style.css"];
+    const entries = await Promise.all(paths.map((path) =>
+      cache.match(new URL("./" + path, location.href))
+    ));
+    return entries.every(Boolean);
+  });
+
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator("#network")).toContainText("Sin conexión");

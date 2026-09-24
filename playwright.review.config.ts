@@ -18,9 +18,9 @@ export default defineConfig({
   ],
   outputDir: process.env.ILP_REVIEW_ARTIFACTS_DIR ?? "review-browser-artifacts",
   webServer: {
-    command: "npm run dev",
+    command: "npm run preview -- --host localhost --port 5173 --strictPort",
     url: "http://localhost:5173/review/index.html",
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 45_000,
   },
 });
