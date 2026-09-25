@@ -23,9 +23,11 @@ import { dirname, resolve } from "node:path";
 
 test("el código offline incrustado coincide exactamente con las fuentes revisadas", () => {
   const directory = resolve(dirname(fileURLToPath(import.meta.url)), "../../public/review");
-  const html = readFileSync(resolve(directory, "index.html"), "utf8");
-  const model = readFileSync(resolve(directory, "model.mjs"), "utf8");
-  const app = readFileSync(resolve(directory, "app.mjs"), "utf8");
+  const readSource = (name) => readFileSync(resolve(directory, name), "utf8")
+    .replace(/\r\n?/g, "\n");
+  const html = readSource("index.html");
+  const model = readSource("model.mjs");
+  const app = readSource("app.mjs");
   const inline = html.match(/<script id="review-code">\n([\s\S]*?)\n  <\/script>/)?.[1];
   const expected = (model.replace("export const items", "const items")
     .replace("export function summarize", "function summarize") + "\n" +
