@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ILP · Laboratorio de cola sintética offline</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <h1>Laboratorio de cola sintética offline</h1>
+    <p>Prueba técnica independiente de la demostración académica y del piloto. Sólo crea intentos ficticios de Física; no solicita nombres ni respuestas personales.</p>
+    <p><strong>Sin sincronización:</strong> pendiente local no significa recibido por un servidor ni incorporado al conjunto de datos de investigación.</p>
+    <button id="create" type="button">Crear intento ficticio pendiente</button>
+    <button id="clear" type="button">Borrar intentos de este navegador</button>
+    <p id="status" role="status" aria-live="polite">Cargando almacenamiento local…</p>
+    <h2>Intentos locales</h2>
+    <ol id="history"></ol>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

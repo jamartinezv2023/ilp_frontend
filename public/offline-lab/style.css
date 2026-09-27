@@ -1,0 +1,7 @@
+:root { color-scheme: light; font: 1rem/1.5 system-ui, sans-serif; color: #14243d; background: #f7fafc; }
+body { margin: 0; }
+main { max-width: 52rem; margin: auto; padding: 1.5rem; }
+button { padding: .7rem 1rem; margin: .25rem; color: white; background: #14376a; border: 0; border-radius: .4rem; cursor: pointer; }
+button:focus-visible { outline: .2rem solid #f59e0b; outline-offset: .15rem; }
+button:disabled { opacity: .5; }
+li { overflow-wrap: anywhere; margin: .5rem 0; }
