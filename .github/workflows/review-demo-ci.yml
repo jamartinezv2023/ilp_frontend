@@ -37,6 +37,7 @@ jobs:
           path: |
             review-browser-results.json
             review-browser-artifacts/
+            offline-lab-artifacts/
           if-no-files-found: ignore
 
   published-preview:

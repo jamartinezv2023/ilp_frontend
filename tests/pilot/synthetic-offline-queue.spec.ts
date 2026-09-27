@@ -6,8 +6,15 @@ test("un intento ficticio sigue pendiente tras recarga offline y nunca contacta 
     if (/\/api\/|onrender\.com|neon\.tech/i.test(request.url())) apiRequests.push(request.url());
   });
   await page.goto("/offline-lab/index.html");
-  await page.waitForFunction(async () => Boolean((await navigator.serviceWorker.ready).active));
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    const cache = await caches.open("ilp-synthetic-offline-lab-v1");
+    const entries = await Promise.all(["index.html", "style.css", "app.mjs", "store.mjs"]
+      .map((path) => cache.match(new URL("./" + path, location.href))));
+    return Boolean(registration.active && entries.every(Boolean));
+  });
   await page.reload();
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
   await page.getByRole("button", { name: "Crear intento ficticio pendiente" }).click();
   await expect(page.locator("#history li")).toHaveCount(1);
   const before = await page.locator("#history li").innerText();
