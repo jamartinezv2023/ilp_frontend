@@ -1,0 +1,37 @@
+name: ILP Locale CI
+
+on:
+  push:
+    branches:
+      - review/locale-foundation-20260927
+      - review/locale-core-20260927
+  pull_request:
+    branches:
+      - feature/assessment-wizard-generic-renderer
+      - review/locale-foundation-20260927
+
+permissions:
+  contents: read
+
+jobs:
+  locale-browser:
+    name: Spanish and English browser checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config playwright.locale-ci.config.ts
+      - name: Upload browser evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: locale-browser-evidence
+          path: locale-browser-artifacts/
+          if-no-files-found: ignore
