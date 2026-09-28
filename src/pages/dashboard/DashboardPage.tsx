@@ -15,6 +15,7 @@ import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import ScienceIcon from "@mui/icons-material/Science";
 import SecurityIcon from "@mui/icons-material/Security";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import { useI18n } from "../../i18n/I18nProvider";
 
 const metrics = [
   {
@@ -59,6 +60,8 @@ const evidenceAreas = [
 ];
 
 export const DashboardPage = () => {
+  const { t } = useI18n();
+
   return (
     <Box>
       <Box
@@ -71,18 +74,24 @@ export const DashboardPage = () => {
           border: "1px solid rgba(148,163,184,.25)",
         }}
       >
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1.25, sm: 2 }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          sx={{ mb: 2, minWidth: 0, width: "100%" }}
+        >
           <DashboardIcon color="primary" sx={{ fontSize: 38 }} />
           <Chip
             icon={<VerifiedUserIcon />}
             label="Doctoral Research Executive View"
             color="primary"
             variant="outlined"
+            sx={{ maxWidth: "100%", minWidth: 0 }}
           />
         </Stack>
 
         <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Executive Research Dashboard
+          {t("dashboard.executiveTitle")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>

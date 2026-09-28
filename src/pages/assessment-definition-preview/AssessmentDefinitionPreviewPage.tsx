@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Box,
@@ -15,6 +15,7 @@ import {
   type AssessmentDefinitionSource,
 } from "../../features/assessment-engine/services/loadCompatibleAssessmentDefinition";
 import type { AssessmentDefinition } from "../../types/assessmentDefinition";
+import { useI18n } from "../../i18n/I18nProvider";
 
 const ASSESSMENT_CODE = "KOLB_V1";
 
@@ -24,6 +25,8 @@ const sourceLabel: Record<AssessmentDefinitionSource, string> = {
 };
 
 export const AssessmentDefinitionPreviewPage = () => {
+  const { t } = useI18n();
+  const requestSequence = useRef(0);
   const [definition, setDefinition] =
     useState<AssessmentDefinition | null>(null);
   const [source, setSource] =
@@ -32,6 +35,8 @@ export const AssessmentDefinitionPreviewPage = () => {
   const [error, setError] = useState("");
 
   const loadDefinition = async () => {
+    const requestId = ++requestSequence.current;
+
     try {
       setLoading(true);
       setError("");
@@ -39,16 +44,22 @@ export const AssessmentDefinitionPreviewPage = () => {
       const result =
         await loadCompatibleAssessmentDefinition(ASSESSMENT_CODE);
 
+      if (requestId !== requestSequence.current) return;
+
       setDefinition(result.definition);
       setSource(result.source);
     } catch {
+      if (requestId !== requestSequence.current) return;
+
       setDefinition(null);
       setSource(null);
       setError(
         `No fue posible cargar la definición del instrumento ${ASSESSMENT_CODE}.`
       );
     } finally {
-      setLoading(false);
+      if (requestId === requestSequence.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -104,7 +115,7 @@ export const AssessmentDefinitionPreviewPage = () => {
           <CircularProgress />
 
           <Typography sx={{ mt: 2 }}>
-            Cargando instrumento...
+            {t("assessment.loading")}
           </Typography>
         </Stack>
       )}

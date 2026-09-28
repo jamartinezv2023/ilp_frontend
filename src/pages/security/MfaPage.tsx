@@ -1,147 +1,163 @@
-﻿import {
+import { useState } from "react";
+import {
   Alert,
   Box,
   Button,
   Card,
   CardContent,
-  Chip,
+  CircularProgress,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import SecurityIcon from "@mui/icons-material/Security";
-import QrCode2Icon from "@mui/icons-material/QrCode2";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import { useI18n } from "../../i18n/I18nProvider";
+import { useAppSelector } from "../../store/hooks";
+import { authApi, bearerHeaders } from "../../features/auth/services/authApi";
 
-const qrCells = Array.from({ length: 121 }, (_, index) => index);
+interface SetupResponse {
+  secret: string;
+  qrProvisioningUri: string;
+}
 
 export const MfaPage = () => {
+  const { locale } = useI18n();
+  const { accessToken, email } = useAppSelector((state) => state.auth);
+  const [setup, setSetup] = useState<SetupResponse | null>(null);
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const startSetup = async () => {
+    if (!accessToken || !email) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await authApi.post<SetupResponse>(
+        "/auth/mfa/setup",
+        { email },
+        { headers: bearerHeaders(accessToken) },
+      );
+      setSetup(response.data);
+    } catch {
+      setError(
+        locale === "es"
+          ? "No fue posible iniciar la configuración MFA. Puede que ya esté configurada."
+          : "MFA setup could not be started. It may already be configured.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verify = async () => {
+    if (!accessToken || !email || !/^\d{6}$/.test(code)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await authApi.post<boolean>(
+        "/auth/mfa/verify",
+        { email, code: Number(code) },
+        { headers: bearerHeaders(accessToken) },
+      );
+      if (!response.data) {
+        throw new Error("Invalid code");
+      }
+      setSuccess(true);
+      setSetup(null);
+      setCode("");
+    } catch {
+      setError(
+        locale === "es"
+          ? "El código no fue válido o ya expiró."
+          : "The code was invalid or expired.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <Box>
-      <Box
-        sx={{
-          mb: 4,
-          p: { xs: 3, md: 5 },
-          borderRadius: 6,
-          background:
-            "linear-gradient(135deg, rgba(37,99,235,.14), rgba(124,58,237,.16), rgba(14,165,233,.12))",
-          border: "1px solid rgba(148,163,184,.25)",
-        }}
-      >
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <SecurityIcon color="primary" sx={{ fontSize: 42 }} />
-          <Chip
-            icon={<VerifiedUserIcon />}
-            label="Secure Research Access"
-            color="primary"
-            variant="outlined"
-          />
-        </Stack>
+      <Typography variant="h3" fontWeight={900} sx={{ mb: 1 }}>
+        {locale === "es" ? "Autenticación multifactor" : "Multi-factor authentication"}
+      </Typography>
+      <Typography color="text.secondary" sx={{ mb: 3, maxWidth: 820 }}>
+        {locale === "es"
+          ? "Proteja su cuenta mediante una aplicación autenticadora compatible con TOTP."
+          : "Protect your account with a TOTP-compatible authenticator application."}
+      </Typography>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Security & Research Access Center
-        </Typography>
-
-        <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 900 }}>
-          Protección de acceso para la plataforma de investigación doctoral en
-          inteligencia artificial educativa inclusiva.
-        </Typography>
-      </Box>
-
-      <Card
-        sx={{
-          maxWidth: 720,
-          borderRadius: 6,
-          boxShadow: "0 24px 70px rgba(15,23,42,.14)",
-          border: "1px solid rgba(148,163,184,.28)",
-        }}
-      >
+      <Card sx={{ maxWidth: 760, borderRadius: 4 }}>
         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1 }}>
-            <QrCode2Icon color="primary" />
-            <Typography variant="h4" fontWeight={900}>
-              Multi-Factor Authentication
-            </Typography>
+          <Stack spacing={3}>
+            <SecurityIcon color="primary" sx={{ fontSize: 44 }} aria-hidden="true" />
+            {error && <Alert severity="error" role="alert">{error}</Alert>}
+            {success && (
+              <Alert severity="success" role="status">
+                {locale === "es" ? "MFA quedó activada correctamente." : "MFA was enabled successfully."}
+              </Alert>
+            )}
+
+            {!setup && !success && (
+              <Button
+                variant="contained"
+                onClick={startSetup}
+                disabled={busy || !accessToken || !email}
+                startIcon={busy ? <CircularProgress size={18} /> : <SecurityIcon />}
+              >
+                {locale === "es" ? "Configurar MFA" : "Set up MFA"}
+              </Button>
+            )}
+
+            {setup && (
+              <>
+                <Alert severity="warning">
+                  {locale === "es"
+                    ? "El secreto se muestra una sola vez. No lo comparta ni lo incluya en capturas."
+                    : "The secret is shown once. Do not share it or include it in screenshots."}
+                </Alert>
+                <TextField
+                  label={locale === "es" ? "Clave de configuración" : "Setup key"}
+                  value={setup.secret}
+                  fullWidth
+                  InputProps={{ readOnly: true }}
+                  inputProps={{ "aria-describedby": "mfa-setup-help" }}
+                />
+                <Typography id="mfa-setup-help" variant="body2" color="text.secondary">
+                  {locale === "es"
+                    ? "Introduzca esta clave manualmente en su aplicación autenticadora y genere un código de seis dígitos."
+                    : "Enter this key manually in your authenticator app and generate a six-digit code."}
+                </Typography>
+                <TextField
+                  label={locale === "es" ? "Código de verificación" : "Verification code"}
+                  value={code}
+                  onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
+                  required
+                  autoComplete="one-time-code"
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]{6}", maxLength: 6 }}
+                  error={code.length > 0 && !/^\d{6}$/.test(code)}
+                  helperText={
+                    code.length > 0 && !/^\d{6}$/.test(code)
+                      ? locale === "es" ? "Ingrese seis dígitos." : "Enter six digits."
+                      : " "
+                  }
+                />
+                <Button
+                  variant="contained"
+                  onClick={verify}
+                  disabled={busy || !/^\d{6}$/.test(code)}
+                  startIcon={busy ? <CircularProgress size={18} /> : <VerifiedUserIcon />}
+                >
+                  {locale === "es" ? "Verificar y activar" : "Verify and enable"}
+                </Button>
+              </>
+            )}
           </Stack>
-
-          <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Configure Google Authenticator or a compatible MFA application to
-            protect access to the ILP Research Platform.
-          </Typography>
-
-          <Box
-            sx={{
-              p: 3,
-              borderRadius: 5,
-              background:
-                "linear-gradient(135deg, rgba(219,234,254,.9), rgba(245,208,254,.75))",
-              display: "flex",
-              justifyContent: "center",
-              mb: 3,
-            }}
-          >
-            <Box
-              sx={{
-                width: 230,
-                height: 230,
-                p: 2,
-                borderRadius: 4,
-                background: "white",
-                boxShadow: "inset 0 0 0 1px rgba(15,23,42,.10)",
-                display: "grid",
-                gridTemplateColumns: "repeat(11, 1fr)",
-                gap: "4px",
-              }}
-              aria-label="MFA QR preview"
-            >
-              {qrCells.map((cell) => {
-                const active =
-                  cell % 2 === 0 ||
-                  cell % 7 === 0 ||
-                  [0, 1, 2, 11, 22, 98, 108, 120].includes(cell);
-
-                return (
-                  <Box
-                    key={cell}
-                    sx={{
-                      borderRadius: "3px",
-                      background: active ? "#0f172a" : "#e2e8f0",
-                    }}
-                  />
-                );
-              })}
-            </Box>
-          </Box>
-
-          <Alert severity="info" sx={{ mb: 3 }}>
-            QR enrollment preview. In production, this area must be generated by
-            the authentication service using a temporary MFA secret.
-          </Alert>
-
-          <TextField
-            fullWidth
-            label="Authentication Code"
-            placeholder="Enter the 6-digit code"
-            sx={{ mb: 3 }}
-          />
-
-          <Button
-            fullWidth
-            size="large"
-            variant="contained"
-            startIcon={<VerifiedUserIcon />}
-            sx={{
-              py: 1.4,
-              borderRadius: 4,
-              fontWeight: 900,
-              background: "linear-gradient(135deg,#2563eb,#7c3aed)",
-            }}
-          >
-            Verify MFA
-          </Button>
         </CardContent>
       </Card>
     </Box>
   );
 };
-

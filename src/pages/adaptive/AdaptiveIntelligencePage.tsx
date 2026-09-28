@@ -22,8 +22,10 @@ import type { StudentProfile } from "../../types/student";
 import type { AdaptiveLearningPlan } from "../../types/adaptive";
 import { fetchStudents } from "../../services/studentApi";
 import { generateAdaptivePlan } from "../../services/adaptiveApi";
+import { useI18n } from "../../i18n/I18nProvider";
 
 export const AdaptiveIntelligencePage = () => {
+  const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
   const [plan, setPlan] = useState<AdaptiveLearningPlan | null>(null);
@@ -104,8 +106,7 @@ export const AdaptiveIntelligencePage = () => {
         </Typography>
 
         <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 980 }}>
-          Genera rutas adaptativas personalizadas a partir del perfil de aprendizaje,
-          preferencias, interés vocacional y nivel de apoyo educativo del estudiante.
+          {t("adaptive.description")}
         </Typography>
       </Box>
 
