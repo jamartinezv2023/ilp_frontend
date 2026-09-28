@@ -1,15 +1,19 @@
-﻿import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
+import { useI18n } from "../../i18n/I18nProvider";
 
-export const AdministrationPage = () => (
+export const AdministrationPage = () => {
+  const { t } = useI18n();
+  return (
   <Box>
     <Card sx={{ borderRadius: 5 }}>
       <CardContent sx={{ p: 4 }}>
-        <Typography variant="h3" fontWeight={950}>Administration</Typography>
+        <Typography variant="h3" fontWeight={950}>{t("nav.administration")}</Typography>
         <Typography color="text.secondary">
-          Administración de usuarios, roles, permisos y configuración institucional.
+          {t("administration.description")}
         </Typography>
       </CardContent>
     </Card>
   </Box>
-);
+  );
+};
 
