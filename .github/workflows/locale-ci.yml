@@ -5,10 +5,12 @@ on:
     branches:
       - review/locale-foundation-20260927
       - review/locale-core-20260927
+      - review/locale-family-status-20260928
   pull_request:
     branches:
       - feature/assessment-wizard-generic-renderer
       - review/locale-foundation-20260927
+      - review/locale-core-20260927
 
 permissions:
   contents: read
