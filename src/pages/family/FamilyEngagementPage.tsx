@@ -15,21 +15,22 @@ import SchoolIcon from "@mui/icons-material/School";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import type { StudentProfile } from "../../types/student";
 import { fetchStudents } from "../../services/studentApi";
+import { useI18n } from "../../i18n/I18nProvider";
 
 export const FamilyEngagementPage = () => {
+  const { t, translateBackendValue } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
 
   const loadData = async () => {
     try {
       setLoading(true);
+      setError(false);
       const data = await fetchStudents();
       setStudents(data);
     } catch {
-      setError(
-        "No fue posible cargar la información para familias."
-      );
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -55,29 +56,32 @@ export const FamilyEngagementPage = () => {
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <FamilyRestroomIcon color="primary" sx={{ fontSize: 42 }} />
           <Chip
-            label="Family Educational Support"
+            label={t("family.badge")}
             color="primary"
             variant="outlined"
           />
         </Stack>
 
         <Typography variant="h3" fontWeight={950}>
-          Family Engagement Center
+          {t("family.title")}
         </Typography>
 
         <Typography color="text.secondary" sx={{ mt: 1 }}>
-          Información comprensible para familias y acudientes sobre el
-          acompañamiento educativo de los estudiantes.
+          {t("family.description")}
         </Typography>
       </Box>
 
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
-          <CircularProgress />
+          <CircularProgress aria-label={t("status.loading")} />
         </Stack>
       )}
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{t("family.loadError")}</Alert>}
+
+      {!loading && !error && students.length === 0 && (
+        <Alert severity="info">{t("family.empty")}</Alert>
+      )}
 
       {!loading && !error && (
         <Box
@@ -106,16 +110,16 @@ export const FamilyEngagementPage = () => {
                 >
                   <Box>
                     <Typography variant="h6" fontWeight={950}>
-                      {student.fullName}
+                      {translateBackendValue(student.fullName)}
                     </Typography>
 
                     <Typography color="text.secondary">
-                      Grado {student.grade}
+                      {t("family.grade")} {translateBackendValue(student.grade)}
                     </Typography>
                   </Box>
 
                   <Chip
-                    label={`Apoyo ${student.supportLevel}`}
+                    label={`${t("family.support")} ${translateBackendValue(student.supportLevel)}`}
                     color="primary"
                   />
                 </Stack>
@@ -124,18 +128,18 @@ export const FamilyEngagementPage = () => {
                   fontWeight={900}
                   sx={{ mt: 3, mb: 1 }}
                 >
-                  ¿Cómo aprende mejor?
+                  {t("family.learning")}
                 </Typography>
 
                 <Alert severity="success" variant="outlined">
-                  {student.learningProfile}
+                  {translateBackendValue(student.learningProfile)}
                 </Alert>
 
                 <Typography
                   fontWeight={900}
                   sx={{ mt: 3, mb: 1 }}
                 >
-                  Recomendaciones para la familia
+                  {t("family.recommendations")}
                 </Typography>
 
                 <Stack spacing={1}>
@@ -145,7 +149,7 @@ export const FamilyEngagementPage = () => {
                       severity="info"
                       variant="outlined"
                     >
-                      {item}
+                      {translateBackendValue(item)}
                     </Alert>
                   ))}
                 </Stack>
@@ -154,7 +158,7 @@ export const FamilyEngagementPage = () => {
                   fontWeight={900}
                   sx={{ mt: 3, mb: 1 }}
                 >
-                  Estrategias de acompañamiento
+                  {t("family.strategies")}
                 </Typography>
 
                 <Stack spacing={1}>
@@ -165,7 +169,7 @@ export const FamilyEngagementPage = () => {
                       severity="success"
                       variant="outlined"
                     >
-                      {item}
+                        {translateBackendValue(item)}
                     </Alert>
                   ))}
                 </Stack>
@@ -175,8 +179,7 @@ export const FamilyEngagementPage = () => {
                   severity="warning"
                   sx={{ mt: 3 }}
                 >
-                  Mantener comunicación permanente con docentes y
-                  orientadores para fortalecer el proceso educativo.
+                  {t("family.contact")}
                 </Alert>
               </CardContent>
             </Card>
@@ -186,4 +189,3 @@ export const FamilyEngagementPage = () => {
     </Box>
   );
 };
-

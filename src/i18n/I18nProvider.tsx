@@ -51,6 +51,9 @@ const backendKeys: Record<string, MessageKey> = {
   COMPLETED: "status.complete",
   NOT_AVAILABLE: "status.notAvailable",
   UNAVAILABLE: "status.unavailable",
+  ESTUDIANTE_SIN_NOMBRE: "student.unnamed",
+  SIN_GRADO_REGISTRADO: "student.noGrade",
+  PENDIENTE_DE_EVALUACIÓN: "student.awaitingAssessment",
 };
 
 export const I18nProvider = ({ children }: PropsWithChildren) => {
