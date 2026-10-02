@@ -1,0 +1,19 @@
+name: Kolb browser frontend
+on:
+  pull_request:
+    paths: ['src/services/assessmentApi.ts', 'src/pages/assessment/components/KolbRealForm.tsx', 'src/i18n/**', 'e2e/kolb-h2/**', '.github/workflows/kolb-browser-frontend.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

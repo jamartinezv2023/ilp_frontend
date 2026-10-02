@@ -116,3 +116,61 @@ export const submitKuderAssessment = async (
   return response.data;
 };
 
+export const kolbTimestampMatches = (
+  left: unknown,
+  right: unknown
+): boolean =>
+  left === right ||
+  (
+    typeof left === "number" &&
+    typeof right === "number" &&
+    Number.isFinite(left) &&
+    Number.isFinite(right) &&
+    Math.abs(left - right) <= 0.000001
+  );
+export type ConfirmedKolbSubmission = {
+  result: KolbAssessmentResponse;
+  history: KolbAssessmentResponse[];
+  confirmed: boolean;
+};
+export const submitKolbAssessmentWithConfirmation = async (
+  studentId: string,
+  answers: number[]
+): Promise<ConfirmedKolbSubmission> => {
+  if (
+    answers.length !== 48 ||
+    Array.from({ length: 12 }, (_, index) =>
+      answers.slice(index * 4, index * 4 + 4)
+    ).some((group) => [...group].sort().join(",") !== "1,2,3,4")
+  ) {
+    throw new Error("Kolb requiere doce grupos completos con cuatro rangos distintos.");
+  }
+  // Enviar una sola vez; repetir POST tras un GET fallido puede duplicar registros.
+  const result = await submitKolbAssessmentWithAnswers(studentId, answers);
+  if (
+    !result.assessmentId ||
+    result.studentId !== studentId ||
+    !result.instrumentVersion ||
+    !result.createdAt
+  ) {
+    return { result, history: [], confirmed: false };
+  }
+  try {
+    const history = await fetchKolbAssessmentHistory(studentId);
+    const confirmed = history.some(
+      (item) =>
+        item.assessmentId === result.assessmentId &&
+        item.studentId === studentId &&
+        item.instrumentVersion === result.instrumentVersion &&
+        kolbTimestampMatches(item.createdAt, result.createdAt)
+    );
+    return { result, history, confirmed };
+  } catch {
+    return { result, history: [], confirmed: false };
+  }
+};
+
+export const isAssessmentSubmissionInvalid = (error: unknown): boolean =>
+  axios.isAxiosError(error) &&
+  error.response?.status === 422 &&
+  error.response?.data?.code === "ASSESSMENT_SUBMISSION_INVALID";
