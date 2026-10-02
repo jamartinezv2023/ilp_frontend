@@ -30,8 +30,10 @@ import {
   submitKuderAssessment,
 } from "../../services/assessmentApi";
 import { KolbRealForm } from "./components/KolbRealForm";
+import { useI18n } from "../../i18n/I18nProvider";
 
 export const AssessmentCenterPage = () => {
+  const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
   const [kolbResult, setKolbResult] = useState<KolbAssessmentResponse | null>(null);
@@ -125,8 +127,7 @@ export const AssessmentCenterPage = () => {
         </Typography>
 
         <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 980 }}>
-          Centro para aplicar instrumentos educativos, calcular perfiles de
-          aprendizaje, preferencias de procesamiento e intereses vocacionales.
+          {t("assessment.description")}
         </Typography>
       </Box>
 

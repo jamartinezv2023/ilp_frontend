@@ -14,11 +14,39 @@ import { AdministrationPage } from "../pages/administration/AdministrationPage";
 import { AdaptiveIntelligencePage } from "../pages/adaptive/AdaptiveIntelligencePage";
 import { AssessmentCenterPage } from "../pages/assessment/AssessmentCenterPage";
 import { AssessmentDefinitionPreviewPage } from "../pages/assessment-definition-preview/AssessmentDefinitionPreviewPage";
-import { FieldworkDemoPage } from "../features/fieldwork/pages/FieldworkDemoPage";
+import { LocalizedSurface } from "../i18n/LocalizedSurface";
+import { useLocation } from "react-router-dom";
+import { useI18n } from "../i18n/I18nProvider";
+import type { MessageKey } from "../i18n/messages";
+
+const routeTitles: Record<string, MessageKey> = {
+  "/": "nav.institutional",
+  "/institutional": "nav.institutional",
+  "/teacher": "nav.teacher",
+  "/students": "nav.students",
+  "/inclusion": "nav.inclusion",
+  "/family": "nav.family",
+  "/adaptive": "nav.adaptive",
+  "/assessments": "nav.assessments",
+  "/assessment-definition-preview": "nav.forms",
+  "/dashboard": "route.dashboard",
+  "/research": "nav.research",
+  "/security/mfa": "nav.security",
+  "/administration": "nav.administration",
+  "/users": "route.users",
+  "/roles": "route.roles",
+  "/permissions": "route.permissions",
+};
 
 export const AppRoutes = () => {
+  const location = useLocation();
+  const { t } = useI18n();
+  const titleKey = routeTitles[location.pathname] ?? "shell.title";
+
   return (
-    <Routes>
+    <LocalizedSurface>
+      <h1 className="ilp-visually-hidden">{t(titleKey)}</h1>
+      <Routes>
       <Route path="/" element={<Navigate to="/institutional" replace />} />
       <Route path="/institutional" element={<InstitutionalOverviewPage />} />
       <Route path="/teacher" element={<TeacherWorkspacePage />} />
@@ -35,8 +63,8 @@ export const AppRoutes = () => {
       <Route path="/users" element={<UsersPage />} />
       <Route path="/roles" element={<RolesPage />} />
       <Route path="/permissions" element={<PermissionsPage />} />
-      <Route path="/fieldwork-demo" element={<FieldworkDemoPage />} />
-    </Routes>
+      </Routes>
+    </LocalizedSurface>
   );
 };
 

@@ -19,6 +19,7 @@ import type { StudentProfile } from "../../types/student";
 import { fetchStudents } from "../../services/studentApi";
 import { fetchStudentRecommendations } from "../../services/recommendationApi";
 import type { StudentRecommendation } from "../../types/recommendation";
+import { useI18n } from "../../i18n/I18nProvider";
 
 const supportColor = (level: string): "success" | "warning" | "error" | "default" => {
   if (level === "LOW") return "success";
@@ -28,6 +29,7 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const StudentSupportPage = () => {
+  const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,9 +82,7 @@ export const StudentSupportPage = () => {
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Perfil educativo del estudiante para comprender necesidades de apoyo,
-          estilos de aprendizaje, intereses vocacionales, estrategias inclusivas
-          y recomendaciones pedagógicas.
+          {t("students.description")}
         </Typography>
       </Box>
 

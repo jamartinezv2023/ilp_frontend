@@ -1,72 +1,64 @@
-﻿import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-interface LoginRequest {
-  email: string;
-  password: string;
-  mfaCode?: number;
-}
-
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  email: string;
-  password: string;
-  mfaRequired: boolean;
-}
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { logoutSession, refreshSession, type LoginResponse } from "../services/authApi";
 
 interface AuthState {
   accessToken: string | null;
-  refreshToken: string | null;
   email: string | null;
-  password: string | null;
   mfaRequired: boolean;
   loading: boolean;
+  initializing: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
   accessToken: null,
-  refreshToken: null,
   email: null,
-  password: null,
   mfaRequired: false,
   loading: false,
+  initializing: true,
   error: null,
 };
 
-export const loginThunk = createAsyncThunk(
-  "auth/login",
-  async (credentials: LoginRequest): Promise<LoginResponse> => {
-    const validEmail = credentials.email === "admin@demo.com";
-    const validPassword =
-      credentials.password === "Admin123*" ||
-      credentials.password === "password";
-
-    if (!validEmail || !validPassword) {
-      throw new Error("Invalid MVP-21A local credentials");
-    }
-
-    return {
-      accessToken: "mvp21a-local-access-token",
-      refreshToken: "mvp21a-local-refresh-token",
-      email: credentials.email,
-      password: credentials.password,
-      mfaRequired: false,
-    };
-  }
+export const restoreSession = createAsyncThunk(
+  "auth/restoreSession",
+  async (): Promise<LoginResponse> => refreshSession(),
 );
+
+export const logout = createAsyncThunk("auth/logout", async () => {
+  try {
+    await logoutSession();
+    return true;
+  } catch {
+    return false;
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.email = null;
-      state.password = null;
+    authenticationStarted: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    authenticationSucceeded: (state, action: PayloadAction<LoginResponse>) => {
+      state.loading = false;
+      state.accessToken = action.payload.accessToken;
+      state.email = action.payload.email;
       state.mfaRequired = false;
       state.error = null;
+    },
+    authenticationRequiresMfa: (state) => {
+      state.loading = false;
+      state.accessToken = null;
+      state.mfaRequired = true;
+      state.error = null;
+    },
+    authenticationFailed: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.accessToken = null;
+      state.email = null;
+      state.error = action.payload;
     },
     clearError: (state) => {
       state.error = null;
@@ -74,31 +66,27 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginThunk.fulfilled, (state, action) => {
-        state.loading = false;
+      .addCase(restoreSession.fulfilled, (state, action) => {
+        state.initializing = false;
         state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
         state.email = action.payload.email;
-        state.password = action.payload.password;
-        state.mfaRequired = action.payload.mfaRequired;
-        state.error = null;
       })
-      .addCase(loginThunk.rejected, (state) => {
-        state.loading = false;
+      .addCase(restoreSession.rejected, (state) => {
+        state.initializing = false;
         state.accessToken = null;
-        state.refreshToken = null;
         state.email = null;
-        state.password = null;
-        state.mfaRequired = false;
-        state.error = "Login failed";
-      });
+      })
+      .addCase(logout.fulfilled, () => ({ ...initialState, initializing: false }))
+      .addCase(logout.rejected, () => ({ ...initialState, initializing: false }));
   },
 });
 
-export const { logout, clearError } = authSlice.actions;
-export default authSlice.reducer;
+export const {
+  authenticationStarted,
+  authenticationSucceeded,
+  authenticationRequiresMfa,
+  authenticationFailed,
+  clearError,
+} = authSlice.actions;
 
+export default authSlice.reducer;
