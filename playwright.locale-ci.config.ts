@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/pilot",
-  testMatch: /locale-(consistency|core)\.spec\.ts/,
+  testMatch: /locale-(consistency|core|family)\.spec\.ts/,
   workers: 1,
   outputDir: "locale-browser-artifacts",
   use: {

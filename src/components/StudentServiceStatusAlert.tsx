@@ -1,21 +1,24 @@
 import { useSyncExternalStore } from "react";
 import { Alert, AlertTitle } from "@mui/material";
+import { useI18n } from "../i18n/I18nProvider";
+import type { MessageKey } from "../i18n/messages";
 
 import {
   getStudentServiceStatus,
   subscribeStudentServiceStatus,
 } from "../services/studentServiceStatus";
 
-const failureMessages = {
-  authentication: "La sesión no fue aceptada por el servicio. Vuelva a autenticarse.",
-  authorization: "Su cuenta no tiene autorización para consultar estudiantes.",
-  "not-found": "La ruta de estudiantes no está disponible en esta versión del backend.",
-  unavailable: "El servicio continúa temporalmente indisponible después de los reintentos.",
-  network: "No fue posible establecer comunicación con el servicio de estudiantes.",
-  unexpected: "Ocurrió un error inesperado al consultar el servicio de estudiantes.",
-} as const;
+const failureMessages: Record<string, MessageKey> = {
+  authentication: "studentService.authentication",
+  authorization: "studentService.authorization",
+  "not-found": "studentService.notFound",
+  unavailable: "studentService.unavailable",
+  network: "studentService.network",
+  unexpected: "studentService.unexpected",
+};
 
 export const StudentServiceStatusAlert = () => {
+  const { t } = useI18n();
   const state = useSyncExternalStore(
     subscribeStudentServiceStatus,
     getStudentServiceStatus,
@@ -25,9 +28,10 @@ export const StudentServiceStatusAlert = () => {
   if (state.phase === "starting") {
     return (
       <Alert severity="info" sx={{ mb: 3 }}>
-        <AlertTitle>El servicio está iniciando</AlertTitle>
-        Render está reactivando el backend. Reintento {state.attempt + 1} de{" "}
-        {state.maxAttempts}; sus datos y su sesión permanecen intactos.
+        <AlertTitle>{t("studentService.startingTitle")}</AlertTitle>
+        {t("studentService.startingPrefix")} {state.attempt + 1}{" "}
+        {t("studentService.startingMiddle")} {state.maxAttempts}
+        {t("studentService.startingSuffix")}
       </Alert>
     );
   }
@@ -38,9 +42,9 @@ export const StudentServiceStatusAlert = () => {
     return (
       <Alert severity={authenticationFailure ? "warning" : "error"} sx={{ mb: 3 }}>
         <AlertTitle>
-          {authenticationFailure ? "Autenticación requerida" : "Servicio no disponible"}
+          {t(authenticationFailure ? "studentService.authTitle" : "studentService.unavailableTitle")}
         </AlertTitle>
-        {failureMessages[state.failureKind]}
+        {t(failureMessages[state.failureKind])}
       </Alert>
     );
   }
