@@ -1,5 +1,5 @@
 import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -16,6 +16,7 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import SchoolIcon from "@mui/icons-material/School";
 import type { StudentProfile } from "../../types/student";
 import { fetchStudents } from "../../services/studentApi";
+import { useI18n } from "../../i18n/I18nProvider";
 
 const supportColor = (level: string): "success" | "warning" | "error" | "default" => {
   if (level === "LOW") return "success";
@@ -25,28 +26,27 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const TeacherWorkspacePage = () => {
+  const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadStudents = async () => {
+  const loadStudents = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
       const data = await fetchStudents();
       setStudents(data);
     } catch {
-      setError(
-        "No fue posible cargar los estudiantes. Verifique que el backend esté activo en https://ilp-adaptive-education-service.onrender.com."
-      );
+      setError(t("teacher.studentsUnavailable"));
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     void loadStudents();
-  }, []);
+  }, [loadStudents]);
 
   const highSupport = students.filter((student) => student.supportLevel === "HIGH").length;
   const mediumSupport = students.filter((student) => student.supportLevel === "MEDIUM").length;
