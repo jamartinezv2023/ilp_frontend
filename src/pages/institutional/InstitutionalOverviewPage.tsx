@@ -15,6 +15,7 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import { useI18n } from "../../i18n/I18nProvider";
 
 const indicators = [
   {
@@ -43,14 +44,15 @@ const indicators = [
   },
 ];
 
-const priorities = [
-  "Identificar necesidades de apoyo educativo sin emitir diagnósticos clínicos.",
-  "Acompañar al docente con recomendaciones pedagógicas comprensibles.",
-  "Fortalecer el seguimiento institucional de inclusión y permanencia.",
-  "Promover decisiones humanas, éticas, trazables y centradas en el estudiante.",
-];
-
 export const InstitutionalOverviewPage = () => {
+  const { t } = useI18n();
+  const priorities = [
+    "Identificar necesidades de apoyo educativo sin emitir diagnósticos clínicos.",
+    "Acompañar al docente con recomendaciones pedagógicas comprensibles.",
+    "Fortalecer el seguimiento institucional de inclusión y permanencia.",
+    t("institutional.priority.studentCentered"),
+  ];
+
   return (
     <Box>
       <Box
@@ -63,13 +65,19 @@ export const InstitutionalOverviewPage = () => {
           border: "1px solid rgba(148,163,184,.25)",
         }}
       >
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1.25, sm: 2 }}
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          sx={{ mb: 2, minWidth: 0, width: "100%" }}
+        >
           <SchoolIcon color="primary" sx={{ fontSize: 42 }} />
           <Chip
             icon={<VerifiedUserIcon />}
             label="Educational Community View"
             color="primary"
             variant="outlined"
+            sx={{ maxWidth: "100%", minWidth: 0 }}
           />
         </Stack>
 
@@ -78,9 +86,7 @@ export const InstitutionalOverviewPage = () => {
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Vista institucional para directivos, docentes, orientadores y comunidad
-          educativa. Resume el estado de acompañamiento, inclusión, apoyos
-          pedagógicos y seguimiento educativo de la plataforma ILP.
+          {t("institutional.description")}
         </Typography>
       </Box>
 

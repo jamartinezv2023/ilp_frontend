@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Box,
@@ -20,10 +20,14 @@ import type {
   KolbAssessmentResponse,
 } from "../../../types/assessment";
 import {
+  isAssessmentSubmissionInvalid,
+  kolbTimestampMatches,
   fetchKolbAssessmentHistory,
   fetchKolbQuestions,
-  submitKolbAssessmentWithAnswers,
+  submitKolbAssessmentWithConfirmation,
 } from "../../../services/assessmentApi";
+
+import { useI18n } from "../../../i18n/I18nProvider";
 
 type KolbRealFormProps = {
   studentId: string;
@@ -35,6 +39,8 @@ type IpsativeAnswers = Record<string, Record<number, number>>;
 const rankOptions = [4, 3, 2, 1];
 
 export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
+  const { t } = useI18n();
+  const [submissionRejected, setSubmissionRejected] = useState(false);
   const [questions, setQuestions] = useState<InstrumentQuestion[]>([]);
   const [answers, setAnswers] = useState<IpsativeAnswers>({});
   const [history, setHistory] = useState<KolbAssessmentResponse[]>([]);
@@ -44,7 +50,11 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [pendingResult, setPendingResult] = useState<KolbAssessmentResponse | null>(null);
+  const [submissionUncertain, setSubmissionUncertain] = useState(false);
   const [error, setError] = useState("");
+  const currentStudentId = useRef(studentId);
+  const submissionInFlight = useRef(false);
 
   const loadQuestions = async () => {
     try {
@@ -58,7 +68,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
     }
   };
 
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     try {
       setHistoryLoading(true);
       setHistory(await fetchKolbAssessmentHistory(studentId));
@@ -67,17 +77,23 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
     } finally {
       setHistoryLoading(false);
     }
-  };
+  }, [studentId]);
 
   useEffect(() => {
     void loadQuestions();
   }, []);
 
   useEffect(() => {
+    currentStudentId.current = studentId;
     setAnswers({});
+    setHistory([]);
     setLatestResult(null);
+    setPendingResult(null);
+    setSubmissionUncertain(false);
+    setSubmissionRejected(false);
+    setSubmitting(false);
     void loadHistory();
-  }, [studentId]);
+  }, [studentId, loadHistory]);
 
   const usedRanksByQuestion = useMemo(() => {
     const result: Record<string, number[]> = {};
@@ -141,33 +157,88 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
   };
 
   const submit = async () => {
+    if (submissionInFlight.current || pendingResult || submissionUncertain) return;
+    if (!allQuestionsComplete) {
+      setError(
+        "Debe completar todos los grupos usando exactamente una vez los valores 4, 3, 2 y 1."
+      );
+      return;
+    }
+    const submittedStudentId = studentId;
+    submissionInFlight.current = true;
+    setSubmissionRejected(false);
+    setSubmitting(true);
+    setError("");
     try {
-      setSubmitting(true);
-      setError("");
-
-      if (!allQuestionsComplete) {
+      const { result, history: persistedHistory, confirmed } =
+        await submitKolbAssessmentWithConfirmation(
+          submittedStudentId,
+          buildPayload()
+        );
+      if (currentStudentId.current !== submittedStudentId) return;
+      if (!confirmed) {
+        setPendingResult(result);
         setError(
-          "Debe completar todos los grupos usando exactamente una vez los valores 4, 3, 2 y 1."
+          `Se recibió la evaluación ${result.assessmentId || "(sin ID)"}, pero no se confirmó en el historial. Consulte el historial antes de cualquier nuevo envío.`
         );
         return;
       }
-
-      const result = await submitKolbAssessmentWithAnswers(
-        studentId,
-        buildPayload()
-      );
-
+      setHistory(persistedHistory);
       setLatestResult(result);
       onCompleted(result);
-      await loadHistory();
-    } catch {
-      setError("No fue posible enviar el formulario Kolb.");
+    } catch (caught) {
+      if (currentStudentId.current === submittedStudentId) {
+        if (isAssessmentSubmissionInvalid(caught)) {
+          setSubmissionRejected(true);
+          setSubmissionUncertain(false);
+          return;
+        }
+        setSubmissionUncertain(true);
+        setError(
+          "El estado del envío es incierto. Consulte el historial y no repita el envío hasta verificarlo."
+        );
+      }
     } finally {
-      setSubmitting(false);
+      submissionInFlight.current = false;
+      if (currentStudentId.current === submittedStudentId) {
+        setSubmitting(false);
+      }
     }
   };
-
-  if (loading) {
+  const checkPendingHistory = async () => {
+    if (!pendingResult) return;
+    const submittedStudentId = studentId;
+    try {
+      setHistoryLoading(true);
+      const persistedHistory =
+        await fetchKolbAssessmentHistory(submittedStudentId);
+      if (currentStudentId.current !== submittedStudentId) return;
+      setHistory(persistedHistory);
+      const confirmed = persistedHistory.some(
+        (item) =>
+          item.assessmentId === pendingResult.assessmentId &&
+          item.studentId === submittedStudentId &&
+          item.instrumentVersion === pendingResult.instrumentVersion &&
+          kolbTimestampMatches(item.createdAt, pendingResult.createdAt)
+      );
+      if (confirmed) {
+        setLatestResult(pendingResult);
+        setPendingResult(null);
+        setError("");
+        onCompleted(pendingResult);
+      } else {
+        setError("El registro aún no aparece en el historial. No lo vuelva a enviar.");
+      }
+    } catch {
+      if (currentStudentId.current === submittedStudentId) {
+        setError("No fue posible consultar el historial. No vuelva a enviar.");
+      }
+    } finally {
+      if (currentStudentId.current === submittedStudentId) {
+        setHistoryLoading(false);
+      }
+    }
+  };  if (loading) {
     return (
       <Stack alignItems="center" sx={{ py: 4 }}>
         <CircularProgress />
@@ -192,15 +263,15 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
             frase que más lo representa y 1 para la que menos lo representa.
           </Alert>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+          {(error || submissionRejected) && (
+            <Alert severity="error" role="alert" sx={{ mb: 2 }}>
+              {submissionRejected ? t("assessment.submission.invalid") : error}
             </Alert>
           )}
 
           {latestResult && (
             <Alert severity="success" sx={{ mb: 2 }}>
-              Resultado registrado: {latestResult.learningStyle}. CE:{" "}
+              Registro confirmado en historial: {latestResult.assessmentId} · Kolb {latestResult.instrumentVersion} · {latestResult.learningStyle}. CE:{" "}
               {latestResult.scoreCE}, RO: {latestResult.scoreRO}, AC:{" "}
               {latestResult.scoreAC}, AE: {latestResult.scoreAE}.
             </Alert>
@@ -281,10 +352,35 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
             })}
           </Stack>
 
+          {submissionUncertain && (
+            <Button
+              variant="outlined"
+              disabled={historyLoading}
+              onClick={() => void loadHistory()}
+              sx={{ mb: 2 }}
+            >
+              Consultar historial sin volver a enviar
+            </Button>
+          )}
+          {pendingResult && (
+            <Button
+              variant="outlined"
+              disabled={historyLoading}
+              onClick={() => void checkPendingHistory()}
+              sx={{ mb: 2 }}
+            >
+              Comprobar historial sin volver a enviar
+            </Button>
+          )}
           <Button
             fullWidth
             variant="contained"
-            disabled={submitting || !allQuestionsComplete}
+            disabled={
+              submitting ||
+              !!pendingResult ||
+              submissionUncertain ||
+              !allQuestionsComplete
+            }
             onClick={() => void submit()}
             sx={{ mt: 3, borderRadius: 3, fontWeight: 900 }}
           >
