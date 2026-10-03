@@ -1,0 +1,100 @@
+name: Review Demo CI
+
+on:
+  push:
+    branches:
+      - "review/**"
+  pull_request:
+    branches:
+      - "feat/bootstrap-frontend"
+
+permissions:
+  contents: read
+
+jobs:
+  review-demo:
+    name: Lint, Build, Model and Browser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: node --test tests/pilot/review-model.test.mjs
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config playwright.review.config.ts
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-browser-evidence
+          path: |
+            review-browser-results.json
+            review-browser-artifacts/
+          if-no-files-found: ignore
+
+  published-preview:
+    name: Published HTTPS preview in Chromium
+    if: github.event_name == 'push' && github.ref == 'refs/heads/review/synthetic-offline-demo-20260924'
+    needs: review-demo
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      ILP_REVIEW_BASE_URL: https://ilp-frontend-git-review-synthetic-offline-demo-20260924-teac.vercel.app
+      ILP_REVIEW_REPORT_FILE: published-review-browser-results.json
+      ILP_REVIEW_ARTIFACTS_DIR: published-review-browser-artifacts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Wait for the published review assets
+        run: |
+          node --input-type=module <<'NODE'
+          const base = process.env.ILP_REVIEW_BASE_URL;
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+              const [page, worker] = await Promise.all([
+                fetch(base + "/review/index.html", { redirect: "manual", cache: "no-store" }),
+                fetch(base + "/review/sw.js", { redirect: "follow", cache: "no-store" }),
+              ]);
+              if ([page.status, worker.status].some((status) => status >= 300 && status < 400)) {
+                console.error("Preview protected by Vercel SSO; use an authorized shareable link or authenticated browser session before testing HTTPS.");
+                process.exit(1);
+              }
+              const html = await page.text();
+              const sw = await worker.text();
+              if (page.ok && worker.ok &&
+                  page.url === base + "/review/index.html" &&
+                  worker.url === base + "/review/sw.js" &&
+                  html.includes('id="review-code"') &&
+                  sw.includes("ilp-review-v2")) {
+                console.log("Published review assets available over HTTPS");
+                process.exit(0);
+              }
+              console.log(`Attempt ${attempt}: HTML ${page.status} marker=${html.includes('id="review-code"')}; worker ${worker.status} marker=${sw.includes("ilp-review-v2")} type=${worker.headers.get("content-type")}`);
+            } catch (error) {
+              console.log(`Attempt ${attempt}: ${String(error)}`);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 10000));
+          }
+          console.error("Published HTTPS review assets were not available");
+          process.exit(1);
+          NODE
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config playwright.review.config.ts
+      - name: Upload published browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-review-browser-evidence
+          path: |
+            published-review-browser-results.json
+            published-review-browser-artifacts/
+          if-no-files-found: ignore
