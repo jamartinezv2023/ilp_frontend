@@ -1,0 +1,10 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "../../src/store";
+import { authenticationSucceeded } from "../../src/features/auth/store/authSlice";
+import { I18nProvider } from "../../src/i18n/I18nProvider";
+import { AuthorizedResearchPage } from "../../src/pages/research/AuthorizedResearchPage";
+const session = await (await fetch("/test/session")).json();
+store.dispatch(authenticationSucceeded({ accessToken: session.token, email: "synthetic@example.invalid", mfaRequired: false }));
+ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><Provider store={store}><I18nProvider><AuthorizedResearchPage /></I18nProvider></Provider></React.StrictMode>);
