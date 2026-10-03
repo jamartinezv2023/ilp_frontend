@@ -1,0 +1,23 @@
+name: Scientific application frontend
+on:
+  pull_request:
+    branches: [feat/bootstrap-frontend]
+    paths: ['src/**', 'e2e/scientific-application/**', 'package*.json', '.github/workflows/scientific-application-frontend.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npx tsc --noEmit --target ES2022 --module ESNext --moduleResolution bundler --jsx react-jsx --strict --skipLibCheck --types vite/client e2e/scientific-application/harness.tsx
+      - run: node --test e2e/scientific-application/payload.test.mjs
