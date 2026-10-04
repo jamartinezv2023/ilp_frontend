@@ -2,6 +2,9 @@ export type Locale = "es" | "en";
 
 export const messages = {
   es: {
+    "institutional.metricsUnavailable": "Indicadores institucionales no disponibles: requieren registros verificables. No se muestran cifras ilustrativas como resultados reales.",
+    "inclusion.supportShare": "Proporción de perfiles con apoyo medio o alto",
+    "inclusion.readinessUnavailable": "La preparación PIAR no se ha medido. Los niveles de apoyo no acreditan un PIAR elaborado ni ajustes razonables documentados.",
     "language.label": "Idioma",
     "language.spanish": "Castellano",
     "language.english": "Inglés",
@@ -67,6 +70,9 @@ export const messages = {
     "dashboard.executiveTitle": "Panel ejecutivo de investigación",
   },
   en: {
+    "institutional.metricsUnavailable": "Institutional indicators are unavailable: verified records are required. Illustrative figures are not displayed as actual results.",
+    "inclusion.supportShare": "Share of profiles with medium or high support",
+    "inclusion.readinessUnavailable": "PIAR readiness has not been measured. Support levels do not establish a completed PIAR or documented reasonable adjustments.",
     "language.label": "Language",
     "language.spanish": "Spanish",
     "language.english": "English",

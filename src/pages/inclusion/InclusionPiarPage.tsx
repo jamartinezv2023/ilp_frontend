@@ -7,7 +7,6 @@ import {
   CardContent,
   Chip,
   CircularProgress,
-  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -16,6 +15,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import GroupsIcon from "@mui/icons-material/Groups";
 import type { StudentProfile } from "../../types/student";
+import { useI18n } from "../../i18n/I18nProvider";
 import { fetchStudents } from "../../services/studentApi";
 
 const supportColor = (level: string): "success" | "warning" | "error" | "default" => {
@@ -26,6 +26,7 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const InclusionPiarPage = () => {
+  const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -98,7 +99,7 @@ export const InclusionPiarPage = () => {
               <Typography fontWeight={900}>Estudiantes monitoreados</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950}>
-              {loading ? "..." : students.length}
+              {loading ? "..." : error ? "—" : students.length}
             </Typography>
           </CardContent>
         </Card>
@@ -110,7 +111,7 @@ export const InclusionPiarPage = () => {
               <Typography fontWeight={900}>Seguimiento prioritario</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950}>
-              {loading ? "..." : piarCandidates.length}
+              {loading ? "..." : error ? "—" : piarCandidates.length}
             </Typography>
           </CardContent>
         </Card>
@@ -119,10 +120,10 @@ export const InclusionPiarPage = () => {
           <CardContent>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <AssignmentIcon color="success" />
-              <Typography fontWeight={900}>Preparación PIAR</Typography>
+              <Typography fontWeight={900}>{t("inclusion.supportShare")}</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950}>
-              {loading ? "..." : `${Math.round((piarCandidates.length / Math.max(students.length, 1)) * 100)}%`}
+              {loading ? "..." : error || students.length === 0 ? "—" : `${Math.round((piarCandidates.length / students.length) * 100)}%`}
             </Typography>
           </CardContent>
         </Card>
@@ -141,31 +142,7 @@ export const InclusionPiarPage = () => {
             Estado de preparación institucional
           </Typography>
 
-          <Stack spacing={2}>
-            <Box>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography fontWeight={900}>Identificación de necesidades de apoyo</Typography>
-                <Typography fontWeight={900}>82%</Typography>
-              </Stack>
-              <LinearProgress variant="determinate" value={82} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-            </Box>
-
-            <Box>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography fontWeight={900}>Estrategias inclusivas documentadas</Typography>
-                <Typography fontWeight={900}>74%</Typography>
-              </Stack>
-              <LinearProgress variant="determinate" value={74} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-            </Box>
-
-            <Box>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography fontWeight={900}>Preparación de ajustes razonables</Typography>
-                <Typography fontWeight={900}>68%</Typography>
-              </Stack>
-              <LinearProgress variant="determinate" value={68} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-            </Box>
-          </Stack>
+          <Alert severity="info">{t("inclusion.readinessUnavailable")}</Alert>
         </CardContent>
       </Card>
 

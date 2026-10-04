@@ -1,10 +1,9 @@
-﻿import {
+import {
   Alert,
   Box,
   Card,
   CardContent,
   Chip,
-  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -20,25 +19,25 @@ import { useI18n } from "../../i18n/I18nProvider";
 const indicators = [
   {
     title: "Estudiantes con seguimiento activo",
-    value: "128",
+    value: "—",
     detail: "Perfiles educativos priorizados para acompañamiento pedagógico.",
     icon: <GroupsIcon color="primary" />,
   },
   {
     title: "Recomendaciones pedagógicas",
-    value: "342",
+    value: "—",
     detail: "Sugerencias educativas generadas para apoyar decisiones docentes.",
     icon: <PsychologyIcon color="secondary" />,
   },
   {
     title: "Apoyos inclusivos registrados",
-    value: "86",
+    value: "—",
     detail: "Estrategias DUA, ajustes razonables y acciones de aula documentadas.",
     icon: <Diversity3Icon color="success" />,
   },
   {
     title: "Familias vinculadas",
-    value: "74",
+    value: "—",
     detail: "Acudientes conectados al proceso de seguimiento educativo.",
     icon: <FamilyRestroomIcon color="info" />,
   },
@@ -55,6 +54,7 @@ export const InstitutionalOverviewPage = () => {
 
   return (
     <Box>
+      <Alert severity="info" sx={{ mb: 2 }}>{t("institutional.metricsUnavailable")}</Alert>
       <Box
         sx={{
           mb: 3,
@@ -157,37 +157,9 @@ export const InstitutionalOverviewPage = () => {
             </Stack>
 
             <Stack spacing={2}>
-              <Box>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography fontWeight={900}>Seguimiento educativo</Typography>
-                  <Typography fontWeight={900}>82%</Typography>
-                </Stack>
-                <LinearProgress variant="determinate" value={82} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-              </Box>
-
-              <Box>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography fontWeight={900}>Apoyo docente</Typography>
-                  <Typography fontWeight={900}>78%</Typography>
-                </Stack>
-                <LinearProgress variant="determinate" value={78} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-              </Box>
-
-              <Box>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography fontWeight={900}>Ajustes razonables</Typography>
-                  <Typography fontWeight={900}>69%</Typography>
-                </Stack>
-                <LinearProgress variant="determinate" value={69} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-              </Box>
-
-              <Box>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography fontWeight={900}>Participación familiar</Typography>
-                  <Typography fontWeight={900}>61%</Typography>
-                </Stack>
-                <LinearProgress variant="determinate" value={61} sx={{ mt: 1, height: 9, borderRadius: 8 }} />
-              </Box>
+              <Alert severity="info">
+              {t("institutional.metricsUnavailable")}
+            </Alert>
             </Stack>
           </CardContent>
         </Card>
