@@ -48,6 +48,10 @@ jobs:
           path: coverage/
           if-no-files-found: error
       - name: SonarCloud Scan and Quality Gate
+        if: >-
+          github.event_name == 'pull_request' ||
+          github.ref == 'refs/heads/main' ||
+          github.ref == 'refs/heads/feat/bootstrap-frontend'
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

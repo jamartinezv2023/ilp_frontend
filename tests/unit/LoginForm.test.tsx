@@ -19,6 +19,24 @@ function credentials(en=false){
 }
 function submit(container:HTMLElement){const form=container.querySelector('form');if(!form)throw new Error('missing form');fireEvent.submit(form);}
 describe('login credential and MFA boundary',()=>{
+ it.each([
+  {name:'missing separator', email:'missing-at.example.test'},
+  {name:'missing local part', email:'@example.test'},
+  {name:'missing domain', email:'synthetic@'},
+  {name:'missing domain dot', email:'synthetic@example'},
+  {name:'empty domain label', email:'synthetic@.test'},
+  {name:'missing suffix', email:'synthetic@example.'},
+  {name:'repeated separator', email:'synthetic@@example.test'},
+  {name:'whitespace', email:'synthetic user@example.test'},
+  {name:'long domain without dot', email:`synthetic@${'a'.repeat(10000)}`},
+ ])('blocks invalid email before contacting authentication: $name', ({email}) => {
+  const {container} = mount();
+  credentials();
+  fireEvent.change(screen.getByLabelText('Correo institucional', {exact:false}), {target:{value:email}});
+  submit(container);
+  expect(transport.login).not.toHaveBeenCalled();
+  expect(screen.getByText('Ingrese un correo electrónico válido.')).toBeTruthy();
+ });
  it.each(['es','en'] as const)('validates credentials before requesting and clears password after success in %s',async locale=>{
   const {container,store}=mount(locale);submit(container);expect(transport.login).not.toHaveBeenCalled();
   transport.login.mockResolvedValue({accessToken:'synthetic-token',email:'synthetic@example.test',mfaRequired:false});credentials(locale==='en');submit(container);

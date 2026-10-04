@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   Alert,
   Box,
@@ -32,6 +32,14 @@ import {
 import { login } from "../services/authApi";
 import { useI18n } from "../../../i18n/I18nProvider";
 
+function isValidLoginEmail(value: string): boolean {
+  if (/\s/.test(value)) return false;
+  const at = value.indexOf("@");
+  const dot = value.lastIndexOf(".");
+  return at > 0 && at === value.lastIndexOf("@")
+    && dot > at + 1 && dot < value.length - 1;
+}
+
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
   const { locale, setLocale, t } = useI18n();
@@ -50,7 +58,7 @@ export const LoginForm = () => {
   const [useRecoveryCode, setUseRecoveryCode] = useState(false);
   const [recoveryCode, setRecoveryCode] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const emailError = submitted && !/^\S+@\S+\.\S+$/.test(email);
+  const emailError = submitted && !isValidLoginEmail(email);
   const passwordError = submitted && password.length < 8;
   const mfaError = submitted && mfaRequired && (useRecoveryCode
     ? !/^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(recoveryCode.toUpperCase())
@@ -62,7 +70,7 @@ export const LoginForm = () => {
     const invalidMfa = mfaRequired && (useRecoveryCode
       ? !/^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(recoveryCode.toUpperCase())
       : !/^\d{6}$/.test(mfaCode));
-    if (!/^\S+@\S+\.\S+$/.test(email) || password.length < 8 || invalidMfa) return;
+    if (!isValidLoginEmail(email) || password.length < 8 || invalidMfa) return;
 
     dispatch(authenticationStarted());
     try {
