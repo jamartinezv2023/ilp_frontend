@@ -73,7 +73,7 @@ export const AccessibleAppShell = () => {
   }, [location.pathname]);
 
   const openRoute = (path: string) => {
-    navigate(path);
+    void navigate(path);
     setSearch("");
     setMobileOpen(false);
   };

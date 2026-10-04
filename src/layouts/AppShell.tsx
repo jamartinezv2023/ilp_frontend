@@ -151,7 +151,7 @@ export const AppShell = () => {
                 selected={selected}
                 aria-label={item.text}
                 onClick={() => {
-                  navigate(item.path);
+                  void navigate(item.path);
                   setMobileOpen(false);
                 }}
                 sx={{
