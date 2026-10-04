@@ -141,7 +141,7 @@ export const submitKolbAssessmentWithConfirmation = async (
     answers.length !== 48 ||
     Array.from({ length: 12 }, (_, index) =>
       answers.slice(index * 4, index * 4 + 4)
-    ).some((group) => [...group].sort().join(",") !== "1,2,3,4")
+    ).some((group) => [...group].sort((left, right) => left - right).join(",") !== "1,2,3,4")
   ) {
     throw new Error("Kolb requiere doce grupos completos con cuatro rangos distintos.");
   }

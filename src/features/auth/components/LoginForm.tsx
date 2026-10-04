@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Box,
@@ -59,7 +59,10 @@ export const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    if (emailError || passwordError || mfaError || !/^\S+@\S+\.\S+$/.test(email) || password.length < 8) return;
+    const invalidMfa = mfaRequired && (useRecoveryCode
+      ? !/^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(recoveryCode.toUpperCase())
+      : !/^\d{6}$/.test(mfaCode));
+    if (!/^\S+@\S+\.\S+$/.test(email) || password.length < 8 || invalidMfa) return;
 
     dispatch(authenticationStarted());
     try {
