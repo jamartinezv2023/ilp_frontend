@@ -217,15 +217,16 @@ export const InclusionPiarPage = () => {
               <CardContent sx={{ p: 3 }}>
                 <Stack direction="row" justifyContent="space-between" spacing={2}>
                   <Box>
-                    <Typography variant="h6" fontWeight={950}>
+                    <Typography variant="h6" fontWeight={950} translate="no">
                       {student.fullName}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {student.id} · Grado {student.grade} · Perfil: {student.learningProfile}
+                      <span translate="no">{student.id}</span> · Grado <span translate="no">{student.grade}</span> · Perfil: <span translate="no">{student.learningProfile}</span>
                     </Typography>
                   </Box>
 
                   <Chip
+                    translate="no"
                     label={student.supportLevel}
                     color={supportColor(student.supportLevel)}
                     sx={{ fontWeight: 900 }}
@@ -238,7 +239,7 @@ export const InclusionPiarPage = () => {
 
                 <Stack spacing={1} sx={{ mt: 1 }}>
                   {student.inclusiveStrategies.map((strategy) => (
-                    <Alert key={strategy} severity="success" variant="outlined">
+                    <Alert key={strategy} severity="success" variant="outlined" translate="no">
                       {strategy}
                     </Alert>
                   ))}

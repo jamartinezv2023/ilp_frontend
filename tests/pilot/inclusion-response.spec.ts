@@ -2,12 +2,15 @@ import { expect, test, type Page } from "@playwright/test";
 const profiles = [
   {
     id: "SYNTHETIC-HIGH",
-    fullName: "ZXQ-001",
+    fullName: "Synthetic High",
     supportLevel: "HIGH",
+    grade: "High",
+    learningProfile: "Low",
+    inclusiveStrategies: ["Synthetic High strategy"],
   },
   {
     id: "SYNTHETIC-LOW",
-    fullName: "ZXQ-002",
+    fullName: "Synthetic Low",
     supportLevel: "LOW",
   },
 ];
@@ -15,7 +18,7 @@ async function expectUnavailable(page: Page) {
   await expect(page.getByText("—", { exact: true })).toHaveCount(3);
   await expect(page.getByText("50%", { exact: true })).toHaveCount(0);
   await expect(page.getByText("0", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("ZXQ-001", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Synthetic High", { exact: true })).toHaveCount(0);
 }
 for (const locale of ["es", "en"] as const) {
   test.describe(`Inclusion browser response in ${locale}`, () => {
@@ -117,16 +120,34 @@ for (const locale of ["es", "en"] as const) {
         await expect.poll(() => requests).toBe(2);
         await expect(page.getByRole("progressbar")).toBeVisible();
         await expect(page.getByText("...", { exact: true })).toHaveCount(3);
-        await expect(page.getByText("ZXQ-001", { exact: true })).toHaveCount(0);
+        await expect(page.getByText("Synthetic High", { exact: true })).toHaveCount(0);
         await expect(page.getByText("50%", { exact: true })).toHaveCount(0);
         await expect(page.getByText("0", { exact: true })).toHaveCount(0);
         await expect(page.getByText(emptyMessage, { exact: true })).toHaveCount(0);
         if (!release) throw new Error("Response release was not initialized");
         release();
         await expect(page.getByText("50%", { exact: true })).toBeVisible();
-        await expect(page.getByText("ZXQ-001", { exact: true })).toBeVisible();
+        await expect(page.getByText("Synthetic High", { exact: true })).toBeVisible();
         await expect(page.getByRole("progressbar")).toHaveCount(0);
         await expect(page.getByRole("button", { name: retryName })).toHaveCount(0);
+        for (const target of [locale === "es" ? "en" : "es", locale] as const) {
+          const current = await page.locator("html").getAttribute("lang");
+          const languageSelector = page.getByRole("combobox");
+          await expect(languageSelector).toHaveCount(1);
+          await languageSelector.click();
+          await page.getByRole("option", {
+            name: target === "en"
+              ? (current === "es" ? "Inglés" : "English")
+              : (current === "es" ? "Castellano" : "Spanish"),
+            exact: true,
+          }).click();
+          await expect(page.locator("html")).toHaveAttribute("lang", target);
+          await expect(page.getByRole("heading", { name: "Synthetic High", exact: true })).toBeVisible();
+          await expect(page.locator('[translate="no"]', { hasText: "Synthetic High strategy" })).toHaveText("Synthetic High strategy");
+          await expect(page.getByText("High", { exact: true })).toBeVisible();
+          await expect(page.getByText("Low", { exact: true })).toBeVisible();
+          await expect(page.getByText("50%", { exact: true })).toBeVisible();
+        }
         expect(requests).toBe(2);
       } finally {
         release?.();
