@@ -11,6 +11,14 @@ export const LocalizedSurface = ({ children }: PropsWithChildren) => {
     const root = rootRef.current;
     if (!root) return;
 
+    const localizeAttributes = (element: HTMLElement) => {
+      for (const attribute of translatableAttributes) {
+        const current = element.getAttribute(attribute);
+        if (!current) continue;
+        const translated = translateLegacyText(current);
+        if (translated !== current) element.setAttribute(attribute, translated);
+      }
+    };
     const localize = (node: Node) => {
       const element = node instanceof Element ? node : node.parentElement;
       if (element?.closest('[translate="no"]')) return;
@@ -19,14 +27,7 @@ export const LocalizedSurface = ({ children }: PropsWithChildren) => {
         if (translated !== node.textContent) node.textContent = translated;
       }
 
-      if (node instanceof HTMLElement) {
-        for (const attribute of translatableAttributes) {
-          const current = node.getAttribute(attribute);
-          if (!current) continue;
-          const translated = translateLegacyText(current);
-          if (translated !== current) node.setAttribute(attribute, translated);
-        }
-      }
+      if (node instanceof HTMLElement) localizeAttributes(node);
 
       for (const child of Array.from(node.childNodes)) localize(child);
     };
