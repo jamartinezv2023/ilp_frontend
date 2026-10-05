@@ -47,9 +47,13 @@ describe('student response and service availability contracts', () => {
     transport.get.mockResolvedValue({ data: { id: 7, age: 'unknown' } });
     expect(await fetchStudentById('7')).toMatchObject({ id: '7', fullName: 'Estudiante sin nombre', age: null });
   });
-  it('returns an empty collection for an unsupported response envelope', async () => {
+  it('rejects an unsupported envelope instead of reporting no students', async () => {
     transport.get.mockResolvedValue({ data: { value: {}, content: {}, data: {} } });
-    expect(await fetchStudents()).toEqual([]);
+    await expect(fetchStudents()).rejects.toThrow('invalid response');
+    expect(transport.get).toHaveBeenCalledTimes(1);
+    expect(getStudentServiceStatus()).toEqual({
+      phase: 'failed', failureKind: 'unexpected',
+    });
   });
   it.each([
     { status: 401, kind: 'authentication' }, { status: 403, kind: 'authorization' },
@@ -100,4 +104,67 @@ describe('student response and service availability contracts', () => {
     unsubscribe(); markStudentServiceReady(); expect(listener).toHaveBeenCalledTimes(3);
     expect(getStudentServiceStatus()).toEqual({ phase: 'ready' });
   });
+});
+
+describe('student API rejects malformed data without inventing empty results', () => {
+  it.each(['array', 'value', 'content', 'data'])(
+    'accepts a valid empty %s collection', async shape => {
+      const payload = shape === 'array' ? [] : { [shape]: [] };
+      transport.get.mockResolvedValue({ data: payload });
+      expect(await fetchStudents()).toEqual([]);
+      expect(getStudentServiceStatus()).toEqual({ phase: 'ready' });
+    },
+  );
+  it.each([
+    null, undefined, false, 42, 'invalid', {},
+    { value: null }, { content: {} }, { data: 'invalid' },
+    { value: [], content: [] },
+    [null], [{}], [{ id: '' }], [{ id: '   ' }],
+    [{ id: {} }], [{ id: 1.5 }],
+    [{ id: 1, fullName: 7 }],
+    [{ id: 1, inclusiveStrategies: 'invalid' }],
+    [{ id: 1, pedagogicalRecommendations: [false] }],
+    [{ id: 1 }, { name: 'Missing identity' }],
+  ])('rejects malformed list case %# without retrying', async payload => {
+    transport.get.mockResolvedValue({ data: payload });
+    const onRetry = vi.fn();
+    await expect(fetchStudents({ onRetry })).rejects.toThrow('invalid response');
+    expect(transport.get).toHaveBeenCalledTimes(1);
+    expect(onRetry).not.toHaveBeenCalled();
+    expect(getStudentServiceStatus()).toEqual({
+      phase: 'failed', failureKind: 'unexpected',
+    });
+  });
+  it.each([null, {}, { id: '' }, { id: 1, supportLevel: false }])(
+    'rejects malformed individual profile case %#', async payload => {
+      transport.get.mockResolvedValue({ data: payload });
+      await expect(fetchStudentById('synthetic')).rejects.toThrow('invalid response');
+      expect(transport.get).toHaveBeenCalledTimes(1);
+      expect(getStudentServiceStatus().phase).toBe('failed');
+    },
+  );
+  it('recovers after malformed data only when a later query returns valid data', async () => {
+    transport.get.mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: [{ id: 'synthetic-1' }] });
+    await expect(fetchStudents()).rejects.toThrow('invalid response');
+    expect(getStudentServiceStatus().phase).toBe('failed');
+    expect(await fetchStudents()).toHaveLength(1);
+    expect(getStudentServiceStatus()).toEqual({ phase: 'ready' });
+    expect(transport.get).toHaveBeenCalledTimes(2);
+  });
+  it.each([401, 403])(
+    'preserves HTTP %s denial and recovers on a later valid query', async status => {
+      const error = failure(status);
+      transport.get.mockRejectedValueOnce(error)
+        .mockResolvedValueOnce({ data: [] });
+      await expect(fetchStudents()).rejects.toBe(error);
+      expect(getStudentServiceStatus()).toEqual({
+        phase: 'failed',
+        failureKind: status === 401 ? 'authentication' : 'authorization',
+      });
+      expect(transport.get).toHaveBeenCalledTimes(1);
+      expect(await fetchStudents()).toEqual([]);
+      expect(getStudentServiceStatus()).toEqual({ phase: 'ready' });
+    },
+  );
 });
