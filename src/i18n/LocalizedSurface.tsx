@@ -12,6 +12,8 @@ export const LocalizedSurface = ({ children }: PropsWithChildren) => {
     if (!root) return;
 
     const localize = (node: Node) => {
+      const element = node instanceof Element ? node : node.parentElement;
+      if (element?.closest('[translate="no"]')) return;
       if (node.nodeType === Node.TEXT_NODE && node.textContent) {
         const translated = translateLegacyText(node.textContent);
         if (translated !== node.textContent) node.textContent = translated;
