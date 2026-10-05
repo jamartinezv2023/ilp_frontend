@@ -2,6 +2,7 @@ import { StudentServiceStatusAlert } from "../../components/StudentServiceStatus
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Button,
   Box,
   Card,
   CardContent,
@@ -26,7 +27,7 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const InclusionPiarPage = () => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,6 +36,7 @@ export const InclusionPiarPage = () => {
     try {
       setLoading(true);
       setError("");
+      setStudents([]);
       const data = await fetchStudents();
       setStudents(data);
     } catch {
@@ -168,7 +170,29 @@ export const InclusionPiarPage = () => {
         </Stack>
       )}
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && (
+        <Alert
+          severity="error"
+          action={
+            <Button
+              color="inherit"
+              onClick={() => void loadStudents()}
+              disabled={loading}
+            >
+              {locale === "es" ? "Reintentar" : "Retry"}
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
+      )}
+      {!loading && !error && students.length === 0 && (
+        <Alert severity="info" role="status">
+          {locale === "es"
+            ? "No hay estudiantes disponibles en la respuesta del servicio."
+            : "No students are available in the service response."}
+        </Alert>
+      )}
 
       {!loading && !error && (
         <Box
