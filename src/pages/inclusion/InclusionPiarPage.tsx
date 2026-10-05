@@ -51,6 +51,21 @@ export const InclusionPiarPage = () => {
   const highSupport = students.filter((student) => student.supportLevel === "HIGH");
   const mediumSupport = students.filter((student) => student.supportLevel === "MEDIUM");
   const piarCandidates = [...highSupport, ...mediumSupport];
+  let monitoredCount: string | number = "...";
+  let priorityCount: string | number = "...";
+  let supportShare = "...";
+  if (!loading) {
+    monitoredCount = "—";
+    priorityCount = "—";
+    supportShare = "—";
+    if (!error) {
+      monitoredCount = students.length;
+      priorityCount = piarCandidates.length;
+      if (students.length > 0) {
+        supportShare = `${Math.round((piarCandidates.length / students.length) * 100)}%`;
+      }
+    }
+  }
 
   return (
     <Box>
@@ -99,7 +114,7 @@ export const InclusionPiarPage = () => {
               <Typography fontWeight={900}>Estudiantes monitoreados</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950}>
-              {loading ? "..." : error ? "—" : students.length}
+              {monitoredCount}
             </Typography>
           </CardContent>
         </Card>
@@ -111,7 +126,7 @@ export const InclusionPiarPage = () => {
               <Typography fontWeight={900}>Seguimiento prioritario</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950}>
-              {loading ? "..." : error ? "—" : piarCandidates.length}
+              {priorityCount}
             </Typography>
           </CardContent>
         </Card>
@@ -123,7 +138,7 @@ export const InclusionPiarPage = () => {
               <Typography fontWeight={900}>{t("inclusion.supportShare")}</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950}>
-              {loading ? "..." : error || students.length === 0 ? "—" : `${Math.round((piarCandidates.length / students.length) * 100)}%`}
+              {supportShare}
             </Typography>
           </CardContent>
         </Card>
