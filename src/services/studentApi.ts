@@ -133,40 +133,69 @@ const toStudentProfile = (student: BackendStudent): StudentProfile => ({
   pedagogicalRecommendations: student.pedagogicalRecommendations ?? [],
 });
 
-type StudentListResponse =
-  | BackendStudent[]
-  | {
-      value?: BackendStudent[];
-      content?: BackendStudent[];
-      data?: BackendStudent[];
-      Count?: number;
-    };
-
-const normalizeStudents = (payload: StudentListResponse): StudentProfile[] => {
-  if (Array.isArray(payload)) {
-    return payload.map(toStudentProfile);
+export class InvalidStudentResponseError extends Error {
+  constructor() {
+    super("The student API returned an invalid response.");
+    this.name = "InvalidStudentResponseError";
   }
-
-  if (Array.isArray(payload.value)) {
-    return payload.value.map(toStudentProfile);
+}
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+const toValidatedStudentProfile = (value: unknown): StudentProfile => {
+  if (!isRecord(value)) {
+    throw new InvalidStudentResponseError();
   }
-
-  if (Array.isArray(payload.content)) {
-    return payload.content.map(toStudentProfile);
+  const id = value.id;
+  const validId =
+    (typeof id === "string" && id.trim().length > 0) ||
+    (typeof id === "number" && Number.isSafeInteger(id));
+  if (!validId) {
+    throw new InvalidStudentResponseError();
   }
-
-  if (Array.isArray(payload.data)) {
-    return payload.data.map(toStudentProfile);
+  for (const field of [
+    "name", "fullName", "grade", "learningProfile",
+    "vocationalInterest", "supportLevel",
+  ]) {
+    const fieldValue = value[field];
+    if (fieldValue !== undefined && fieldValue !== null &&
+        typeof fieldValue !== "string") {
+      throw new InvalidStudentResponseError();
+    }
   }
-
-  return [];
+  for (const field of ["inclusiveStrategies", "pedagogicalRecommendations"]) {
+    const fieldValue = value[field];
+    if (fieldValue !== undefined && fieldValue !== null &&
+        (!Array.isArray(fieldValue) ||
+         !fieldValue.every((item: unknown) => typeof item === "string"))) {
+      throw new InvalidStudentResponseError();
+    }
+  }
+  return toStudentProfile(value as BackendStudent);
 };
-
+const normalizeStudents = (payload: unknown): StudentProfile[] => {
+  if (Array.isArray(payload)) {
+    return payload.map(toValidatedStudentProfile);
+  }
+  if (!isRecord(payload)) {
+    throw new InvalidStudentResponseError();
+  }
+  const keys = ["value", "content", "data"].filter(
+    (key) => Object.prototype.hasOwnProperty.call(payload, key),
+  );
+  if (keys.length !== 1) {
+    throw new InvalidStudentResponseError();
+  }
+  const collection = payload[keys[0]];
+  if (!Array.isArray(collection)) {
+    throw new InvalidStudentResponseError();
+  }
+  return collection.map(toValidatedStudentProfile);
+};
 export const fetchStudents = async (
   options: StudentRequestOptions = {},
 ): Promise<StudentProfile[]> =>
   requestWithColdStartRetry(async () => {
-    const response = await client.get<StudentListResponse>("/api/v1/students");
+    const response = await client.get<unknown>("/api/v1/students");
     return normalizeStudents(response.data);
   }, options);
 
@@ -175,6 +204,6 @@ export const fetchStudentById = async (
   options: StudentRequestOptions = {},
 ): Promise<StudentProfile> =>
   requestWithColdStartRetry(async () => {
-    const response = await client.get<BackendStudent>(`/api/v1/students/${id}`);
-    return toStudentProfile(response.data);
+    const response = await client.get<unknown>(`/api/v1/students/${id}`);
+    return toValidatedStudentProfile(response.data);
   }, options);
