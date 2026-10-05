@@ -1,0 +1,71 @@
+name: Inclusion browser CI
+on:
+  pull_request:
+    branches:
+      - feat/bootstrap-frontend
+  push:
+    branches:
+      - feat/bootstrap-frontend
+      - test/inclusion-browser-recovery-20261005-070059930
+permissions:
+  contents: read
+concurrency:
+  group: inclusion-browser-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  inclusion-browser:
+    name: Compiled inclusion browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Lint frontend
+        run: npm run lint
+      - name: Typecheck tests
+        run: npm run test:types
+      - name: Install Chromium
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Compiled bilingual inclusion browser
+        run: npx --no-install playwright test --config playwright.inclusion.config.ts
+      - name: Verify twelve browser cases executed
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          report = Path("test-results/inclusion-results.xml")
+          if not report.is_file():
+              raise SystemExit("Missing inclusion JUnit report")
+          root = ET.parse(report).getroot()
+          cases = list(root.iter("testcase"))
+          problems = [
+              node
+              for case in cases
+              for node in case
+              if node.tag in ("failure", "error", "skipped")
+          ]
+          if len(cases) != 12 or problems:
+              raise SystemExit(
+                  f"Expected 12 passed cases; cases={len(cases)}, "
+                  f"problems={len(problems)}"
+              )
+          print("INCLUSION_BROWSER_CASES_PASSED=12")
+          PY
+      - name: Preserve browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inclusion-browser-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/inclusion/
+            test-results/inclusion/
+            test-results/inclusion-results.xml
+          if-no-files-found: error
+          retention-days: 14
