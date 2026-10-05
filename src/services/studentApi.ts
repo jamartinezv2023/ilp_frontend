@@ -180,7 +180,7 @@ const normalizeStudents = (payload: unknown): StudentProfile[] => {
     throw new InvalidStudentResponseError();
   }
   const keys = ["value", "content", "data"].filter(
-    (key) => Object.prototype.hasOwnProperty.call(payload, key),
+    (key) => Object.hasOwn(payload, key),
   );
   if (keys.length !== 1) {
     throw new InvalidStudentResponseError();
