@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: jamartinezv2023/ilp_backend
-          ref: a5442c4e757cfc07b1aea933105ea6a20cc14090
+          ref: e9fe737d146663a3f7ccc4640fee358446a8aeba
           path: backend
       - uses: actions/checkout@v4
         with:
