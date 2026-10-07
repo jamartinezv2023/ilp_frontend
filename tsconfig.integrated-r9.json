@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": { "types": ["vite/client", "node"] },
+  "include": ["src", "e2e/integrated-r9", "tests/pilot/integrated-r9.spec.ts", "vite.r9.config.ts", "playwright.integrated-r9.config.ts"]
+}

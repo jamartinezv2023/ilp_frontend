@@ -260,7 +260,7 @@ export const LoginForm = () => {
 
                 <TextField
                   label={locale === "es" ? "Correo institucional" : "Institutional Email"}
-                  type="email"
+                  id="login-email" type="email"
                   fullWidth
                   value={email}
                   disabled={mfaRequired}
@@ -273,7 +273,7 @@ export const LoginForm = () => {
 
                 <TextField
                   label={locale === "es" ? "Contraseña" : "Password"}
-                  type="password"
+                  id="login-password" type="password"
                   fullWidth
                   value={password}
                   disabled={mfaRequired}

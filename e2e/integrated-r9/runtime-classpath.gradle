@@ -1,0 +1,22 @@
+allprojects { p ->
+    afterEvaluate {
+        if (p.path in [':auth-service', ':adaptive-education-service']) {
+            tasks.register('r9RuntimeClasspath') {
+                dependsOn tasks.named('testClasses')
+                doLast {
+                    def output = new File(p.findProperty('r9Output').toString())
+                    output.mkdirs()
+                    def runtimeClasses = new File(p.buildDir, 'r9-runtime-classes')
+                    p.copy {
+                        from sourceSets.test.output.classesDirs
+                        include 'ilp/r9/**'
+                        into runtimeClasses
+                    }
+                    // Do not expose unrelated @Configuration test fixtures to component scanning.
+                    new File(output, p.name + '.classpath.txt').text =
+                        p.files(sourceSets.main.output, configurations.testRuntimeClasspath, runtimeClasses).asPath
+                }
+            }
+        }
+    }
+}
