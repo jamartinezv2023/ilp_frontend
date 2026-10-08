@@ -1,0 +1,68 @@
+name: R9 exact integrated commit pair
+on:
+  pull_request:
+    branches: [feat/bootstrap-frontend]
+    paths:
+      - 'src/features/auth/**'
+      - 'e2e/integrated-r9/**'
+      - 'tests/pilot/integrated-r9.spec.ts'
+      - 'playwright.integrated-r9.config.ts'
+      - 'vite.r9.config.ts'
+      - 'r9.html'
+      - '.github/workflows/r9-integrated-commits.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integrated-r9:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: jamartinezv2023/ilp_backend
+          ref: 87d16cf8c3742ec24705dcc44c44f9056a655ee1
+          path: backend
+      - uses: actions/checkout@v4
+        with:
+          ref: ef65d1e11ba5e144ba4f445d5a4e7f62767dccb7
+          path: frontend
+      - name: Verify exact integrated revisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C backend rev-parse HEAD)" = "87d16cf8c3742ec24705dcc44c44f9056a655ee1"
+          test "$(git -C frontend rev-parse HEAD)" = "ef65d1e11ba5e144ba4f445d5a4e7f62767dccb7"
+          echo "BACKEND_TESTED_SHA=87d16cf8c3742ec24705dcc44c44f9056a655ee1"
+          echo "FRONTEND_TESTED_SHA=ef65d1e11ba5e144ba4f445d5a4e7f62767dccb7"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew
+        working-directory: backend
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Auth error boundary regression
+        run: ./gradlew --no-daemon --no-configuration-cache :auth-service:test --tests '*LoginBoundaryExceptionHandlerTest'
+        working-directory: backend
+      - name: Real login, authorization, UI submission and history
+        run: node e2e/integrated-r9/run.mjs ../backend
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r9-merge-pair-87d16cf8-ef65d1e1
+          path: |
+            frontend/test-results
+            frontend/playwright-report/integrated-r9
+            backend/auth-service/build/test-results/test
+          if-no-files-found: warn
