@@ -14,21 +14,32 @@ export function OfflineDraftEditor() {
   useEffect(() => () => lockPreparedDraft(currentDraft.current), []);
   const [choice, setChoice] = useState<'A' | 'B'>('A');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<'access' | 'expired' | undefined>();
   const [saved, setSaved] = useState(false);
+  const errorMessages = en ? {
+    expired: 'Prepared identity expired. Reconnect and sign in online to renew access. Your draft was preserved.',
+    access: 'Local access or saving failed. Your draft was preserved.',
+  } : {
+    expired: 'La identidad preparada venció. Recupere la conexión e inicie sesión en línea para renovar el acceso. Se conservó su borrador.',
+    access: 'Falló el acceso o guardado local. Se conservó su borrador.',
+  };
   async function unlock() {
-    setBusy(true); setError(false);
+    setBusy(true); setError(undefined);
     try {
       const value = await unlockPreparedDraft(fixtureKey, passphrase);
       setDraft(value); setChoice(value.answer === 'B' ? 'B' : 'A');
-    } catch { setError(true); }
+    } catch (failure) { setError(failure instanceof Error && failure.message === 'OFFLINE_CREDENTIAL_EXPIRED' ? 'expired' : 'access'); }
     finally { setPassphrase(''); setBusy(false); }
   }
   async function save() {
     if (!draft) return;
-    setBusy(true); setError(false); setSaved(false);
+    setBusy(true); setError(undefined); setSaved(false);
     try { setDraft(await saveLocallyUnlockedDraft(fixtureKey, draft, choice)); setSaved(true); }
-    catch { setError(true); }
+    catch (failure) {
+      if (failure instanceof Error && failure.message === 'OFFLINE_CREDENTIAL_EXPIRED') {
+        lockPreparedDraft(draft); setDraft(undefined); setError('expired');
+      } else { setError('access'); }
+    }
     finally { setBusy(false); }
   }
   return <section aria-label={en ? 'Local draft access' : 'Acceso local al borrador'}>
@@ -46,13 +57,13 @@ export function OfflineDraftEditor() {
         </label>)}
       </fieldset>
       <button disabled={busy} onClick={() => void save()}>{en ? 'Save local edit' : 'Guardar edición local'}</button>
-      <button disabled={busy} onClick={() => { lockPreparedDraft(draft); setDraft(undefined); setSaved(false); setError(false); }}>{en ? 'Lock local draft' : 'Bloquear borrador local'}</button>
+      <button disabled={busy} onClick={() => { lockPreparedDraft(draft); setDraft(undefined); setSaved(false); setError(undefined); }}>{en ? 'Lock local draft' : 'Bloquear borrador local'}</button>
       {saved && <output>{en ? 'Local edit saved. Not submitted.' : 'Edición local guardada. No enviada.'}</output>}
     </> : <>
       <label>{en ? 'Device key' : 'Clave del dispositivo'}<input type="password" autoComplete="off" maxLength={128} value={passphrase}
         onChange={event => setPassphrase(event.target.value)} /></label>
       <button disabled={busy || passphrase.length < 12} onClick={() => void unlock()}>{en ? 'Unlock local draft' : 'Desbloquear borrador local'}</button>
     </>}
-    {error && <p role="alert">{en ? 'Local access or saving failed. Your draft was preserved.' : 'Falló el acceso o guardado local. Se conservó su borrador.'}</p>}
+    {error && <p role="alert">{errorMessages[error]}</p>}
   </section>;
 }

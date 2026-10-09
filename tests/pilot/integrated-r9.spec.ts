@@ -231,7 +231,7 @@ for (const locale of ["es", "en"] as const) {
       await reopened.clock.setFixedTime(new Date(Date.now() + 11 * 60 * 1000));
       await reopened.reload();
       await keyInput().fill(deviceKey); await unlock().click();
-      await expect(reopened.getByRole("alert")).toBeVisible();
+      await expect(reopened.getByRole("alert")).toContainText(en ? "Prepared identity expired" : "La identidad preparada venció");
       await expect(reopened.getByTestId("offline-attempt")).toHaveCount(0);
       await assertEncryptedStorage(reopened);
       expect(posts).toBe(0);
