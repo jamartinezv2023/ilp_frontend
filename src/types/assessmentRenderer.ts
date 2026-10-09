@@ -17,6 +17,10 @@ export type AssessmentRendererMetadata = {
   version: string;
   instrumentType: AssessmentInstrumentType;
   language: string;
+  contentComplete?: boolean;
+  publicationStatus?: string;
+  sourceEdition?: string;
+  expectedQuestionCount?: number;
   estimatedMinutes: number;
   objective: string;
   copyrightNotice: string;

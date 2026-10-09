@@ -1,3 +1,4 @@
+import { useSuiteText } from "../../../i18n/useSuiteText";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -21,6 +22,7 @@ import type {
 } from "../../../types/assessment";
 import {
   isAssessmentSubmissionInvalid,
+  isAssessmentSubmissionBlocked,
   kolbTimestampMatches,
   fetchKolbAssessmentHistory,
   fetchKolbQuestions,
@@ -39,7 +41,8 @@ type IpsativeAnswers = Record<string, Record<number, number>>;
 const rankOptions = [4, 3, 2, 1];
 
 export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
-  const { t } = useI18n();
+  const ui = useSuiteText();
+  const { t, locale } = useI18n();
   const [submissionRejected, setSubmissionRejected] = useState(false);
   const [questions, setQuestions] = useState<InstrumentQuestion[]>([]);
   const [answers, setAnswers] = useState<IpsativeAnswers>({});
@@ -188,6 +191,13 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
       onCompleted(result);
     } catch (caught) {
       if (currentStudentId.current === submittedStudentId) {
+        if (isAssessmentSubmissionBlocked(caught)) {
+          setSubmissionUncertain(false);
+          setError(locale === "en"
+            ? "Submission is disabled pending institutional and instrument approval. No successful submission was confirmed."
+            : "El envío está deshabilitado hasta aprobar la institución y el instrumento. No se confirmó un envío exitoso.");
+          return;
+        }
         if (isAssessmentSubmissionInvalid(caught)) {
           setSubmissionRejected(true);
           setSubmissionUncertain(false);
@@ -242,7 +252,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
     return (
       <Stack alignItems="center" sx={{ py: 4 }}>
         <CircularProgress />
-        <Typography sx={{ mt: 2 }}>Cargando preguntas Kolb...</Typography>
+        <Typography sx={{ mt: 2 }}>{ui("Cargando preguntas Kolb...")}</Typography>
       </Stack>
     );
   }
@@ -254,13 +264,12 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
             <AssignmentTurnedInIcon color="primary" />
             <Typography variant="h6" fontWeight={950}>
-              Formulario Kolb real
+              {ui("Formulario Kolb real")}
             </Typography>
           </Stack>
 
           <Alert severity="info" sx={{ mb: 2 }}>
-            En cada grupo debe asignar 4, 3, 2 y 1 una sola vez. Use 4 para la
-            frase que más lo representa y 1 para la que menos lo representa.
+            {ui("En cada grupo debe asignar 4, 3, 2 y 1 una sola vez. Use 4 para la frase que más lo representa y 1 para la que menos lo representa.")}
           </Alert>
 
           {(error || submissionRejected) && (
@@ -271,7 +280,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
 
           {latestResult && (
             <Alert severity="success" sx={{ mb: 2 }}>
-              Registro confirmado en historial: {latestResult.assessmentId} · Kolb {latestResult.instrumentVersion} · {latestResult.learningStyle}. CE:{" "}
+              {ui("Registro confirmado en historial:")} {latestResult.assessmentId} · Kolb {latestResult.instrumentVersion} · {latestResult.learningStyle}. CE:{" "}
               {latestResult.scoreCE}, RO: {latestResult.scoreRO}, AC:{" "}
               {latestResult.scoreAC}, AE: {latestResult.scoreAE}.
             </Alert>
@@ -295,7 +304,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
                 >
                   <Stack direction="row" justifyContent="space-between" gap={1}>
                     <Typography fontWeight={900}>
-                      Grupo {question.questionOrder}. {question.text}
+                      {ui("Grupo")} {question.questionOrder}. {question.text}
                     </Typography>
 
                     <Chip
@@ -306,7 +315,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
                   </Stack>
 
                   <Typography variant="caption" color="text.secondary">
-                    Valores usados:{" "}
+                    {ui("Valores usados:")}{" "}
                     {usedRanks.length ? usedRanks.join(", ") : "ninguno"}
                   </Typography>
 
@@ -322,7 +331,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
                           fullWidth
                           label={option}
                           value={currentValue}
-                          helperText="Seleccione un valor no repetido en este grupo."
+                          helperText={ui("Seleccione un valor no repetido en este grupo.")}
                           onChange={(event) =>
                             updateRank(
                               question.id,
@@ -359,7 +368,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
               onClick={() => void loadHistory()}
               sx={{ mb: 2 }}
             >
-              Consultar historial sin volver a enviar
+              {ui("Consultar historial sin volver a enviar")}
             </Button>
           )}
           {pendingResult && (
@@ -369,7 +378,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
               onClick={() => void checkPendingHistory()}
               sx={{ mb: 2 }}
             >
-              Comprobar historial sin volver a enviar
+              {ui("Comprobar historial sin volver a enviar")}
             </Button>
           )}
           <Button
@@ -394,7 +403,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
             <HistoryIcon color="primary" />
             <Typography variant="h6" fontWeight={950}>
-              Historial de evaluaciones Kolb
+              {ui("Historial de evaluaciones Kolb")}
             </Typography>
           </Stack>
 
@@ -402,12 +411,12 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
             <Stack alignItems="center" sx={{ py: 2 }}>
               <CircularProgress size={24} />
               <Typography variant="body2" sx={{ mt: 1 }}>
-                Cargando historial...
+                {ui("Cargando historial...")}
               </Typography>
             </Stack>
           ) : history.length === 0 ? (
             <Alert severity="warning">
-              Este estudiante aún no tiene evaluaciones Kolb registradas.
+              {ui("Este estudiante aún no tiene evaluaciones Kolb registradas.")}
             </Alert>
           ) : (
             <Stack spacing={2}>
@@ -439,7 +448,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
                   </Stack>
 
                   <Typography variant="caption" color="text.secondary">
-                    ID: {item.assessmentId} · Fecha:{" "}
+                    ID: {item.assessmentId} {ui("· Fecha:")}{" "}
                     {new Date(item.createdAt).toLocaleString()}
                   </Typography>
 

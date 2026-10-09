@@ -11,7 +11,7 @@ beforeEach(()=>{fixture.token='synthetic-token';fixture.history.mockReset().mock
 function mount(locale:'es'|'en'='es'){localStorage.setItem('ilp.locale',locale);render(<I18nProvider><AuthorizedResearchPage/></I18nProvider>);}
 async function load(en=false){fireEvent.change(screen.getByLabelText(en?'Institutional assignment ID':'Identificador de asignación institucional'),{target:{value:' assignment '}});fireEvent.click(screen.getByRole('button',{name:en?'Load history':'Consultar historial'}));await screen.findByRole('button',{name:en?'Verify dataset':'Verificar dataset'});}
 describe('research UI authorization boundary',()=>{
- it('requires authentication before displaying assignment controls',()=>{fixture.token=null;mount();expect(screen.getByRole('status').textContent).toContain('Sign in');expect(screen.queryByRole('textbox')).toBeNull();});
+ it.each(['es','en'] as const)('requires authentication with a single language in %s',locale=>{fixture.token=null;mount(locale);expect(screen.getByRole('status').textContent).toBe(locale==='es'?'Inicie sesión':'Sign in');expect(screen.queryByRole('textbox')).toBeNull();});
  it.each(['es','en'] as const)('reauthorizes every download and blocks a later rejection in %s',async locale=>{
   mount(locale);const en=locale==='en';await load(en);expect(fixture.history).toHaveBeenCalledWith('assignment');
   fireEvent.click(screen.getByRole('button',{name:en?'Verify dataset':'Verificar dataset'}));await screen.findByText('verified-hash');

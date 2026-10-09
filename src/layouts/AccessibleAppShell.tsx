@@ -54,6 +54,8 @@ export const AccessibleAppShell = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   const [announcement, setAnnouncement] = useState("");
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(72);
   const mainRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -70,7 +72,19 @@ export const AccessibleAppShell = () => {
 
   useEffect(() => {
     mainRef.current?.focus({ preventScroll: true });
+    if (mainRef.current) mainRef.current.scrollTop = 0;
   }, [location.pathname]);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const measure = () => setHeaderHeight(Math.ceil(header.getBoundingClientRect().height) || 72);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   const openRoute = (path: string) => {
     void navigate(path);
@@ -84,7 +98,7 @@ export const AccessibleAppShell = () => {
         <Stack direction="row" spacing={1.5} alignItems="center" justifyContent={collapsed ? "center" : "flex-start"}>
           <Box
             component="img"
-            src="/brand/ILP_simbolo_negativo.svg"
+            src="/brand/ilp-wordmark.svg"
             alt=""
             aria-hidden="true"
             sx={{ width: 48, height: 48, objectFit: "contain", flexShrink: 0 }}
@@ -140,10 +154,12 @@ export const AccessibleAppShell = () => {
     </Box>
   );
 
-  return <Box sx={{ display: "flex", minHeight: "100vh", width: "100%" }}>
+  return <Box sx={{ position: "fixed", inset: 0, display: "flex", height: "100dvh", overflow: "clip", width: "100%" }}>
     <CssBaseline />
     <a className="ilp-skip-link" href="#main-content">{t("shell.skip")}</a>
     <AppBar
+      ref={headerRef}
+      component="header"
       position="fixed"
       elevation={0}
       sx={{
@@ -152,7 +168,7 @@ export const AccessibleAppShell = () => {
         transition: "width .2s ease, margin-left .2s ease",
       }}
     >
-      <Toolbar sx={{ gap: { xs: 0.5, sm: 1.25 }, minHeight: { xs: 64, md: 72 } }}>
+      <Toolbar sx={{ gap: { xs: 0.5, sm: 1.25 }, minHeight: { xs: "72px !important", md: "72px !important" } }}>
         <Tooltip title={collapsed ? t("shell.expand") : t("shell.collapse")}>
           <IconButton
             onClick={() => isMobile ? setMobileOpen((value) => !value) : setCollapsed((value) => !value)}
@@ -217,8 +233,7 @@ export const AccessibleAppShell = () => {
       ><Box id="primary-navigation-results-desktop" sx={{ height: "100%" }}>{drawer}</Box></Drawer>
     </Box>
 
-    <Box ref={mainRef} component="main" id="main-content" tabIndex={-1} sx={{ flexGrow: 1, p: { xs: 1.5, sm: 2, lg: 3 }, minWidth: 0, maxWidth: "100%" }}>
-      <Toolbar sx={{ minHeight: { xs: 64, md: 72 } }} />
+    <Box ref={mainRef} component="main" id="main-content" tabIndex={-1} sx={{ flexGrow: 1, p: { xs: 1.5, sm: 2, lg: 3 }, minWidth: 0, maxWidth: "100%", mt: `${headerHeight}px`, height: `calc(100dvh - ${headerHeight}px)`, overflowY: "auto", overflowX: "hidden" }}>
       <AppRoutes />
       <Box className="ilp-visually-hidden" role="status" aria-live="polite" aria-atomic="true">{announcement}</Box>
       <Box component="footer" sx={{ mt: 4, py: 2, textAlign: "center", color: "#475569" }}>

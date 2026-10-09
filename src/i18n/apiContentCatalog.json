@@ -1,0 +1,510 @@
+{
+  "Divergent learning profile": {
+    "en": "Divergent learning profile",
+    "es": "Perfil de aprendizaje divergente"
+  },
+  "Sequential learning profile": {
+    "en": "Sequential learning profile",
+    "es": "Perfil de aprendizaje secuencial"
+  },
+  "Reflective learning profile": {
+    "en": "Reflective learning profile",
+    "es": "Perfil de aprendizaje reflexivo"
+  },
+  "Arts and communication": {
+    "en": "Arts and communication",
+    "es": "Artes y comunicación"
+  },
+  "Technology and problem solving": {
+    "en": "Technology and problem solving",
+    "es": "Tecnología y resolución de problemas"
+  },
+  "Health and social care": {
+    "en": "Health and social care",
+    "es": "Salud y atención social"
+  },
+  "Visual learning support": {
+    "en": "Visual learning support",
+    "es": "Apoyo visual al aprendizaje"
+  },
+  "Collaborative classroom activities": {
+    "en": "Collaborative classroom activities",
+    "es": "Actividades colaborativas en el aula"
+  },
+  "Flexible demonstration of understanding": {
+    "en": "Flexible demonstration of understanding",
+    "es": "Demostración flexible de la comprensión"
+  },
+  "Use visual organizers before complex tasks": {
+    "en": "Use visual organizers before complex tasks",
+    "es": "Usar organizadores visuales antes de tareas complejas"
+  },
+  "Promote peer-supported learning": {
+    "en": "Promote peer-supported learning",
+    "es": "Promover el aprendizaje con apoyo de compañeros"
+  },
+  "Provide step-by-step instructions": {
+    "en": "Provide step-by-step instructions",
+    "es": "Proporcionar instrucciones paso a paso"
+  },
+  "Structured task sequencing": {
+    "en": "Structured task sequencing",
+    "es": "Secuenciación estructurada de tareas"
+  },
+  "Clear evaluation criteria": {
+    "en": "Clear evaluation criteria",
+    "es": "Criterios de evaluación claros"
+  },
+  "Short feedback cycles": {
+    "en": "Short feedback cycles",
+    "es": "Ciclos breves de retroalimentación"
+  },
+  "Provide ordered checklists": {
+    "en": "Provide ordered checklists",
+    "es": "Proporcionar listas de verificación ordenadas"
+  },
+  "Use short practice activities": {
+    "en": "Use short practice activities",
+    "es": "Usar actividades breves de práctica"
+  },
+  "Offer immediate formative feedback": {
+    "en": "Offer immediate formative feedback",
+    "es": "Ofrecer retroalimentación formativa inmediata"
+  },
+  "Additional processing time": {
+    "en": "Additional processing time",
+    "es": "Tiempo adicional de procesamiento"
+  },
+  "Emotionally safe participation options": {
+    "en": "Emotionally safe participation options",
+    "es": "Opciones de participación emocionalmente seguras"
+  },
+  "Reasonable adjustment monitoring": {
+    "en": "Reasonable adjustment monitoring",
+    "es": "Seguimiento de ajustes razonables"
+  },
+  "Allow preparation time before oral participation": {
+    "en": "Allow preparation time before oral participation",
+    "es": "Permitir tiempo de preparación antes de la participación oral"
+  },
+  "Use private formative feedback": {
+    "en": "Use private formative feedback",
+    "es": "Usar retroalimentación formativa privada"
+  },
+  "Coordinate follow-up with inclusion team": {
+    "en": "Coordinate follow-up with inclusion team",
+    "es": "Coordinar el seguimiento con el equipo de inclusión"
+  },
+  "Structured learning guide": {
+    "en": "Structured learning guide",
+    "es": "Guía de aprendizaje estructurada"
+  },
+  "Teacher-guided formative activities": {
+    "en": "Teacher-guided formative activities",
+    "es": "Actividades formativas guiadas por el docente"
+  },
+  "Identify learning goal": {
+    "en": "Identify learning goal",
+    "es": "Identificar el objetivo de aprendizaje"
+  },
+  "Select support strategy": {
+    "en": "Select support strategy",
+    "es": "Seleccionar la estrategia de apoyo"
+  },
+  "Apply guided activity": {
+    "en": "Apply guided activity",
+    "es": "Aplicar la actividad guiada"
+  },
+  "Review evidence": {
+    "en": "Review evidence",
+    "es": "Revisar evidencias"
+  },
+  "Adjust next support action": {
+    "en": "Adjust next support action",
+    "es": "Ajustar la siguiente acción de apoyo"
+  },
+  "Infographics and visual organizers": {
+    "en": "Infographics and visual organizers",
+    "es": "Infografías y organizadores visuales"
+  },
+  "Concept maps and diagrams": {
+    "en": "Concept maps and diagrams",
+    "es": "Mapas conceptuales y diagramas"
+  },
+  "Hands-on activities": {
+    "en": "Hands-on activities",
+    "es": "Actividades prácticas"
+  },
+  "Collaborative challenges": {
+    "en": "Collaborative challenges",
+    "es": "Retos colaborativos"
+  },
+  "Simulations and inquiry-based experiments": {
+    "en": "Simulations and inquiry-based experiments",
+    "es": "Simulaciones y experimentos de indagación"
+  },
+  "Project templates and presentation guides": {
+    "en": "Project templates and presentation guides",
+    "es": "Plantillas de proyectos y guías de presentación"
+  },
+  "Explore the problem with visual examples": {
+    "en": "Explore the problem with visual examples",
+    "es": "Explorar el problema con ejemplos visuales"
+  },
+  "Plan a collaborative project": {
+    "en": "Plan a collaborative project",
+    "es": "Planificar un proyecto colaborativo"
+  },
+  "Create a concrete product": {
+    "en": "Create a concrete product",
+    "es": "Crear un producto concreto"
+  },
+  "Reflect on learning progress": {
+    "en": "Reflect on learning progress",
+    "es": "Reflexionar sobre el progreso del aprendizaje"
+  },
+  "Present evidence of understanding": {
+    "en": "Present evidence of understanding",
+    "es": "Presentar evidencias de comprensión"
+  },
+  "Introduce key concepts": {
+    "en": "Introduce key concepts",
+    "es": "Introducir conceptos clave"
+  },
+  "Organize information in models": {
+    "en": "Organize information in models",
+    "es": "Organizar la información en modelos"
+  },
+  "Compare examples and non-examples": {
+    "en": "Compare examples and non-examples",
+    "es": "Comparar ejemplos y contraejemplos"
+  },
+  "Explain relationships": {
+    "en": "Explain relationships",
+    "es": "Explicar relaciones"
+  },
+  "Apply the model to a new situation": {
+    "en": "Apply the model to a new situation",
+    "es": "Aplicar el modelo a una situación nueva"
+  },
+  "Present a practical challenge": {
+    "en": "Present a practical challenge",
+    "es": "Presentar un reto práctico"
+  },
+  "Identify known and unknown information": {
+    "en": "Identify known and unknown information",
+    "es": "Identificar la información conocida y desconocida"
+  },
+  "Test possible solutions": {
+    "en": "Test possible solutions",
+    "es": "Probar posibles soluciones"
+  },
+  "Receive formative feedback": {
+    "en": "Receive formative feedback",
+    "es": "Recibir retroalimentación formativa"
+  },
+  "Apply the solution independently": {
+    "en": "Apply the solution independently",
+    "es": "Aplicar la solución de manera independiente"
+  },
+  "Start with direct experience": {
+    "en": "Start with direct experience",
+    "es": "Comenzar con una experiencia directa"
+  },
+  "Discuss what happened": {
+    "en": "Discuss what happened",
+    "es": "Conversar sobre lo ocurrido"
+  },
+  "Connect experience with concepts": {
+    "en": "Connect experience with concepts",
+    "es": "Relacionar la experiencia con los conceptos"
+  },
+  "Apply learning in a new context": {
+    "en": "Apply learning in a new context",
+    "es": "Aplicar el aprendizaje en un contexto nuevo"
+  },
+  "Evaluate progress": {
+    "en": "Evaluate progress",
+    "es": "Evaluar el progreso"
+  },
+  "Review the adaptive plan before the next lesson.": {
+    "en": "Review the adaptive plan before the next lesson.",
+    "es": "Revisar el plan adaptativo antes de la siguiente clase."
+  },
+  "Select two strategies that can be applied this week.": {
+    "en": "Select two strategies that can be applied this week.",
+    "es": "Seleccionar dos estrategias que se puedan aplicar esta semana."
+  },
+  "Collect formative evidence during classroom activities.": {
+    "en": "Collect formative evidence during classroom activities.",
+    "es": "Recoger evidencias formativas durante las actividades de aula."
+  },
+  "Coordinate follow-up with the inclusion team.": {
+    "en": "Coordinate follow-up with the inclusion team.",
+    "es": "Coordinar el seguimiento con el equipo de inclusión."
+  },
+  "Review reasonable adjustments with the teaching team.": {
+    "en": "Review reasonable adjustments with the teaching team.",
+    "es": "Revisar los ajustes razonables con el equipo docente."
+  },
+  "Document support evidence for institutional follow-up.": {
+    "en": "Document support evidence for institutional follow-up.",
+    "es": "Documentar las evidencias de apoyo para el seguimiento institucional."
+  },
+  "Evaluate whether PIAR support planning is required.": {
+    "en": "Evaluate whether PIAR support planning is required.",
+    "es": "Evaluar si se requiere planificación de apoyo mediante PIAR."
+  },
+  "Monitor progress and adjust classroom strategies.": {
+    "en": "Monitor progress and adjust classroom strategies.",
+    "es": "Supervisar el progreso y ajustar las estrategias de aula."
+  },
+  "Maintain regular classroom monitoring.": {
+    "en": "Maintain regular classroom monitoring.",
+    "es": "Mantener el seguimiento regular en el aula."
+  },
+  "Support learning routines with short and clear goals.": {
+    "en": "Support learning routines with short and clear goals.",
+    "es": "Apoyar las rutinas de aprendizaje con objetivos breves y claros."
+  },
+  "Maintain communication with teachers and support staff.": {
+    "en": "Maintain communication with teachers and support staff.",
+    "es": "Mantener la comunicación con docentes y personal de apoyo."
+  },
+  "Encourage curiosity through simple experiments and questions.": {
+    "en": "Encourage curiosity through simple experiments and questions.",
+    "es": "Fomentar la curiosidad mediante experimentos sencillos y preguntas."
+  },
+  "Use drawings, examples or visual notes at home.": {
+    "en": "Use drawings, examples or visual notes at home.",
+    "es": "Usar dibujos, ejemplos o notas visuales en casa."
+  },
+  "Use open-ended activities and visual exploration.": {
+    "en": "Use open-ended activities and visual exploration.",
+    "es": "Usar actividades abiertas y exploración visual."
+  },
+  "Promote dialogue, reflection and collaborative work.": {
+    "en": "Promote dialogue, reflection and collaborative work.",
+    "es": "Promover el diálogo, la reflexión y el trabajo colaborativo."
+  },
+  "Use diagrams, visual organizers and color-coded examples.": {
+    "en": "Use diagrams, visual organizers and color-coded examples.",
+    "es": "Usar diagramas, organizadores visuales y ejemplos con códigos de color."
+  },
+  "Use practical tasks, participation and short challenges.": {
+    "en": "Use practical tasks, participation and short challenges.",
+    "es": "Usar tareas prácticas, participación y retos breves."
+  },
+  "Prioritize institutional follow-up with the inclusion team.": {
+    "en": "Prioritize institutional follow-up with the inclusion team.",
+    "es": "Priorizar el seguimiento institucional con el equipo de inclusión."
+  },
+  "Document reasonable adjustments and classroom evidence.": {
+    "en": "Document reasonable adjustments and classroom evidence.",
+    "es": "Documentar ajustes razonables y evidencias de aula."
+  },
+  "Monitor progress and review support strategies periodically.": {
+    "en": "Monitor progress and review support strategies periodically.",
+    "es": "Supervisar el progreso y revisar periódicamente las estrategias de apoyo."
+  },
+  "Maintain regular communication with teachers and counsellors.": {
+    "en": "Maintain regular communication with teachers and counsellors.",
+    "es": "Mantener la comunicación regular con docentes y orientadores."
+  },
+  "Support study routines using clear and short goals.": {
+    "en": "Support study routines using clear and short goals.",
+    "es": "Apoyar las rutinas de estudio con objetivos claros y breves."
+  },
+  "Encourage curiosity through experiments, questions and problem-solving activities.": {
+    "en": "Encourage curiosity through experiments, questions and problem-solving activities.",
+    "es": "Fomentar la curiosidad mediante experimentos, preguntas y actividades de resolución de problemas."
+  },
+  "Encourage creative expression through drawing, music, writing or design.": {
+    "en": "Encourage creative expression through drawing, music, writing or design.",
+    "es": "Fomentar la expresión creativa mediante dibujo, música, escritura o diseño."
+  },
+  "Encourage teamwork, empathy and community participation.": {
+    "en": "Encourage teamwork, empathy and community participation.",
+    "es": "Fomentar el trabajo en equipo, la empatía y la participación comunitaria."
+  },
+  "Review student profile with the teaching team.": {
+    "en": "Review student profile with the teaching team.",
+    "es": "Revisar el perfil del estudiante con el equipo docente."
+  },
+  "Select classroom strategies for the next academic period.": {
+    "en": "Select classroom strategies for the next academic period.",
+    "es": "Seleccionar estrategias de aula para el siguiente período académico."
+  },
+  "Schedule inclusion team review.": {
+    "en": "Schedule inclusion team review.",
+    "es": "Programar la revisión del equipo de inclusión."
+  },
+  "Share family-friendly recommendations with guardians.": {
+    "en": "Share family-friendly recommendations with guardians.",
+    "es": "Compartir recomendaciones comprensibles para las familias con los acudientes."
+  },
+  "Unassessed": {
+    "en": "Unassessed",
+    "es": "Sin evaluar"
+  },
+  "Pending assessment": {
+    "en": "Pending assessment",
+    "es": "Evaluación pendiente"
+  },
+  "Not available": {
+    "en": "Not available",
+    "es": "No disponible"
+  },
+  "DIFFERENTIATED_INSTRUCTION": {
+    "en": "Differentiated instruction",
+    "es": "Enseñanza diferenciada"
+  },
+  "PROJECT_BASED_LEARNING": {
+    "en": "Project-based learning",
+    "es": "Aprendizaje basado en proyectos"
+  },
+  "CONCEPTUAL_MODELING": {
+    "en": "Conceptual modeling",
+    "es": "Modelización conceptual"
+  },
+  "PROBLEM_SOLVING": {
+    "en": "Problem solving",
+    "es": "Resolución de problemas"
+  },
+  "EXPERIENTIAL_LEARNING": {
+    "en": "Experiential learning",
+    "es": "Aprendizaje experiencial"
+  },
+  "HIGH_EDUCATIONAL_SUPPORT_NEED": {
+    "en": "High educational support need",
+    "es": "Necesidad alta de apoyo educativo"
+  },
+  "MODERATE_EDUCATIONAL_SUPPORT_NEED": {
+    "en": "Moderate educational support need",
+    "es": "Necesidad moderada de apoyo educativo"
+  },
+  "LOW_EDUCATIONAL_SUPPORT_NEED": {
+    "en": "Low educational support need",
+    "es": "Necesidad baja de apoyo educativo"
+  },
+  "VISUAL": {
+    "en": "Visual",
+    "es": "Visual"
+  },
+  "ACTIVE": {
+    "en": "Active",
+    "es": "Activo"
+  },
+  "REFLECTIVE": {
+    "en": "Reflective",
+    "es": "Reflexivo"
+  },
+  "SEQUENTIAL": {
+    "en": "Sequential",
+    "es": "Secuencial"
+  },
+  "GLOBAL": {
+    "en": "Global",
+    "es": "Global"
+  },
+  "VERBAL": {
+    "en": "Verbal",
+    "es": "Verbal"
+  },
+  "SENSING": {
+    "en": "Sensing",
+    "es": "Sensorial"
+  },
+  "INTUITIVE": {
+    "en": "Intuitive",
+    "es": "Intuitivo"
+  },
+  "DIVERGENT": {
+    "en": "Divergent",
+    "es": "Divergente"
+  },
+  "ASSIMILATING": {
+    "en": "Assimilating",
+    "es": "Asimilador"
+  },
+  "CONVERGENT": {
+    "en": "Convergent",
+    "es": "Convergente"
+  },
+  "ACCOMMODATING": {
+    "en": "Accommodating",
+    "es": "Acomodador"
+  },
+  "SCIENTIFIC": {
+    "en": "Scientific",
+    "es": "Científico"
+  },
+  "ARTISTIC": {
+    "en": "Artistic",
+    "es": "Artístico"
+  },
+  "SOCIAL": {
+    "en": "Social",
+    "es": "Social"
+  },
+  "ACTIVE_STATUS": {
+    "en": "Active",
+    "es": "Activo"
+  },
+  "MONITORED": {
+    "en": "Monitored",
+    "es": "En seguimiento"
+  },
+  "CONTROLLED": {
+    "en": "Controlled",
+    "es": "Controlado"
+  },
+  "LOW": {
+    "en": "Low",
+    "es": "Bajo"
+  },
+  "MEDIUM": {
+    "en": "Medium",
+    "es": "Medio"
+  },
+  "HIGH": {
+    "en": "High",
+    "es": "Alto"
+  },
+  "UNSPECIFIED": {
+    "en": "Not specified",
+    "es": "Sin especificar"
+  },
+  "Use DIFFERENTIATED_INSTRUCTION as the main instructional approach.": {
+    "en": "Use differentiated instruction as the main instructional approach.",
+    "es": "Usar enseñanza diferenciada como enfoque principal de enseñanza."
+  },
+  "Use PROJECT_BASED_LEARNING as the main instructional approach.": {
+    "en": "Use project-based learning as the main instructional approach.",
+    "es": "Usar aprendizaje basado en proyectos como enfoque principal de enseñanza."
+  },
+  "Use CONCEPTUAL_MODELING as the main instructional approach.": {
+    "en": "Use conceptual modeling as the main instructional approach.",
+    "es": "Usar modelización conceptual como enfoque principal de enseñanza."
+  },
+  "Use PROBLEM_SOLVING as the main instructional approach.": {
+    "en": "Use problem solving as the main instructional approach.",
+    "es": "Usar resolución de problemas como enfoque principal de enseñanza."
+  },
+  "Use EXPERIENTIAL_LEARNING as the main instructional approach.": {
+    "en": "Use experiential learning as the main instructional approach.",
+    "es": "Usar aprendizaje experiencial como enfoque principal de enseñanza."
+  },
+  "Pendiente de evaluación": {
+    "en": "Pending assessment",
+    "es": "Evaluación pendiente"
+  },
+  "Pendiente": {
+    "en": "Pending assessment",
+    "es": "Evaluación pendiente"
+  },
+  "No disponible": {
+    "en": "Not available",
+    "es": "No disponible"
+  }
+}

@@ -1,3 +1,5 @@
+import { useApiText } from "../../i18n/useApiText";
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
 import { useEffect, useState } from "react";
 import {
@@ -25,7 +27,9 @@ import { generateAdaptivePlan } from "../../services/adaptiveApi";
 import { useI18n } from "../../i18n/I18nProvider";
 
 export const AdaptiveIntelligencePage = () => {
-  const { t } = useI18n();
+  const ui = useSuiteText();
+  const apiText = useApiText();
+  const { t, locale } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
   const [plan, setPlan] = useState<AdaptiveLearningPlan | null>(null);
@@ -47,45 +51,44 @@ export const AdaptiveIntelligencePage = () => {
     }
   };
 
-  const handleGeneratePlan = async (student: StudentProfile) => {
-    try {
-      setGenerating(true);
-      setError("");
-      const data = await generateAdaptivePlan(student.id);
-
-      const sameStudent = data.studentId === student.id;
-      const sameSupportLevel = data.supportLevel === student.supportLevel;
-
-      if (!sameStudent || !sameSupportLevel) {
-        setPlan(null);
-        setError(
-          "El plan adaptativo no coincide con el estudiante seleccionado. " +
-            "Se preservó la sesión y no se mostraron datos inconsistentes."
-        );
-        return;
-      }
-
-      setPlan(data);
-    } catch {
-      setError("No fue posible generar el plan adaptativo.");
-    } finally {
-      setGenerating(false);
-    }
-  };
+  const [previewAttempt, setPreviewAttempt] = useState(0);
 
   useEffect(() => {
     void loadStudents();
   }, []);
 
   useEffect(() => {
-    if (selectedStudent) {
-      void handleGeneratePlan(selectedStudent);
-    }
-  }, [selectedStudent]);
+    let active = true;
+    setPlan(null);
+    if (!selectedStudent) return;
+    const student = selectedStudent;
+    setGenerating(true);
+    setError("");
+    void generateAdaptivePlan(student.id).then((data) => {
+      if (!active) return;
+      if (data.studentId !== student.id || data.supportLevel !== student.supportLevel) {
+        throw new Error("Unexpected student");
+      }
+      setPlan(data);
+    }).catch(() => {
+      if (active) {
+        setPlan(null);
+        setError("No fue posible consultar la vista previa del plan adaptativo.");
+      }
+    }).finally(() => {
+      if (active) setGenerating(false);
+    });
+    return () => { active = false; };
+  }, [selectedStudent, previewAttempt]);
 
   return (
     <Box>
       <StudentServiceStatusAlert />
+      <Alert severity="info" sx={{ mb: 2 }}>
+        {locale === "es"
+          ? "Vista previa sin guardar. Consultar o actualizar no registra un plan ni modifica el historial. El registro autorizado sigue pendiente."
+          : "Unsaved preview. Viewing or refreshing does not record a plan or change history. Authorized recording remains pending."}
+      </Alert>
       <Box
         sx={{
           mb: 3,
@@ -98,11 +101,11 @@ export const AdaptiveIntelligencePage = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <AutoAwesomeIcon color="primary" sx={{ fontSize: 42 }} />
-          <Chip label="Adaptive Educational Intelligence" color="primary" variant="outlined" />
+          <Chip label={ui("Adaptive Educational Intelligence")} color="primary" variant="outlined" />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950}>
-          Adaptive Intelligence Center
+        <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {ui("Adaptive Intelligence Center")}
         </Typography>
 
         <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 980 }}>
@@ -113,12 +116,17 @@ export const AdaptiveIntelligencePage = () => {
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Cargando estudiantes...</Typography>
+          <Typography sx={{ mt: 2 }}>{ui("Cargando estudiantes...")}</Typography>
         </Stack>
       )}
 
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{error === "No fue posible consultar la vista previa del plan adaptativo." ? (locale === "es" ? error : "The adaptive plan preview could not be retrieved.") : ui(error)}</Alert>}
 
+      {!loading && error && selectedStudent && (
+        <Button disabled={generating} onClick={() => setPreviewAttempt((attempt) => attempt + 1)}>
+          {locale === "es" ? "Reintentar consulta" : "Retry preview"}
+        </Button>
+      )}
       {!loading && (
         <Box
           sx={{
@@ -133,7 +141,7 @@ export const AdaptiveIntelligencePage = () => {
           <Card sx={{ borderRadius: 5, height: "fit-content" }}>
             <CardContent sx={{ p: 2.5 }}>
               <Typography variant="h6" fontWeight={950} sx={{ mb: 2 }}>
-                Estudiantes
+                {ui("Estudiantes")}
               </Typography>
 
               <Stack spacing={1.2}>
@@ -156,12 +164,12 @@ export const AdaptiveIntelligencePage = () => {
                       "&:hover": { background: "rgba(37,99,235,.06)" },
                     }}
                   >
-                    <Typography fontWeight={900}>{student.fullName}</Typography>
+                    <Typography fontWeight={900}><span translate="no">{student.fullName}</span></Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {student.id} · Grado {student.grade}
+                      {student.id} {ui("· Grado")} {student.grade}
                     </Typography>
                     <Chip
-                      label={student.supportLevel}
+                      label={ui(student.supportLevel)}
                       size="small"
                       sx={{ mt: 1, fontWeight: 800 }}
                     />
@@ -182,7 +190,7 @@ export const AdaptiveIntelligencePage = () => {
               {generating && (
                 <Stack alignItems="center" sx={{ py: 6 }}>
                   <CircularProgress />
-                  <Typography sx={{ mt: 2 }}>Generando plan adaptativo...</Typography>
+                  <Typography sx={{ mt: 2 }}>{locale === "es" ? "Consultando vista previa..." : "Loading preview..."}</Typography>
                 </Stack>
               )}
 
@@ -196,22 +204,22 @@ export const AdaptiveIntelligencePage = () => {
                   >
                     <Box>
                       <Typography variant="h4" fontWeight={950}>
-                        {plan.fullName}
+                        <span translate="no">{plan.fullName}</span>
                       </Typography>
                       <Typography color="text.secondary">
-                        {plan.studentId} · Perfil {plan.learningProfile} ·{" "}
-                        Interés {plan.vocationalInterest}
+                        {plan.studentId} {ui("· Perfil")} {apiText(plan.learningProfile, plan)} ·{" "}
+                        {ui("Interés")} {apiText(plan.vocationalInterest, plan)}
                       </Typography>
                     </Box>
 
                     <Stack direction="row" spacing={1} flexWrap="wrap">
                       <Chip
-                        label={`Nivel de apoyo: ${plan.supportLevel}`}
+                        label={`${ui("Nivel de apoyo:")} ${ui(plan.supportLevel)}`}
                         variant="outlined"
                         sx={{ fontWeight: 900 }}
                       />
                       <Chip
-                        label={`Riesgo adaptativo: ${plan.riskLevel}`}
+                        label={`${ui("Riesgo adaptativo:")} ${apiText(plan.riskLevel, plan)}`}
                         color={
                           plan.riskLevel.includes("HIGH")
                             ? "error"
@@ -231,17 +239,17 @@ export const AdaptiveIntelligencePage = () => {
                       <Stack direction="row" spacing={1.5} alignItems="center">
                         <PsychologyIcon color="primary" />
                         <Typography variant="h6" fontWeight={950}>
-                          Metodología recomendada
+                          {ui("Metodología recomendada")}
                         </Typography>
                       </Stack>
 
                       <Typography variant="h4" fontWeight={950} sx={{ mt: 1 }}>
-                        {plan.recommendedMethodology.replaceAll("_", " ")}
+                        {apiText(plan.recommendedMethodology, plan)}
                       </Typography>
 
                       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 2 }}>
                         {plan.learningPreferences.map((item) => (
-                          <Chip key={item} label={item} variant="outlined" />
+                          <Chip key={apiText(item, plan)} label={apiText(item, plan)} variant="outlined" />
                         ))}
                       </Stack>
                     </CardContent>
@@ -261,12 +269,12 @@ export const AdaptiveIntelligencePage = () => {
                       <CardContent>
                         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                           <AccountTreeIcon color="primary" />
-                          <Typography fontWeight={950}>Ruta adaptativa</Typography>
+                          <Typography fontWeight={950}>{ui("Ruta adaptativa")}</Typography>
                         </Stack>
                         <Stack spacing={1}>
                           {plan.adaptivePathway.map((item, index) => (
-                            <Alert key={item} severity="info" variant="outlined">
-                              {index + 1}. {item}
+                            <Alert key={apiText(item, plan)} severity="info" variant="outlined">
+                              {index + 1}. {apiText(item, plan)}
                             </Alert>
                           ))}
                         </Stack>
@@ -276,12 +284,12 @@ export const AdaptiveIntelligencePage = () => {
                     <Card variant="outlined" sx={{ borderRadius: 4 }}>
                       <CardContent>
                         <Typography fontWeight={950} sx={{ mb: 2 }}>
-                          Recursos recomendados
+                          {ui("Recursos recomendados")}
                         </Typography>
                         <Stack spacing={1}>
                           {plan.recommendedResources.map((item) => (
-                            <Alert key={item} severity="success" variant="outlined">
-                              {item}
+                            <Alert key={apiText(item, plan)} severity="success" variant="outlined">
+                              {apiText(item, plan)}
                             </Alert>
                           ))}
                         </Stack>
@@ -292,12 +300,12 @@ export const AdaptiveIntelligencePage = () => {
                       <CardContent>
                         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                           <GroupsIcon color="primary" />
-                          <Typography fontWeight={950}>Acciones docentes</Typography>
+                          <Typography fontWeight={950}>{ui("Acciones docentes")}</Typography>
                         </Stack>
                         <Stack spacing={1}>
                           {plan.teacherActions.map((item) => (
-                            <Alert key={item} severity="info" variant="outlined">
-                              {item}
+                            <Alert key={apiText(item, plan)} severity="info" variant="outlined">
+                              {apiText(item, plan)}
                             </Alert>
                           ))}
                         </Stack>
@@ -308,12 +316,12 @@ export const AdaptiveIntelligencePage = () => {
                       <CardContent>
                         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                           <Diversity3Icon color="success" />
-                          <Typography fontWeight={950}>Acciones de inclusión</Typography>
+                          <Typography fontWeight={950}>{ui("Acciones de inclusión")}</Typography>
                         </Stack>
                         <Stack spacing={1}>
                           {plan.inclusionActions.map((item) => (
-                            <Alert key={item} severity="warning" variant="outlined">
-                              {item}
+                            <Alert key={apiText(item, plan)} severity="warning" variant="outlined">
+                              {apiText(item, plan)}
                             </Alert>
                           ))}
                         </Stack>
@@ -324,12 +332,12 @@ export const AdaptiveIntelligencePage = () => {
                       <CardContent>
                         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                           <FamilyRestroomIcon color="secondary" />
-                          <Typography fontWeight={950}>Acciones familiares</Typography>
+                          <Typography fontWeight={950}>{ui("Acciones familiares")}</Typography>
                         </Stack>
                         <Stack spacing={1}>
                           {plan.familyActions.map((item) => (
-                            <Alert key={item} severity="success" variant="outlined">
-                              {item}
+                            <Alert key={apiText(item, plan)} severity="success" variant="outlined">
+                              {apiText(item, plan)}
                             </Alert>
                           ))}
                         </Stack>
@@ -341,14 +349,12 @@ export const AdaptiveIntelligencePage = () => {
                     variant="contained"
                     startIcon={<AutoAwesomeIcon />}
                     onClick={() => {
-                      if (selectedStudent) {
-                        void handleGeneratePlan(selectedStudent);
-                      }
+                      setPreviewAttempt((attempt) => attempt + 1);
                     }}
                     disabled={!selectedStudent || generating}
                     sx={{ mt: 3, borderRadius: 4, fontWeight: 900 }}
                   >
-                    Regenerar plan adaptativo
+                    {locale === "es" ? "Actualizar vista previa" : "Refresh preview"}
                   </Button>
                 </>
               )}

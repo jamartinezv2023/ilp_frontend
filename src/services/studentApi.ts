@@ -15,6 +15,7 @@ const client = axios.create({
 });
 
 type BackendStudent = {
+  localizedContent?: StudentProfile["localizedContent"];
   id: number | string;
   name?: string;
   fullName?: string;
@@ -122,6 +123,7 @@ const requestWithColdStartRetry = async <T>(
 };
 
 const toStudentProfile = (student: BackendStudent): StudentProfile => ({
+  localizedContent: student.localizedContent,
   id: String(student.id),
   fullName: student.fullName ?? student.name ?? "Estudiante sin nombre",
   grade: student.grade ?? "Sin grado registrado",

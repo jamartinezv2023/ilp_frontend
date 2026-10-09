@@ -1,13 +1,14 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { I18nProvider } from '../../src/i18n/I18nProvider';
-const api=vi.hoisted(()=>({fetchKolbQuestions:vi.fn(),fetchKolbAssessmentHistory:vi.fn(),submitKolbAssessmentWithConfirmation:vi.fn(),isAssessmentSubmissionInvalid:vi.fn(),kolbTimestampMatches:(a:unknown,b:unknown)=>a===b}));
+const api=vi.hoisted(()=>({fetchKolbQuestions:vi.fn(),fetchKolbAssessmentHistory:vi.fn(),submitKolbAssessmentWithConfirmation:vi.fn(),isAssessmentSubmissionInvalid:vi.fn(),isAssessmentSubmissionBlocked:vi.fn(),kolbTimestampMatches:(a:unknown,b:unknown)=>a===b}));
 vi.mock('../../src/services/assessmentApi',()=>api);
 import { KolbRealForm } from '../../src/pages/assessment/components/KolbRealForm';
 const result={assessmentId:'synthetic-record',studentId:'student',instrumentVersion:'TEST_ONLY',createdAt:'2026-10-04',learningStyle:'SYNTHETIC',scoreCE:4,scoreRO:3,scoreAC:2,scoreAE:1};
 const question={id:'synthetic-q',questionOrder:1,text:'Synthetic fixture',options:['CE','RO','AC','AE'],instrument:'KOLB',instrumentVersion:'TEST_ONLY',dimension:'synthetic'};
 beforeEach(()=>{
  api.fetchKolbQuestions.mockReset().mockResolvedValue([question]);api.fetchKolbAssessmentHistory.mockReset().mockResolvedValue([]);
+ api.isAssessmentSubmissionBlocked.mockReset().mockReturnValue(false);
  api.submitKolbAssessmentWithConfirmation.mockReset();api.isAssessmentSubmissionInvalid.mockReset().mockReturnValue(false);
 });
 function mount(){const completed=vi.fn();const view=render(<I18nProvider><KolbRealForm studentId="student" onCompleted={completed}/></I18nProvider>);return {...view,completed};}
@@ -61,4 +62,15 @@ describe('Kolb UI transaction safeguards with synthetic fixture',()=>{
   fireEvent.click(screen.getByRole('button',{name:'Consultar historial sin volver a enviar'}));
   expect((screen.getByRole('button',{name:'Enviar respuestas reales Kolb'}) as HTMLButtonElement).disabled).toBe(true);
  });
+});
+
+it('shows explicit blocking instead of uncertain delivery on 410',async()=>{
+ localStorage.setItem('ilp.locale','es');
+ api.isAssessmentSubmissionBlocked.mockReturnValue(true);
+ api.submitKolbAssessmentWithConfirmation.mockRejectedValue(new Error('410'));
+ const {completed}=mount();await fill();fireEvent.click(screen.getByRole('button',{name:'Enviar respuestas reales Kolb'}));
+ await screen.findByText(/El envío está deshabilitado/);
+ expect(screen.queryByText(/El estado del envío es incierto/)).toBeNull();
+ expect(completed).not.toHaveBeenCalled();
+ expect(api.submitKolbAssessmentWithConfirmation).toHaveBeenCalledTimes(1);
 });

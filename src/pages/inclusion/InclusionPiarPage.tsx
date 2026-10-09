@@ -1,3 +1,5 @@
+import { useApiText } from "../../i18n/useApiText";
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
 import { useEffect, useState } from "react";
 import {
@@ -27,6 +29,8 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const InclusionPiarPage = () => {
+  const ui = useSuiteText();
+  const apiText = useApiText();
   const { t, locale } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,17 +88,15 @@ export const InclusionPiarPage = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Diversity3Icon color="success" sx={{ fontSize: 42 }} />
-          <Chip label="Inclusive Education Support" color="success" variant="outlined" />
+          <Chip label={ui("Inclusive Education Support")} color="success" variant="outlined" />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Inclusion & PIAR Center
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1, fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {ui("Inclusion & PIAR Center")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Centro de apoyo para equipos de inclusión, orientación y directivos.
-          Permite identificar estudiantes que requieren seguimiento, estrategias
-          inclusivas, ajustes razonables y acciones asociadas al PIAR.
+          {ui("Centro de apoyo para equipos de inclusión, orientación y directivos. Permite identificar estudiantes que requieren seguimiento, estrategias inclusivas, ajustes razonables y acciones asociadas al PIAR.")}
         </Typography>
       </Box>
 
@@ -113,9 +115,9 @@ export const InclusionPiarPage = () => {
           <CardContent>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <GroupsIcon color="primary" />
-              <Typography fontWeight={900}>Estudiantes monitoreados</Typography>
+              <Typography fontWeight={900}>{ui("Estudiantes monitoreados")}</Typography>
             </Stack>
-            <Typography variant="h3" fontWeight={950}>
+            <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
               {monitoredCount}
             </Typography>
           </CardContent>
@@ -125,9 +127,9 @@ export const InclusionPiarPage = () => {
           <CardContent>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <PsychologyIcon color="warning" />
-              <Typography fontWeight={900}>Seguimiento prioritario</Typography>
+              <Typography fontWeight={900}>{ui("Seguimiento prioritario")}</Typography>
             </Stack>
-            <Typography variant="h3" fontWeight={950}>
+            <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
               {priorityCount}
             </Typography>
           </CardContent>
@@ -139,7 +141,7 @@ export const InclusionPiarPage = () => {
               <AssignmentIcon color="success" />
               <Typography fontWeight={900}>{t("inclusion.supportShare")}</Typography>
             </Stack>
-            <Typography variant="h3" fontWeight={950}>
+            <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
               {supportShare}
             </Typography>
           </CardContent>
@@ -156,7 +158,7 @@ export const InclusionPiarPage = () => {
       >
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h5" fontWeight={950} sx={{ mb: 2 }}>
-            Estado de preparación institucional
+            {ui("Estado de preparación institucional")}
           </Typography>
 
           <Alert severity="info">{t("inclusion.readinessUnavailable")}</Alert>
@@ -166,7 +168,7 @@ export const InclusionPiarPage = () => {
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Cargando información de inclusión...</Typography>
+          <Typography sx={{ mt: 2 }}>{ui("Cargando información de inclusión...")}</Typography>
         </Stack>
       )}
 
@@ -183,7 +185,7 @@ export const InclusionPiarPage = () => {
             </Button>
           }
         >
-          {error}
+          {ui(error)}
         </Alert>
       )}
       {!loading && !error && students.length === 0 && (
@@ -218,40 +220,39 @@ export const InclusionPiarPage = () => {
                 <Stack direction="row" justifyContent="space-between" spacing={2}>
                   <Box>
                     <Typography variant="h6" fontWeight={950} translate="no">
-                      {student.fullName}
+                      <span translate="no">{student.fullName}</span>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      <span translate="no">{student.id}</span> · Grado <span translate="no">{student.grade}</span> · Perfil: <span translate="no">{student.learningProfile}</span>
+                      <span translate="no">{student.id}</span> {ui("· Grado")} <span translate="no">{student.grade}</span> {ui("· Perfil:")} <span translate="no">{apiText(student.learningProfile, student)}</span>
                     </Typography>
                   </Box>
 
                   <Chip
                     translate="no"
-                    label={student.supportLevel}
+                    label={ui(student.supportLevel)}
                     color={supportColor(student.supportLevel)}
                     sx={{ fontWeight: 900 }}
                   />
                 </Stack>
 
                 <Typography fontWeight={900} sx={{ mt: 2 }}>
-                  Estrategias inclusivas sugeridas
+                  {ui("Estrategias inclusivas sugeridas")}
                 </Typography>
 
                 <Stack spacing={1} sx={{ mt: 1 }}>
                   {student.inclusiveStrategies.map((strategy) => (
-                    <Alert key={strategy} severity="success" variant="outlined" translate="no">
-                      {strategy}
+                    <Alert key={apiText(strategy, student)} severity="success" variant="outlined" translate="no">
+                      {apiText(strategy, student)}
                     </Alert>
                   ))}
                 </Stack>
 
                 <Typography fontWeight={900} sx={{ mt: 2 }}>
-                  Acción institucional recomendada
+                  {ui("Acción institucional recomendada")}
                 </Typography>
 
                 <Alert severity="info" variant="outlined" sx={{ mt: 1 }}>
-                  Revisar necesidad de ajustes razonables, documentar evidencia
-                  pedagógica y definir seguimiento con equipo de inclusión.
+                  {ui("Revisar necesidad de ajustes razonables, documentar evidencia pedagógica y definir seguimiento con equipo de inclusión.")}
                 </Alert>
               </CardContent>
             </Card>

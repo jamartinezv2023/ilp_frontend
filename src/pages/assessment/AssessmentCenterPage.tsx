@@ -1,358 +1,62 @@
-import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import PsychologyIcon from "@mui/icons-material/Psychology";
-import SchoolIcon from "@mui/icons-material/School";
-import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
-import type { StudentProfile } from "../../types/student";
-import type {
-  FelderSilvermanAssessmentResponse,
-  KolbAssessmentResponse,
-  KuderAssessmentResponse,
-} from "../../types/assessment";
-import { fetchStudents, fetchStudentById } from "../../services/studentApi";
-import { generateAdaptivePlan } from "../../services/adaptiveApi";
-import type { AdaptiveLearningPlan } from "../../types/adaptive";
-import {
-  submitFelderSilvermanAssessment,
-  submitKuderAssessment,
-} from "../../services/assessmentApi";
-import { KolbRealForm } from "./components/KolbRealForm";
+import { Alert, Box, Button, CircularProgress, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 import { useI18n } from "../../i18n/I18nProvider";
+import { fetchStudents } from "../../services/studentApi";
+import { fetchKolbAssessmentHistory } from "../../services/assessmentApi";
+import type { StudentProfile } from "../../types/student";
+import type { KolbAssessmentResponse } from "../../types/assessment";
 
 export const AssessmentCenterPage = () => {
-  const { t } = useI18n();
+  const { locale } = useI18n();
+  const en = locale === "en";
   const [students, setStudents] = useState<StudentProfile[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
-  const [kolbResult, setKolbResult] = useState<KolbAssessmentResponse | null>(null);
-  const [felderResult, setFelderResult] =
-    useState<FelderSilvermanAssessmentResponse | null>(null);
-  const [kuderResult, setKuderResult] = useState<KuderAssessmentResponse | null>(null);
-  const [adaptivePlan, setAdaptivePlan] = useState<AdaptiveLearningPlan | null>(null);
+  const [studentId, setStudentId] = useState("");
+  const [history, setHistory] = useState<KolbAssessmentResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [running, setRunning] = useState("");
-  const [error, setError] = useState("");
-
-  const loadStudents = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const data = await fetchStudents();
-      setStudents(data);
-      setSelectedStudent(data[0] ?? null);
-    } catch {
-      setError("No fue posible cargar estudiantes desde el backend.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const runFelder = async () => {
-    if (!selectedStudent) return;
-
-    try {
-      setRunning("felder");
-      setFelderResult(await submitFelderSilvermanAssessment(selectedStudent.id));
-      setSelectedStudent(await fetchStudentById(selectedStudent.id));
-    } catch {
-      setError("No fue posible aplicar Felder-Silverman.");
-    } finally {
-      setRunning("");
-    }
-  };
-
-  const runKuder = async () => {
-    if (!selectedStudent) return;
-
-    try {
-      setRunning("kuder");
-      setKuderResult(await submitKuderAssessment(selectedStudent.id));
-      setSelectedStudent(await fetchStudentById(selectedStudent.id));
-    } catch {
-      setError("No fue posible aplicar Kuder.");
-    } finally {
-      setRunning("");
-    }
-  };
-
-  const runAdaptivePlan = async () => {
-    if (!selectedStudent) return;
-
-    try {
-      setRunning("adaptive");
-      setAdaptivePlan(await generateAdaptivePlan(selectedStudent.id));
-    } catch {
-      setError("No fue posible generar el plan adaptativo.");
-    } finally {
-      setRunning("");
-    }
-  };
-
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+  const [checked, setChecked] = useState(false);
   useEffect(() => {
-    void loadStudents();
+    let active = true;
+    void fetchStudents().then(data => {
+      if (active) { setStudents(data); setStudentId(data[0]?.id ?? ""); }
+    }).catch(() => { if (active) setError(true); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
-
-  return (
-    <Box>
-      <StudentServiceStatusAlert />
-      <Box
-        sx={{
-          mb: 3,
-          p: { xs: 3, md: 4 },
-          borderRadius: 5,
-          background:
-            "linear-gradient(135deg, rgba(37,99,235,.14), rgba(124,58,237,.14), rgba(16,185,129,.12))",
-          border: "1px solid rgba(148,163,184,.25)",
-        }}
-      >
-        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <AssignmentTurnedInIcon color="primary" sx={{ fontSize: 42 }} />
-          <Chip label="Educational Assessment Engine" color="primary" variant="outlined" />
-        </Stack>
-
-        <Typography variant="h3" fontWeight={950}>
-          Assessment Center
-        </Typography>
-
-        <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 980 }}>
-          {t("assessment.description")}
-        </Typography>
-      </Box>
-
-      {loading && (
-        <Stack alignItems="center" sx={{ py: 8 }}>
-          <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Cargando estudiantes...</Typography>
-        </Stack>
-      )}
-
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-
-      {!loading && (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              lg: "360px 1fr",
-            },
-            gap: 2.5,
-          }}
-        >
-          <Card sx={{ borderRadius: 5, height: "fit-content" }}>
-            <CardContent sx={{ p: 2.5 }}>
-              <Typography variant="h6" fontWeight={950} sx={{ mb: 2 }}>
-                Estudiantes
-              </Typography>
-
-              <Stack spacing={1.2}>
-                {students.map((student) => (
-                  <Box
-                    key={student.id}
-                    onClick={() => {
-                      setSelectedStudent(student);
-                      setKolbResult(null);
-                      setFelderResult(null);
-                      setKuderResult(null);
-                      setAdaptivePlan(null);
-                    }}
-                    sx={{
-                      p: 2,
-                      borderRadius: 4,
-                      cursor: "pointer",
-                      border:
-                        selectedStudent?.id === student.id
-                          ? "2px solid #2563eb"
-                          : "1px solid rgba(148,163,184,.25)",
-                      background:
-                        selectedStudent?.id === student.id
-                          ? "rgba(37,99,235,.08)"
-                          : "white",
-                      "&:hover": { background: "rgba(37,99,235,.06)" },
-                    }}
-                  >
-                    <Typography fontWeight={900}>{student.fullName}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {student.id} · Grado {student.grade}
-                    </Typography>
-                    <Chip label={student.supportLevel} size="small" sx={{ mt: 1 }} />
-                  </Box>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-
-          <Card
-            sx={{
-              borderRadius: 5,
-              boxShadow: "0 20px 55px rgba(15,23,42,.10)",
-              border: "1px solid rgba(148,163,184,.24)",
-            }}
-          >
-            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-              {selectedStudent && (
-                <>
-                  <Typography variant="h4" fontWeight={950}>
-                    {selectedStudent.fullName}
-                  </Typography>
-                  <Typography color="text.secondary">
-                    {selectedStudent.id} · Grado {selectedStudent.grade} ·{" "}
-                    Perfil actual: {selectedStudent.learningProfile}
-                  </Typography>
-
-                  <Divider sx={{ my: 3 }} />
-
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "1fr",
-                        md: "repeat(3, 1fr)",
-                      },
-                      gap: 2.5,
-                    }}
-                  >
-                    <Card variant="outlined" sx={{ borderRadius: 4 }}>
-                      <CardContent>
-                        <Stack direction="row" spacing={1.5} alignItems="center">
-                          <PsychologyIcon color="primary" />
-                          <Typography fontWeight={950}>Kolb</Typography>
-                        </Stack>
-
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          Identifica el estilo de aprendizaje experiencial.
-                        </Typography>
-
-                        {selectedStudent && (
-                          <Box sx={{ mt: 2 }}>
-                            <KolbRealForm
-                              studentId={selectedStudent.id}
-                              onCompleted={(result) => setKolbResult(result)}
-                            />
-                          </Box>
-                        )}
-
-                        {kolbResult && (
-                          <Alert severity="success" sx={{ mt: 2 }}>
-                            Resultado real: {kolbResult.learningStyle}
-                          </Alert>
-                        )}
-                      </CardContent>
-                    </Card>
-
-                    <Card variant="outlined" sx={{ borderRadius: 4 }}>
-                      <CardContent>
-                        <Stack direction="row" spacing={1.5} alignItems="center">
-                          <SchoolIcon color="secondary" />
-                          <Typography fontWeight={950}>Felder-Silverman</Typography>
-                        </Stack>
-
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          Identifica preferencias de procesamiento.
-                        </Typography>
-
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          disabled={running === "felder"}
-                          onClick={() => void runFelder()}
-                          sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
-                        >
-                          {running === "felder"
-                            ? "Aplicando..."
-                            : "Aplicar Felder"}
-                        </Button>
-
-                        {felderResult && (
-                          <Alert severity="success" sx={{ mt: 2 }}>
-                            {felderResult.learningPreferences.join(", ")}
-                          </Alert>
-                        )}
-                      </CardContent>
-                    </Card>
-
-                    <Card variant="outlined" sx={{ borderRadius: 4 }}>
-                      <CardContent>
-                        <Stack direction="row" spacing={1.5} alignItems="center">
-                          <TipsAndUpdatesIcon color="warning" />
-                          <Typography fontWeight={950}>Kuder</Typography>
-                        </Stack>
-
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          Identifica áreas de interés vocacional.
-                        </Typography>
-
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          disabled={running === "kuder"}
-                          onClick={() => void runKuder()}
-                          sx={{ mt: 2, borderRadius: 3, fontWeight: 900 }}
-                        >
-                          {running === "kuder" ? "Aplicando..." : "Aplicar Kuder"}
-                        </Button>
-
-                        {kuderResult && (
-                          <Alert severity="success" sx={{ mt: 2 }}>
-                            Área dominante: {kuderResult.dominantVocationalArea}
-                          </Alert>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Box>
-
-                  <Card variant="outlined" sx={{ borderRadius: 4, mt: 3 }}>
-                    <CardContent>
-                      <Typography variant="h5" fontWeight={950}>
-                        Perfil actualizado del estudiante
-                      </Typography>
-
-                      <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 2 }}>
-                        <Chip label={`Kolb: ${selectedStudent.learningProfile}`} color="primary" />
-                        <Chip label={`Vocacional: ${selectedStudent.vocationalInterest}`} color="secondary" />
-                        <Chip label={`Apoyo: ${selectedStudent.supportLevel}`} variant="outlined" />
-                      </Stack>
-
-                      <Button
-                        variant="contained"
-                        disabled={running === "adaptive"}
-                        onClick={() => void runAdaptivePlan()}
-                        sx={{ mt: 3, borderRadius: 3, fontWeight: 900 }}
-                      >
-                        {running === "adaptive"
-                          ? "Generando plan..."
-                          : "Generar plan adaptativo actualizado"}
-                      </Button>
-
-                      {adaptivePlan && (
-                        <Alert severity="success" sx={{ mt: 3 }}>
-                          Plan generado: {adaptivePlan.recommendedMethodology.replaceAll("_", " ")} · Riesgo: {adaptivePlan.riskLevel}
-                        </Alert>
-                      )}
-                    </CardContent>
-                  </Card>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </Box>
-      )}
-    </Box>
-  );
+  async function loadHistory() {
+    setHistory([]); setChecked(false); setError(false); setBusy(true);
+    try { setHistory(await fetchKolbAssessmentHistory(studentId)); setChecked(true); }
+    catch { setError(true); }
+    finally { setBusy(false); }
+  }
+  return <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1100 }}>
+    <Stack spacing={3}>
+      <Typography variant="h4" component="h2">{en ? "Assessment center" : "Centro de evaluaciones"}</Typography>
+      <Alert severity="warning">{en
+        ? "Legacy submissions are disabled pending institutional and instrument approval. This page does not collect or submit answers."
+        : "Los envíos antiguos están deshabilitados hasta aprobar la institución y el instrumento. Esta página no recoge ni envía respuestas."}</Alert>
+      <Typography>{en
+        ? "Kolb, Felder-Silverman and Kuder require an approved version, scoring manual, institutional assignment and versioned consent. Existing student profiles do not confirm a new assessment."
+        : "Kolb, Felder-Silverman y Kuder requieren versión aprobada, manual de puntuación, asignación institucional y consentimiento versionado. Los perfiles existentes no confirman una evaluación nueva."}</Typography>
+      <Button component={Link} to="/research/authorized" variant="outlined">{en ? "Authorized history and evidence" : "Historial y evidencia autorizados"}</Button>
+      <Alert severity="info">{en
+        ? "The authorized circuit requires a configured backend and valid identifiers. Local visualization does not activate it."
+        : "El circuito autorizado requiere un backend configurado e identificadores válidos. La visualización local no lo activa."}</Alert>
+      <Typography variant="h5">{en ? "Legacy Kolb history (read only)" : "Historial antiguo Kolb (solo lectura)"}</Typography>
+      {loading && <CircularProgress />}
+      {error && <Alert severity="error">{en ? "The service could not be verified. This is not an empty history." : "No se pudo verificar el servicio. Esto no equivale a un historial vacío."}</Alert>}
+      {!loading && students.length === 0 && !error && <Typography>{en ? "No students available." : "No hay estudiantes disponibles."}</Typography>}
+      {students.length > 0 && <>
+        <TextField select label={en ? "Student" : "Estudiante"} value={studentId} disabled={busy} onChange={event => {
+          setStudentId(event.target.value); setHistory([]); setChecked(false); setError(false);
+        }}>{students.map(student => <MenuItem key={student.id} value={student.id}><span translate="no">{student.fullName} · {student.id}</span></MenuItem>)}</TextField>
+        <Button variant="contained" disabled={busy || !studentId} onClick={() => void loadHistory()}>{en ? "Read history without submitting" : "Consultar historial sin enviar"}</Button>
+      </>}
+      {busy && <CircularProgress />}
+      {checked && history.length === 0 && <Alert severity="info">{en ? "No legacy Kolb assessments were returned for this student." : "No se devolvieron evaluaciones antiguas Kolb para este estudiante."}</Alert>}
+      <ul>{history.map(item => <li key={item.assessmentId}><span translate="no">{item.assessmentId} · {item.instrumentVersion} · {String(item.createdAt)}</span></li>)}</ul>
+    </Stack>
+  </Box>;
 };
-
-
-
-

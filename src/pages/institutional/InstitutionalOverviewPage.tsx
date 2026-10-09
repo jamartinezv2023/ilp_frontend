@@ -16,39 +16,40 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import { useI18n } from "../../i18n/I18nProvider";
 
-const indicators = [
+const makeIndicators = (t: ReturnType<typeof useI18n>["t"]) => [
   {
-    title: "Estudiantes con seguimiento activo",
+    title: t("institutional.explicit.0"),
     value: "—",
-    detail: "Perfiles educativos priorizados para acompañamiento pedagógico.",
+    detail: t("institutional.explicit.1"),
     icon: <GroupsIcon color="primary" />,
   },
   {
-    title: "Recomendaciones pedagógicas",
+    title: t("institutional.explicit.2"),
     value: "—",
-    detail: "Sugerencias educativas generadas para apoyar decisiones docentes.",
+    detail: t("institutional.explicit.3"),
     icon: <PsychologyIcon color="secondary" />,
   },
   {
-    title: "Apoyos inclusivos registrados",
+    title: t("institutional.explicit.4"),
     value: "—",
-    detail: "Estrategias DUA, ajustes razonables y acciones de aula documentadas.",
+    detail: t("institutional.explicit.5"),
     icon: <Diversity3Icon color="success" />,
   },
   {
-    title: "Familias vinculadas",
+    title: t("institutional.explicit.6"),
     value: "—",
-    detail: "Acudientes conectados al proceso de seguimiento educativo.",
+    detail: t("institutional.explicit.7"),
     icon: <FamilyRestroomIcon color="info" />,
   },
 ];
 
 export const InstitutionalOverviewPage = () => {
   const { t } = useI18n();
+  const indicators = makeIndicators(t);
   const priorities = [
-    "Identificar necesidades de apoyo educativo sin emitir diagnósticos clínicos.",
-    "Acompañar al docente con recomendaciones pedagógicas comprensibles.",
-    "Fortalecer el seguimiento institucional de inclusión y permanencia.",
+    t("institutional.explicit.8"),
+    t("institutional.explicit.9"),
+    t("institutional.explicit.10"),
     t("institutional.priority.studentCentered"),
   ];
 
@@ -74,15 +75,15 @@ export const InstitutionalOverviewPage = () => {
           <SchoolIcon color="primary" sx={{ fontSize: 42 }} />
           <Chip
             icon={<VerifiedUserIcon />}
-            label="Educational Community View"
+            label={t("institutional.explicit.11")}
             color="primary"
             variant="outlined"
             sx={{ maxWidth: "100%", minWidth: 0 }}
           />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Institutional Inclusion Overview
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1, fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {t("institutional.explicit.12")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
@@ -152,7 +153,7 @@ export const InstitutionalOverviewPage = () => {
             <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
               <TrendingUpIcon color="primary" />
               <Typography variant="h5" fontWeight={950}>
-                Estado institucional de inclusión
+                {t("institutional.explicit.13")}
               </Typography>
             </Stack>
 
@@ -173,7 +174,7 @@ export const InstitutionalOverviewPage = () => {
         >
           <CardContent sx={{ p: 3 }}>
             <Typography variant="h5" fontWeight={950} sx={{ mb: 2 }}>
-              Prioridades educativas
+              {t("institutional.explicit.14")}
             </Typography>
 
             <Stack spacing={1.5}>

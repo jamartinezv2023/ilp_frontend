@@ -51,3 +51,16 @@ describe('Kolb confirmation', () => {
     client.get.mockResolvedValue({data:{questions:[{id:2}]}});expect(await api.fetchKolbQuestions()).toMatchObject([{questionOrder:0,text:'',options:[]}]);
   });
 });
+
+describe('Legacy assessment boundary', () => {
+  it.each([api.submitKolbAssessment, api.submitFelderSilvermanAssessment, api.submitKuderAssessment])('blocks automatic answers without HTTP', async submit => {
+    await expect(submit('student')).rejects.toThrow('LEGACY_ASSESSMENT_SUBMISSION_BLOCKED');
+    expect(client.post).not.toHaveBeenCalled();
+    expect(client.get).not.toHaveBeenCalled();
+  });
+  it('distinguishes explicit 410 from uncertain delivery', () => {
+    expect(api.isAssessmentSubmissionBlocked({isAxiosError:true,response:{status:410}})).toBe(true);
+    expect(api.isAssessmentSubmissionBlocked(new api.LegacyAssessmentSubmissionBlocked())).toBe(true);
+    for (const error of [null, {}, new Error('timeout'), {isAxiosError:true,response:{status:500}}]) expect(api.isAssessmentSubmissionBlocked(error)).toBe(false);
+  });
+});

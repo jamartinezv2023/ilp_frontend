@@ -7,6 +7,10 @@ const profiles = [
     grade: "High",
     learningProfile: "Low",
     inclusiveStrategies: ["Synthetic High strategy"],
+    localizedContent: {
+      "Synthetic High strategy": { es: "Estrategia sintética de apoyo alto", en: "Synthetic High strategy" },
+      "Low": { es: "Bajo", en: "Low" },
+    },
   },
   {
     id: "SYNTHETIC-LOW",
@@ -143,9 +147,10 @@ for (const locale of ["es", "en"] as const) {
           }).click();
           await expect(page.locator("html")).toHaveAttribute("lang", target);
           await expect(page.getByRole("heading", { name: "Synthetic High", exact: true })).toBeVisible();
-          await expect(page.locator('[translate="no"]', { hasText: "Synthetic High strategy" })).toHaveText("Synthetic High strategy");
-          await expect(page.getByText("High", { exact: true })).toBeVisible();
-          await expect(page.getByText("Low", { exact: true })).toBeVisible();
+          await expect(page.getByRole("alert").filter({ hasText: target === "es" ? "Estrategia sintética de apoyo alto" : "Synthetic High strategy" })).toHaveText(target === "es" ? "Estrategia sintética de apoyo alto" : "Synthetic High strategy");
+          await expect(page.getByText("SYNTHETIC-HIGH", { exact: true })).toBeVisible();
+          await expect(page.locator('span[translate="no"]').filter({ hasText: /^High$/ })).toBeVisible();
+          await expect(page.locator('span[translate="no"]').filter({ hasText: target === "es" ? /^Bajo$/ : /^Low$/ })).toBeVisible();
           await expect(page.getByText("50%", { exact: true })).toBeVisible();
         }
         expect(requests).toBe(2);

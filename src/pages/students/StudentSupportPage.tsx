@@ -1,3 +1,5 @@
+import { useApiText } from "../../i18n/useApiText";
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
 import { useEffect, useState } from "react";
 import {
@@ -29,6 +31,8 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const StudentSupportPage = () => {
+  const ui = useSuiteText();
+  const apiText = useApiText();
   const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
@@ -74,11 +78,11 @@ export const StudentSupportPage = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <PsychologyIcon color="primary" sx={{ fontSize: 42 }} />
-          <Chip label="Student Educational Support" color="primary" variant="outlined" />
+          <Chip label={ui("Student Educational Support")} color="primary" variant="outlined" />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Student Support Profile
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1, fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {ui("Student Support Profile")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
@@ -89,11 +93,11 @@ export const StudentSupportPage = () => {
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Cargando perfiles estudiantiles...</Typography>
+          <Typography sx={{ mt: 2 }}>{ui("Cargando perfiles estudiantiles...")}</Typography>
         </Stack>
       )}
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{ui(error)}</Alert>}
 
       {!loading && !error && (
         <Box
@@ -109,7 +113,7 @@ export const StudentSupportPage = () => {
           <Card sx={{ borderRadius: 5, height: "fit-content" }}>
             <CardContent sx={{ p: 2.5 }}>
               <Typography variant="h6" fontWeight={950} sx={{ mb: 2 }}>
-                Estudiantes
+                {ui("Estudiantes")}
               </Typography>
 
               <Stack spacing={1.2}>
@@ -138,12 +142,12 @@ export const StudentSupportPage = () => {
                       },
                     }}
                   >
-                    <Typography fontWeight={900}>{student.fullName}</Typography>
+                    <Typography fontWeight={900}><span translate="no">{student.fullName}</span></Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {student.id} · Grado {student.grade}
+                      {student.id} {ui("· Grado")} {student.grade}
                     </Typography>
                     <Chip
-                      label={student.supportLevel}
+                      label={ui(student.supportLevel)}
                       color={supportColor(student.supportLevel)}
                       size="small"
                       sx={{ mt: 1, fontWeight: 800 }}
@@ -171,16 +175,16 @@ export const StudentSupportPage = () => {
                 >
                   <Box>
                     <Typography variant="h4" fontWeight={950}>
-                      {selectedStudent.fullName}
+                      <span translate="no">{selectedStudent.fullName}</span>
                     </Typography>
                     <Typography color="text.secondary">
-                      {selectedStudent.id} · Grado {selectedStudent.grade} ·{" "}
-                      {selectedStudent.age} años
+                      {selectedStudent.id} {ui("· Grado")} {selectedStudent.grade} ·{" "}
+                      {selectedStudent.age} {ui("años")}
                     </Typography>
                   </Box>
 
                   <Chip
-                    label={`Nivel de apoyo: ${selectedStudent.supportLevel}`}
+                    label={`${ui("Nivel de apoyo:")} ${ui(selectedStudent.supportLevel)}`}
                     color={supportColor(selectedStudent.supportLevel)}
                     sx={{ fontWeight: 900 }}
                   />
@@ -202,10 +206,10 @@ export const StudentSupportPage = () => {
                     <CardContent>
                       <Stack direction="row" spacing={1.5} alignItems="center">
                         <SchoolIcon color="primary" />
-                        <Typography fontWeight={900}>Perfil de aprendizaje</Typography>
+                        <Typography fontWeight={900}>{ui("Perfil de aprendizaje")}</Typography>
                       </Stack>
                       <Typography color="text.secondary" sx={{ mt: 1 }}>
-                        {selectedStudent.learningProfile}
+                        <span translate="no">{apiText(selectedStudent.learningProfile, selectedStudent)}</span>
                       </Typography>
                     </CardContent>
                   </Card>
@@ -214,47 +218,47 @@ export const StudentSupportPage = () => {
                     <CardContent>
                       <Stack direction="row" spacing={1.5} alignItems="center">
                         <TipsAndUpdatesIcon color="secondary" />
-                        <Typography fontWeight={900}>Interés vocacional</Typography>
+                        <Typography fontWeight={900}>{ui("Interés vocacional")}</Typography>
                       </Stack>
                       <Typography color="text.secondary" sx={{ mt: 1 }}>
-                        {selectedStudent.vocationalInterest}
+                        <span translate="no">{apiText(selectedStudent.vocationalInterest, selectedStudent)}</span>
                       </Typography>
                     </CardContent>
                   </Card>
                 </Box>
 
                 <Typography variant="h6" fontWeight={950} sx={{ mt: 4, mb: 2 }}>
-                  Estrategias inclusivas
+                  {ui("Estrategias inclusivas")}
                 </Typography>
 
                 <Stack spacing={1}>
                   {selectedStudent.inclusiveStrategies.map((strategy) => (
-                    <Alert key={strategy} severity="success" variant="outlined" icon={<Diversity3Icon />}>
-                      {strategy}
+                    <Alert key={apiText(strategy, selectedStudent)} severity="success" variant="outlined" icon={<Diversity3Icon />}>
+                      {apiText(strategy, selectedStudent)}
                     </Alert>
                   ))}
                 </Stack>
 
                 <Typography variant="h6" fontWeight={950} sx={{ mt: 4, mb: 2 }}>
-                  Recomendaciones inteligentes
+                  {ui("Recomendaciones inteligentes")}
                 </Typography>
 
                 <Stack spacing={1}>
                   {(recommendation?.teacherRecommendations ?? selectedStudent.pedagogicalRecommendations).map((item) => (
-                    <Alert key={item} severity="info" variant="outlined">
-                      {item}
+                    <Alert key={apiText(item, recommendation ?? selectedStudent ?? undefined)} severity="info" variant="outlined">
+                      <span translate="no">{apiText(item, recommendation ?? selectedStudent ?? undefined)}</span>
                     </Alert>
                   ))}
                 </Stack>
 
                 <Typography variant="h6" fontWeight={950} sx={{ mt: 4, mb: 2 }}>
-                  Próximas acciones
+                  {ui("Próximas acciones")}
                 </Typography>
 
                 <Stack spacing={1}>
                   {(recommendation?.nextActions ?? []).map((item) => (
-                    <Alert key={item} severity="warning" variant="outlined">
-                      {item}
+                    <Alert key={apiText(item, recommendation ?? selectedStudent ?? undefined)} severity="warning" variant="outlined">
+                      <span translate="no">{apiText(item, recommendation ?? selectedStudent ?? undefined)}</span>
                     </Alert>
                   ))}
                 </Stack>

@@ -15,7 +15,6 @@ import { AdministrationPage } from "../pages/administration/AdministrationPage";
 import { AdaptiveIntelligencePage } from "../pages/adaptive/AdaptiveIntelligencePage";
 import { AssessmentCenterPage } from "../pages/assessment/AssessmentCenterPage";
 import { AssessmentDefinitionPreviewPage } from "../pages/assessment-definition-preview/AssessmentDefinitionPreviewPage";
-import { LocalizedSurface } from "../i18n/LocalizedSurface";
 import { useLocation } from "react-router-dom";
 import { useI18n } from "../i18n/I18nProvider";
 import type { MessageKey } from "../i18n/messages";
@@ -45,7 +44,7 @@ export const AppRoutes = () => {
   const titleKey = routeTitles[location.pathname] ?? "shell.title";
 
   return (
-    <LocalizedSurface>
+    <>
       <h1 className="ilp-visually-hidden">{t(titleKey)}</h1>
       <Routes>
       <Route path="/" element={<Navigate to="/institutional" replace />} />
@@ -66,7 +65,7 @@ export const AppRoutes = () => {
       <Route path="/roles" element={<RolesPage />} />
       <Route path="/permissions" element={<PermissionsPage />} />
       </Routes>
-    </LocalizedSurface>
+    </>
   );
 };
 

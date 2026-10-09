@@ -1,4 +1,5 @@
-﻿import {
+import { useSuiteText } from "../../i18n/useSuiteText";
+import {
   Alert,
   Box,
   Card,
@@ -60,6 +61,7 @@ const evidenceAreas = [
 ];
 
 export const DashboardPage = () => {
+  const ui = useSuiteText();
   const { t } = useI18n();
 
   return (
@@ -83,20 +85,19 @@ export const DashboardPage = () => {
           <DashboardIcon color="primary" sx={{ fontSize: 38 }} />
           <Chip
             icon={<VerifiedUserIcon />}
-            label="Doctoral Research Executive View"
+            label={ui("Doctoral Research Executive View")}
             color="primary"
             variant="outlined"
             sx={{ maxWidth: "100%", minWidth: 0 }}
           />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1, fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
           {t("dashboard.executiveTitle")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Executive overview of scientific, ethical, technological and deployment
-          maturity for the ILP doctoral research platform.
+          {ui("Executive overview of scientific, ethical, technological and deployment maturity for the ILP doctoral research platform.")}
         </Typography>
       </Box>
 
@@ -114,7 +115,7 @@ export const DashboardPage = () => {
       >
         {metrics.map((metric) => (
           <Card
-            key={metric.title}
+            key={ui(metric.title)}
             sx={{
               height: "100%",
               minHeight: 168,
@@ -128,7 +129,7 @@ export const DashboardPage = () => {
             <CardContent sx={{ p: 2.5, flexGrow: 1 }}>
               <Stack direction="row" spacing={1.5} alignItems="center">
                 {metric.icon}
-                <Typography fontWeight={900}>{metric.title}</Typography>
+                <Typography fontWeight={900}>{ui(metric.title)}</Typography>
               </Stack>
 
               <Typography variant="h4" fontWeight={950} sx={{ mt: 1.5 }}>
@@ -147,7 +148,7 @@ export const DashboardPage = () => {
               />
 
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-                {metric.description}
+                {ui(metric.description)}
               </Typography>
             </CardContent>
           </Card>
@@ -176,14 +177,12 @@ export const DashboardPage = () => {
             <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
               <ScienceIcon color="primary" />
               <Typography variant="h5" fontWeight={950}>
-                Doctoral Research Progress
+                {ui("Doctoral Research Progress")}
               </Typography>
             </Stack>
 
             <Typography color="text.secondary" sx={{ mb: 2.5 }}>
-              The platform has evolved into a research validation environment
-              with governance, explainability, fairness, security, architecture
-              and pilot readiness evidence.
+              {ui("The platform has evolved into a research validation environment with governance, explainability, fairness, security, architecture and pilot readiness evidence.")}
             </Typography>
 
             <Box
@@ -197,8 +196,8 @@ export const DashboardPage = () => {
               }}
             >
               {evidenceAreas.map((area) => (
-                <Alert key={area} severity="info" variant="outlined">
-                  {area}
+                <Alert key={ui(area)} severity="info" variant="outlined">
+                  {ui(area)}
                 </Alert>
               ))}
             </Box>
@@ -217,26 +216,25 @@ export const DashboardPage = () => {
             <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
               <SecurityIcon color="primary" />
               <Typography variant="h5" fontWeight={950}>
-                Institutional Readiness
+                {ui("Institutional Readiness")}
               </Typography>
             </Stack>
 
             <Stack spacing={1.5}>
               <Alert severity="success" variant="filled">
-                Backend validated with PostgreSQL runtime.
+                {ui("Backend validated with PostgreSQL runtime.")}
               </Alert>
 
               <Alert severity="success" variant="filled">
-                OpenAPI and Swagger documentation operational.
+                {ui("OpenAPI and Swagger documentation operational.")}
               </Alert>
 
               <Alert severity="success" variant="filled">
-                Actuator health, liveness and readiness available.
+                {ui("Actuator health, liveness and readiness available.")}
               </Alert>
 
               <Alert severity="info" variant="outlined">
-                Next focus: pilot protocol, ethics documentation, expert
-                validation and research instruments.
+                {ui("Next focus: pilot protocol, ethics documentation, expert validation and research instruments.")}
               </Alert>
             </Stack>
           </CardContent>
@@ -253,11 +251,10 @@ export const DashboardPage = () => {
         }}
       >
         <Typography variant="subtitle1" fontWeight={900}>
-          Inclusive Learning Platform (ILP)
+          {ui("Inclusive Learning Platform (ILP)")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Doctoral Research Validation Environment · Educational Technology ·
-          Explainable AI · Inclusive Education · 2026
+          {ui("Doctoral Research Validation Environment · Educational Technology · Explainable AI · Inclusive Education · 2026")}
         </Typography>
       </Box>
     </Box>

@@ -1,4 +1,5 @@
-﻿import { useMemo, useState } from "react";
+import { useSuiteText } from "../../../i18n/useSuiteText";
+import { useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -25,6 +26,7 @@ type AssessmentWizardProps = {
 };
 
 export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
+ const ui = useSuiteText();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<AssessmentAnswers>({});
   const [completed, setCompleted] = useState(false);
@@ -110,9 +112,9 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
 
           <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
             <Typography fontWeight={900}>
-              Pregunta {currentIndex + 1} de {questions.length}
+              {ui("Pregunta")} {currentIndex + 1} {ui("de")} {questions.length}
             </Typography>
-            <Typography fontWeight={900}>{progress}% completado</Typography>
+            <Typography fontWeight={900}>{progress}{ui("% completado")}</Typography>
           </Stack>
 
           <LinearProgress
@@ -143,7 +145,7 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
               onClick={previous}
               sx={{ borderRadius: 4, fontWeight: 900 }}
             >
-              Anterior
+              {ui("Anterior")}
             </Button>
 
             {!isLastQuestion && (
@@ -154,7 +156,7 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
                 onClick={next}
                 sx={{ borderRadius: 4, fontWeight: 900 }}
               >
-                Siguiente
+                {ui("Siguiente")}
               </Button>
             )}
 
@@ -167,7 +169,7 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
                 onClick={finish}
                 sx={{ borderRadius: 4, fontWeight: 900 }}
               >
-                Finalizar instrumento
+                {ui("Finalizar instrumento")}
               </Button>
             )}
           </Stack>
@@ -187,18 +189,16 @@ export const AssessmentWizard = ({ definition }: AssessmentWizardProps) => {
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <CheckCircleIcon color="success" />
                 <Typography variant="h5" fontWeight={950}>
-                  Instrumento completado correctamente
+                  {ui("Instrumento completado correctamente")}
                 </Typography>
               </Stack>
 
               <Typography color="text.secondary">
-                Las respuestas ipsativas son válidas. En el siguiente ciclo se
-                conectarán con el Assessment Response Engine para persistencia,
-                histórico longitudinal y dataset ML/DL.
+                {ui("Las respuestas ipsativas son válidas. En el siguiente ciclo se conectarán con el Assessment Response Engine para persistencia, histórico longitudinal y dataset ML/DL.")}
               </Typography>
 
               <Alert severity="success">
-                Total de respuestas generadas: {flattenedAnswers.length}
+                {ui("Total de respuestas generadas:")} {flattenedAnswers.length}
               </Alert>
 
               <Box

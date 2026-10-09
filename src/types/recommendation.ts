@@ -1,4 +1,5 @@
-﻿export type StudentRecommendation = {
+import type { LocalizedContentSource } from "../i18n/useApiText";
+export type StudentRecommendation = LocalizedContentSource & {
   studentId: string;
   fullName: string;
   learningProfile: string;
