@@ -2,6 +2,8 @@ name: Integrated real auth and UI history
 on:
   pull_request:
     branches: [feat/bootstrap-frontend]
+  push:
+    branches: [feat/bootstrap-frontend]
   workflow_dispatch:
 permissions:
   contents: read
