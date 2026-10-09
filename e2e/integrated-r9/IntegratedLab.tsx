@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LoginForm } from "../../src/features/auth/components/LoginForm";
 import { useAppDispatch, useAppSelector } from "../../src/store/hooks";
 import { authenticationFailed } from "../../src/features/auth/store/authSlice";
@@ -47,7 +47,7 @@ function Session({ token }: { token: string }) {
   const [scope, setScope] = useState<DraftScope>();
   const [draft, setDraft] = useState<SyntheticDraft>();
   const [localStatus, setLocalStatus] = useState<"" | "saved" | "recovered">("");
-  const [controller] = useState(() => new AbortController());
+  const controller = useRef<AbortController | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [fixtureKey] = useState(() => new URLSearchParams(location.search).get("fixture") ?? "es360");
   const fixture = fixtures?.[fixtureKey];
@@ -79,7 +79,11 @@ function Session({ token }: { token: string }) {
       }, () => { if (active) setMessage("error"); });
     return () => { active = false; };
   }, [fixture, token]);
-  useEffect(() => () => controller.abort(), [controller]);
+  useEffect(() => {
+    const active = new AbortController();
+    controller.current = active;
+    return () => active.abort();
+  }, []);
   async function saveDraft() {
     if (!scope || !option || busy || submitted) return;
     setBusy(true); setMessage("");
@@ -90,13 +94,13 @@ function Session({ token }: { token: string }) {
     finally { setBusy(false); }
   }
   async function submit() {
-    if (!fixture || !scope || !option || busy || submitted) return;
+    if (!fixture || !scope || !option || busy || submitted || !controller.current) return;
     setLocalStatus("");
     await run(async () => {
       const saved = draft?.answer === (option === "R9-A" ? "A" : "B") ? draft
         : await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
       setDraft(saved);
-      const result = await synchronizeSyntheticDraft(token, fixture, saved, locale, controller.signal);
+      const result = await synchronizeSyntheticDraft(token, fixture, saved, locale, controller.current!.signal);
       setHistory(result.history); setAnswer(result.csv); setSubmitted(true); setLocalStatus(""); setMessage("saved");
     });
   }
