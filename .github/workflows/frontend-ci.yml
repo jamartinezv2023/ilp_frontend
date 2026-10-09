@@ -92,3 +92,22 @@ jobs:
             gh api "repos/$GH_REPO/check-runs/$check_id/annotations" \
               --jq '.[] | {path, start_line, title, annotation_level}'
           done < /tmp/sonar-check-ids
+          backend_sha=$(python - <<'PYTHON'
+          import re
+          from pathlib import Path
+          text = Path('.github/workflows/integrated-auth-history.yml').read_text()
+          match = re.search(r'repository: jamartinezv2023/ilp_backend\s+ref: ([a-f0-9]{40})', text)
+          if not match:
+              raise SystemExit('No exact backend SHA in integration workflow')
+          print(match.group(1))
+          PYTHON
+          )
+          if gh api "repos/jamartinezv2023/ilp_backend/commits/$backend_sha/check-runs" \
+              --jq '.check_runs[] | select(.name == "SonarCloud Code Analysis") | .id' > /tmp/backend-sonar-check-ids; then
+            while IFS= read -r check_id; do
+              gh api "repos/jamartinezv2023/ilp_backend/check-runs/$check_id/annotations" \
+                --jq '.[] | {path, start_line, title, annotation_level}'
+            done < /tmp/backend-sonar-check-ids
+          else
+            echo 'Paired backend annotation evidence unavailable to this read-only repository token.'
+          fi
