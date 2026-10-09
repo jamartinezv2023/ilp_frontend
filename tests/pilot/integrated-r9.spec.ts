@@ -46,6 +46,7 @@ for (const locale of ["es", "en"] as const) {
     expect((await request.get("/auth/session-identity", { headers: { ...identityHeaders, Authorization: `Bearer ${credential}` } })).status()).toBe(401);
     expect((await request.post("/auth/offline-access", { headers: { "X-Tenant-Id": tenant }, data: enrollment })).status()).toBe(401);
     expect((await request.post("/auth/offline-access", { headers: identityHeaders, data: { ...enrollment, deviceId: "invalid" } })).status()).toBe(400);
+    expect((await request.post("/auth/offline-access", { headers: { ...identityHeaders, "Content-Type": "application/json" }, data: "{invalid-json" })).status()).toBe(400);
     const assignment = "90000000-0000-4000-8000-000000000021";
     const uri = `/api/v1/scientific-applications/${assignment}/history`;
     expect((await request.get(uri, { headers: { "X-Tenant-Id": tenant } })).status()).toBe(401);

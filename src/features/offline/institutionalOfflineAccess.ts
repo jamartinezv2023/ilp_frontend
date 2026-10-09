@@ -4,7 +4,7 @@ const PUBLIC_KEY = import.meta.env.VITE_OFFLINE_PUBLIC_KEY?.trim() ?? '';
 export const institutionalOfflineConfigured = () => PUBLIC_KEY.length > 0;
 function decode(value: string): Uint8Array<ArrayBuffer> {
   if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error('INVALID_OFFLINE_CREDENTIAL');
-  return Uint8Array.from(atob(value.replaceAll('-', '+').replaceAll('_', '/')), char => char.charCodeAt(0));
+  return Uint8Array.from(atob(value.replaceAll('-', '+').replaceAll('_', '/')), char => char.codePointAt(0) ?? 0);
 }
 /** A pinned separate authority, never the API bearer key. Device clock is not trusted against tampering. */
 export async function verifyInstitutionalOfflineAccess(draft: SyntheticDraft, allowExpired = false,
@@ -16,7 +16,7 @@ export async function verifyInstitutionalOfflineAccess(draft: SyntheticDraft, al
   if (parts.length !== 3) throw new Error('INVALID_OFFLINE_CREDENTIAL');
   const header = JSON.parse(new TextDecoder().decode(decode(parts[0]))) as { alg?: string; typ?: string };
   if (header?.alg !== 'RS256' || header.typ !== 'ilp-offline+jwt') throw new Error('INVALID_OFFLINE_CREDENTIAL');
-  const key = await crypto.subtle.importKey('spki', Uint8Array.from(atob(publicKey), char => char.charCodeAt(0)),
+  const key = await crypto.subtle.importKey('spki', Uint8Array.from(atob(publicKey), char => char.codePointAt(0) ?? 0),
     { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
   if (!await crypto.subtle.verify('RSASSA-PKCS1-v1_5', key, decode(parts[2]), new TextEncoder().encode(`${parts[0]}.${parts[1]}`))) {
     throw new Error('OFFLINE_SIGNATURE_INVALID');
