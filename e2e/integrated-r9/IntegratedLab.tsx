@@ -8,6 +8,8 @@ import { verifiedDraftScope } from "../../src/features/offline/verifiedDraftScop
 import { createSyntheticDraftStore, type DraftScope, type SyntheticDraft } from "../../src/features/offline/syntheticDraftStore";
 import { synchronizeSyntheticDraft } from "../../src/features/offline/synchronizeSyntheticDraft";
 import { prepareR9Shell, type OfflinePreparation } from "../../src/features/offline/prepareOfflineLab";
+import { prepareDraftAccess, forgetPreparedAccess } from "../../src/features/offline/preparedDraftAccess";
+import { OfflineDraftEditor } from "./OfflineDraftEditor";
 const draftStore = createSyntheticDraftStore();
 
 type Fixture = {
@@ -60,6 +62,7 @@ export function IntegratedLab() {
       <h2>{en ? "Online login required" : "Se requiere inicio de sesión en línea"}</h2>
       <p>{en ? "Reconnect and sign in to recover your draft. Offline authentication is not available."
         : "Recupere la conexión e inicie sesión para recuperar su borrador. La autenticación sin conexión no está disponible."}</p>
+      <OfflineDraftEditor />
     </section>}
   </main>;
 }
@@ -77,6 +80,8 @@ function Session({ token }: { token: string }) {
   const [localStatus, setLocalStatus] = useState<"" | "saved" | "recovered">("");
   const controller = useRef<AbortController | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [deviceKey, setDeviceKey] = useState("");
+  const [deviceReady, setDeviceReady] = useState(false);
   const [fixtureKey] = useState(() => new URLSearchParams(location.search).get("fixture") ?? "es360");
   const fixture = fixtures?.[fixtureKey];
   useEffect(() => {
@@ -121,6 +126,16 @@ function Session({ token }: { token: string }) {
     } catch { setMessage("error"); }
     finally { setBusy(false); }
   }
+  async function prepareAccess() {
+    if (!draft) return;
+    setBusy(true); setMessage("");
+    try {
+      if (await prepareR9Shell() !== "ready") throw new Error("SHELL_UNAVAILABLE");
+      await prepareDraftAccess(token, fixtureKey, draft, deviceKey);
+      setDeviceReady(true);
+    } catch { setMessage("error"); }
+    finally { setDeviceKey(""); setBusy(false); }
+  }
   async function submit() {
     if (!fixture || !scope || !option || busy || submitted || !controller.current) return;
     setLocalStatus("");
@@ -129,6 +144,7 @@ function Session({ token }: { token: string }) {
         : await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
       setDraft(saved);
       const result = await synchronizeSyntheticDraft(token, fixture, saved, locale, controller.current!.signal);
+      forgetPreparedAccess(fixtureKey);
       setHistory(result.history); setAnswer(result.csv); setSubmitted(true); setLocalStatus(""); setMessage("saved");
     });
   }
@@ -149,6 +165,12 @@ function Session({ token }: { token: string }) {
     <button disabled={!scope || !option || busy || submitted} onClick={() => void saveDraft()}>
       {en ? "Save on this device" : "Guardar en este dispositivo"}
     </button>
+    <label>{en ? "Prepare device key (12+ characters)" : "Preparar clave del dispositivo (12+ caracteres)"}
+      <input type="password" autoComplete="new-password" value={deviceKey} onChange={event => setDeviceKey(event.target.value)} />
+    </label>
+    <button disabled={!draft || deviceKey.length < 12 || busy || submitted || deviceReady}
+      onClick={() => void prepareAccess()}>{en ? "Enable local unlocking" : "Habilitar desbloqueo local"}</button>
+    {deviceReady && <output data-testid="device-ready">{en ? "Local unlocking prepared. Keep your device key." : "Desbloqueo local preparado. Conserve su clave del dispositivo."}</output>}
     {localStatus && <output data-testid="local-draft-status">{localStatus === "saved"
       ? (en ? "Saved on this device. Not submitted." : "Guardado en este dispositivo. No enviado.")
       : (en ? "Local draft recovered. Server confirmation pending." : "Borrador local recuperado. Confirmación del servidor pendiente.")}</output>}
