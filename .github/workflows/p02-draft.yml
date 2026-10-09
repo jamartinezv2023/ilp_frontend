@@ -18,12 +18,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test --config playwright.p02-draft.config.ts
-      - name: Verify ten cases without skips
+      - name: Verify fifteen cases without skips
         run: |
           python - <<'PY'
           import xml.etree.ElementTree as ET
           root = ET.parse('test-results/p02-draft-results.xml').getroot()
-          assert len(root.findall('.//testcase')) == 10
+          assert len(root.findall('.//testcase')) == 15
           assert not any(root.findall('.//' + tag) for tag in ['failure', 'error', 'skipped'])
           PY
       - uses: actions/upload-artifact@v4

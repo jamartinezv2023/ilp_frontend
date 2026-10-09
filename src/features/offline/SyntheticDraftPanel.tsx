@@ -5,7 +5,7 @@ const defaultStore = createSyntheticDraftStore();
 const copy = {
   es: {
     title: 'Borrador local sintético',
-    boundary: 'Solo datos sintéticos. Aquí no se realiza inicio de sesión, autorización ni envío. La reapertura sin conexión todavía no está habilitada.',
+    boundary: 'Solo datos sintéticos. Aquí no se realiza inicio de sesión, autorización ni envío.',
     language: 'Idioma',
     question: 'Seleccione una respuesta sintética',
     save: 'Guardar en este dispositivo',
@@ -19,7 +19,7 @@ const copy = {
   },
   en: {
     title: 'Synthetic local draft',
-    boundary: 'Synthetic data only. No login, authorization or submission is performed here. Offline reopening is not yet enabled.',
+    boundary: 'Synthetic data only. No login, authorization or submission is performed here.',
     language: 'Language',
     question: 'Choose a synthetic response',
     save: 'Save on this device',

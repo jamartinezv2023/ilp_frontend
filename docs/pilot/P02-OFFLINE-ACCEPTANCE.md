@@ -84,3 +84,11 @@ The laboratory does not perform authentication or submission. The current login 
 Validation: unit tests exercise commit confirmation, corruption, quota failure, concurrency and scope isolation. The P02 browser workflow checks native IndexedDB recovery after reload and in another tab, ES/EN at 360/768/1440 pixels, identity separation, online browser restart, unavailable storage and absence of POST submissions. These checks do not prove a service worker, offline browser restart or production persistence.
 
 Local review: `npx vite build --config vite.p02.config.ts` then `npx vite preview --config vite.p02.config.ts --host 127.0.0.1 --port 5188 --strictPort`; open `http://127.0.0.1:5188/p02.html`. Automated browser review: `npx playwright test --config playwright.p02-draft.config.ts`.
+
+## P02-B implementation candidate
+
+The synthetic laboratory now prepares a service worker with scope `/p02.html`. Installation caches only the build-generated HTML and static asset allowlist, using requests without credentials. API URLs, POST requests and the maintained application's root page are not handled by this worker. Readiness requires an active worker and verification that its complete cache remains available. An initial offline visit without preparation cannot open the laboratory.
+
+New releases wait for existing laboratory clients to close; activation removes only older `ilp-p02-lab-` caches. Draft UUIDs and instrument versions remain independent of cache revisions. Normal-profile offline browser restart, ES/EN draft recovery and offline editing, missing-cache detection, request boundaries and waiting-update activation have dedicated native Chromium checks.
+
+This candidate does not provide offline authentication, real-account binding, synchronization or school collection. Browser deletion, private-mode cleanup and origin/profile changes can remove or separate cached content and drafts. HTTPS is required outside the localhost test origin. The maintained application is not converted into an offline application by this laboratory.
