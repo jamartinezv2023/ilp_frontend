@@ -1,0 +1,1693 @@
+{
+  "translations": [
+    {
+      "es": "Panorama institucional de inclusión",
+      "en": "Institutional Inclusion Overview"
+    },
+    {
+      "es": "Centro de investigación en IA educativa inclusiva",
+      "en": "Inclusive Educational AI Research Center"
+    },
+    {
+      "es": "Autenticación multifactor",
+      "en": "Multi-Factor Authentication"
+    },
+    {
+      "es": "Autenticación multifactor",
+      "en": "Multi-factor authentication"
+    },
+    {
+      "es": "Motor genérico de instrumentos",
+      "en": "Generic Instrument Engine"
+    },
+    {
+      "es": "Definición dinámica proporcionada por el servidor.",
+      "en": "Dynamic definition provided by the backend."
+    },
+    {
+      "es": "API genérica",
+      "en": "Generic API"
+    },
+    {
+      "es": "Compatibilidad temporal",
+      "en": "Temporary compatibility"
+    },
+    {
+      "es": "Recargar",
+      "en": "Reload"
+    },
+    {
+      "es": "Reintentar",
+      "en": "Retry"
+    },
+    {
+      "es": "No fue posible cargar la definición del instrumento",
+      "en": "The instrument definition could not be loaded"
+    },
+    {
+      "es": "Formularios e instrumentos",
+      "en": "Forms and instruments"
+    },
+    {
+      "es": "Disponibilidad de instrumentos",
+      "en": "Instrument availability"
+    },
+    {
+      "es": "Los formularios se muestran cuando está disponible su definición validada.",
+      "en": "Forms are shown when their validated definition is available."
+    },
+    {
+      "es": "El servicio no está disponible. No se ha guardado ninguna respuesta.",
+      "en": "The service is unavailable. No response has been saved."
+    },
+    {
+      "es": "No hay estudiantes disponibles para evaluación.",
+      "en": "No students are available for assessment."
+    },
+    {
+      "es": "Se requiere seleccionar un estudiante para el formulario Kolb real.",
+      "en": "Student selection is required for the real Kolb form."
+    },
+    {
+      "es": "Formulario real de respuestas del estudiante",
+      "en": "Real student response form"
+    },
+    {
+      "es": "Demostración controlada sin persistencia",
+      "en": "Controlled non-persistent demonstration"
+    },
+    {
+      "es": "Formulario no disponible",
+      "en": "Form unavailable"
+    },
+    {
+      "es": "No fue posible cargar estudiantes. El catálogo de instrumentos permanece visible.",
+      "en": "Students could not be loaded. The instrument catalog remains visible."
+    },
+    {
+      "es": "Grado",
+      "en": "Grade"
+    },
+    {
+      "es": "Perfil actual",
+      "en": "Current profile"
+    },
+    {
+      "es": "Nivel de apoyo",
+      "en": "Support level"
+    },
+    {
+      "es": "Riesgo adaptativo",
+      "en": "Adaptive risk"
+    },
+    {
+      "es": "Perfil actualizado del estudiante",
+      "en": "Updated student profile"
+    },
+    {
+      "es": "Vocacional",
+      "en": "Vocational"
+    },
+    {
+      "es": "Apoyo",
+      "en": "Support"
+    },
+    {
+      "es": "Plan generado",
+      "en": "Plan generated"
+    },
+    {
+      "es": "Riesgo",
+      "en": "Risk"
+    },
+    {
+      "es": "Generar plan adaptativo actualizado",
+      "en": "Generate updated adaptive plan"
+    },
+    {
+      "es": "Generando plan",
+      "en": "Generating plan"
+    },
+    {
+      "es": "Ruta adaptativa",
+      "en": "Adaptive pathway"
+    },
+    {
+      "es": "Acciones docentes",
+      "en": "Teaching actions"
+    },
+    {
+      "es": "Acciones de inclusión",
+      "en": "Inclusion actions"
+    },
+    {
+      "es": "Acciones familiares",
+      "en": "Family actions"
+    },
+    {
+      "es": "Seguimiento educativo",
+      "en": "Educational monitoring"
+    },
+    {
+      "es": "Apoyo docente",
+      "en": "Teacher support"
+    },
+    {
+      "es": "Ajustes razonables",
+      "en": "Reasonable accommodations"
+    },
+    {
+      "es": "Participación familiar",
+      "en": "Family participation"
+    },
+    {
+      "es": "Participación familiar",
+      "en": "Family Engagement"
+    },
+    {
+      "es": "Estudiantes monitoreados",
+      "en": "Monitored students"
+    },
+    {
+      "es": "Seguimiento prioritario",
+      "en": "Priority monitoring"
+    },
+    {
+      "es": "Preparación PIAR",
+      "en": "PIAR preparation"
+    },
+    {
+      "es": "Identificación de necesidades de apoyo",
+      "en": "Support needs identification"
+    },
+    {
+      "es": "Estrategias inclusivas documentadas",
+      "en": "Documented inclusive strategies"
+    },
+    {
+      "es": "Preparación de ajustes razonables",
+      "en": "Reasonable accommodation preparation"
+    },
+    {
+      "es": "Estudiantes asignados",
+      "en": "Assigned students"
+    },
+    {
+      "es": "Apoyo medio",
+      "en": "Medium support"
+    },
+    {
+      "es": "Apoyo alto",
+      "en": "High support"
+    },
+    {
+      "es": "Contratos consultados",
+      "en": "Consulted contracts"
+    },
+    {
+      "es": "Respuestas del servidor",
+      "en": "Backend responses"
+    },
+    {
+      "es": "No disponibles",
+      "en": "Unavailable"
+    },
+    {
+      "es": "respuesta del servidor",
+      "en": "Backend response"
+    },
+    {
+      "es": "respuesta del servidor",
+      "en": "backend response"
+    },
+    {
+      "es": "sin respuesta del servidor",
+      "en": "No backend response"
+    },
+    {
+      "es": "sin respuesta del servidor",
+      "en": "no backend response"
+    },
+    {
+      "es": "Apoyos inclusivos registrados",
+      "en": "Inclusive supports registered"
+    },
+    {
+      "es": "Familias vinculadas",
+      "en": "Families involved"
+    },
+    {
+      "es": "Perfiles educativos priorizados para acompañamiento pedagógico.",
+      "en": "Educational profiles prioritized for pedagogical support."
+    },
+    {
+      "es": "Sugerencias educativas generadas para apoyar decisiones docentes.",
+      "en": "Generated educational suggestions to support teaching decisions."
+    },
+    {
+      "es": "Estrategias DUA, ajustes razonables y acciones de aula documentadas.",
+      "en": "Universal Design for Learning strategies, reasonable accommodations and documented classroom actions."
+    },
+    {
+      "es": "Acudientes conectados al proceso de seguimiento educativo.",
+      "en": "Caregivers connected to the educational monitoring process."
+    },
+    {
+      "es": "Identificar necesidades de apoyo educativo sin emitir diagnósticos clínicos.",
+      "en": "Identify educational support needs without issuing clinical diagnoses."
+    },
+    {
+      "es": "Acompañar al docente con recomendaciones pedagógicas comprensibles.",
+      "en": "Support teachers with understandable pedagogical recommendations."
+    },
+    {
+      "es": "Fortalecer el seguimiento institucional de inclusión y permanencia.",
+      "en": "Strengthen institutional monitoring of inclusion and retention."
+    },
+    {
+      "es": "Cargando información de inclusión",
+      "en": "Loading inclusion information"
+    },
+    {
+      "es": "Cargando perfiles estudiantiles",
+      "en": "Loading student profiles"
+    },
+    {
+      "es": "Cargando estudiantes",
+      "en": "Loading students"
+    },
+    {
+      "es": "Generando plan adaptativo",
+      "en": "Generating adaptive plan"
+    },
+    {
+      "es": "Perfil de aprendizaje",
+      "en": "Learning profile"
+    },
+    {
+      "es": "Interés vocacional",
+      "en": "Vocational interest"
+    },
+    {
+      "es": "Recomendaciones pedagógicas",
+      "en": "Educational recommendations"
+    },
+    {
+      "es": "Administración general y configuración institucional.",
+      "en": "General administration and institutional configuration."
+    },
+    {
+      "es": "Gestión de usuarios",
+      "en": "User Management"
+    },
+    {
+      "es": "Gestión de roles",
+      "en": "Role Management"
+    },
+    {
+      "es": "Gestión de permisos",
+      "en": "Permission Management"
+    },
+    {
+      "es": "Código de autenticación",
+      "en": "Authentication Code"
+    },
+    {
+      "es": "Ingrese el código de 6 dígitos",
+      "en": "Enter the 6-digit code"
+    },
+    {
+      "es": "Vista previa del código QR de MFA",
+      "en": "MFA QR preview"
+    },
+    {
+      "es": "Anterior",
+      "en": "Previous"
+    },
+    {
+      "es": "Siguiente",
+      "en": "Next"
+    },
+    {
+      "es": "Finalizar instrumento",
+      "en": "Finish instrument"
+    },
+    {
+      "es": "Instrumento completado correctamente",
+      "en": "Instrument completed successfully"
+    },
+    {
+      "es": "Pregunta",
+      "en": "Question"
+    },
+    {
+      "es": "completado",
+      "en": "completed"
+    },
+    {
+      "es": "Orden de preferencia",
+      "en": "Preference rank"
+    },
+    {
+      "es": "Clasificación",
+      "en": "Ranking"
+    },
+    {
+      "es": "Completo",
+      "en": "Complete"
+    },
+    {
+      "es": "ninguno",
+      "en": "None"
+    },
+    {
+      "es": "Valores usados",
+      "en": "Used values"
+    },
+    {
+      "es": "Seleccione un valor no repetido en este grupo.",
+      "en": "Select a value that has not been repeated in this group."
+    },
+    {
+      "es": "Enviando",
+      "en": "Sending"
+    },
+    {
+      "es": "Enviar respuestas reales Kolb",
+      "en": "Submit real Kolb responses"
+    },
+    {
+      "es": "Historial de evaluaciones Kolb",
+      "en": "Kolb assessment history"
+    },
+    {
+      "es": "Cargando historial",
+      "en": "Loading history"
+    },
+    {
+      "es": "Este estudiante aún no tiene evaluaciones Kolb registradas.",
+      "en": "This student does not yet have any registered Kolb assessments."
+    },
+    {
+      "es": "Fecha",
+      "en": "Date"
+    },
+    {
+      "es": "No fue posible cargar las preguntas de Kolb.",
+      "en": "The Kolb questions could not be loaded."
+    },
+    {
+      "es": "No fue posible enviar el formulario Kolb.",
+      "en": "The Kolb form could not be submitted."
+    },
+    {
+      "es": "En este grupo, el valor",
+      "en": "In this group, the value"
+    },
+    {
+      "es": "ya fue usado.",
+      "en": "has already been used."
+    },
+    {
+      "es": "Debe completar todos los grupos usando exactamente una vez los valores 4, 3, 2 y 1.",
+      "en": "You must complete all groups using the values 4, 3, 2 and 1 exactly once."
+    },
+    {
+      "es": "Entorno de validación de investigación doctoral",
+      "en": "Doctoral Research Validation Environment"
+    },
+    {
+      "es": "Plataforma de Aprendizaje Inclusivo",
+      "en": "Inclusive Learning Platform"
+    },
+    {
+      "es": "Inteligencia artificial para la educación inclusiva",
+      "en": "Artificial Intelligence for Inclusive Education"
+    },
+    {
+      "es": "Educación inclusiva",
+      "en": "Inclusive Education"
+    },
+    {
+      "es": "Inteligencia artificial explicable",
+      "en": "Explainable Artificial Intelligence"
+    },
+    {
+      "es": "Seguridad, privacidad y gobernanza",
+      "en": "Security, Privacy & Governance"
+    },
+    {
+      "es": "Validación y evidencia de investigación",
+      "en": "Research Validation & Evidence"
+    },
+    {
+      "es": "Acceso a la plataforma de investigación",
+      "en": "Research Platform Access"
+    },
+    {
+      "es": "Autenticación segura para investigadores, educadores y actores institucionales.",
+      "en": "Secure authentication for researchers, educators and institutional stakeholders."
+    },
+    {
+      "es": "Autenticación correcta.",
+      "en": "Authentication successful."
+    },
+    {
+      "es": "Se requiere autenticación multifactor.",
+      "en": "Multi-factor authentication required."
+    },
+    {
+      "es": "Correo institucional",
+      "en": "Institutional Email"
+    },
+    {
+      "es": "Contraseña",
+      "en": "Password"
+    },
+    {
+      "es": "Código de verificación MFA",
+      "en": "MFA Verification Code"
+    },
+    {
+      "es": "Verificar autenticación",
+      "en": "Verify Authentication"
+    },
+    {
+      "es": "Acceder a la plataforma",
+      "en": "Access Platform"
+    },
+    {
+      "es": "Administración",
+      "en": "Administration"
+    },
+    {
+      "es": "Inteligencia educativa adaptativa",
+      "en": "Adaptive Educational Intelligence"
+    },
+    {
+      "es": "Inteligencia adaptativa",
+      "en": "Adaptive Intelligence"
+    },
+    {
+      "es": "Centro de evaluación",
+      "en": "Assessment Center"
+    },
+    {
+      "es": "Motor de evaluación educativa",
+      "en": "Educational Assessment Engine"
+    },
+    {
+      "es": "Panorama de la comunidad educativa",
+      "en": "Educational Community View"
+    },
+    {
+      "es": "Apoyo a decisiones docentes",
+      "en": "Teacher Decision Support"
+    },
+    {
+      "es": "Espacio docente",
+      "en": "Teacher Workspace"
+    },
+    {
+      "es": "Apoyo educativo estudiantil",
+      "en": "Student Educational Support"
+    },
+    {
+      "es": "Apoyo estudiantil",
+      "en": "Student Support"
+    },
+    {
+      "es": "Apoyo a la educación inclusiva",
+      "en": "Inclusive Education Support"
+    },
+    {
+      "es": "Panorama institucional",
+      "en": "Institutional Overview"
+    },
+    {
+      "es": "Apoyo educativo familiar",
+      "en": "Family Educational Support"
+    },
+    {
+      "es": "Centro de participación familiar",
+      "en": "Family Engagement Center"
+    },
+    {
+      "es": "Centro de inteligencia adaptativa",
+      "en": "Adaptive Intelligence Center"
+    },
+    {
+      "es": "Perfil de apoyo estudiantil",
+      "en": "Student Support Profile"
+    },
+    {
+      "es": "Centro de inclusión y PIAR",
+      "en": "Inclusion & PIAR Center"
+    },
+    {
+      "es": "Centro de seguridad y acceso a la investigación",
+      "en": "Security & Research Access Center"
+    },
+    {
+      "es": "Analítica de investigación doctoral",
+      "en": "Doctoral Research Analytics"
+    },
+    {
+      "es": "Panorama ejecutivo de investigación doctoral",
+      "en": "Doctoral Research Executive View"
+    },
+    {
+      "es": "Investigación y evaluación",
+      "en": "Research & Evaluation"
+    },
+    {
+      "es": "Acceso seguro a la investigación",
+      "en": "Secure Research Access"
+    },
+    {
+      "es": "Seguridad y privacidad",
+      "en": "Security & Privacy"
+    },
+    {
+      "es": "Vista previa del motor de formularios",
+      "en": "Form Engine Preview"
+    },
+    {
+      "es": "Cargando estudiantes...",
+      "en": "Loading students…"
+    },
+    {
+      "es": "Cargando perfiles estudiantiles...",
+      "en": "Loading student profiles…"
+    },
+    {
+      "es": "Cargando información de inclusión...",
+      "en": "Loading inclusion information…"
+    },
+    {
+      "es": "Generando plan adaptativo...",
+      "en": "Generating adaptive plan…"
+    },
+    {
+      "es": "Generando plan...",
+      "en": "Generating plan…"
+    },
+    {
+      "es": "Estudiantes",
+      "en": "Students"
+    },
+    {
+      "es": "Estudiantes con seguimiento activo",
+      "en": "Students with active monitoring"
+    },
+    {
+      "es": "Información comprensible para familias y acudientes sobre el acompañamiento educativo de los estudiantes.",
+      "en": "Clear information for families and caregivers about students' educational support process."
+    },
+    {
+      "es": "Centro de apoyo para equipos de inclusión, orientación y directivos. Permite identificar estudiantes que requieren seguimiento, estrategias inclusivas, ajustes razonables y acciones asociadas al PIAR.",
+      "en": "Support center for inclusion teams, counselors and school leaders. It identifies students who require monitoring, inclusive strategies, reasonable accommodations and PIAR-related actions."
+    },
+    {
+      "es": "Espacio docente para consultar estudiantes, perfiles de aprendizaje, niveles de apoyo, estrategias inclusivas y recomendaciones pedagógicas.",
+      "en": "Teacher workspace for reviewing students, learning profiles, support levels, inclusive strategies and educational recommendations."
+    },
+    {
+      "es": "Estrategias multidimensionales y apoyos para el aprendizaje.",
+      "en": "Multidimensional learning strategies and supports."
+    },
+    {
+      "es": "Intereses y preferencias de actividad para reflexión vocacional.",
+      "en": "Activity interests and preferences for vocational reflection."
+    },
+    {
+      "es": "Identifica el estilo de aprendizaje experiencial.",
+      "en": "Identifies experiential learning style."
+    },
+    {
+      "es": "No fue posible cargar estudiantes desde el servidor.",
+      "en": "Students could not be loaded from the backend."
+    },
+    {
+      "es": "No fue posible cargar estudiantes desde el servidor.",
+      "en": "Could not load students from the backend."
+    },
+    {
+      "es": "No fue posible generar el plan adaptativo.",
+      "en": "The adaptive plan could not be generated."
+    },
+    {
+      "es": "No fue posible generar el plan adaptativo.",
+      "en": "Could not generate the adaptive plan."
+    },
+    {
+      "es": "No fue posible cargar información de inclusión desde el servidor.",
+      "en": "Inclusion information could not be loaded from the backend."
+    },
+    {
+      "es": "No fue posible cargar la información para familias.",
+      "en": "Family information could not be loaded."
+    },
+    {
+      "es": "No fue posible cargar la información para familias.",
+      "en": "Could not load information for families."
+    },
+    {
+      "es": "No fue posible cargar los perfiles estudiantiles desde el servidor.",
+      "en": "Student profiles could not be loaded from the backend."
+    },
+    {
+      "es": "No fue posible cargar los perfiles estudiantiles desde el servidor.",
+      "en": "Could not load student profiles from the backend."
+    },
+    {
+      "es": "Autenticación requerida",
+      "en": "Authentication required"
+    },
+    {
+      "es": "Servicio no disponible",
+      "en": "Service unavailable"
+    },
+    {
+      "es": "La ruta de estudiantes no está disponible en esta versión del servidor.",
+      "en": "The student route is unavailable in this backend version."
+    },
+    {
+      "es": "La ruta de estudiantes no está disponible en esta versión del servidor.",
+      "en": "The students endpoint is unavailable in this backend version."
+    },
+    {
+      "es": "Su cuenta no tiene autorización para consultar estudiantes.",
+      "en": "Your account is not authorized to view students."
+    },
+    {
+      "es": "La sesión no fue aceptada por el servicio. Vuelva a autenticarse.",
+      "en": "The service did not accept the session. Please sign in again."
+    },
+    {
+      "es": "La sesión no fue aceptada por el servicio. Vuelva a autenticarse.",
+      "en": "The service did not accept the session. Sign in again."
+    },
+    {
+      "es": "Se preservó la sesión y no se mostraron datos inconsistentes.",
+      "en": "The session was preserved and inconsistent data was not displayed."
+    },
+    {
+      "es": "El servicio continúa temporalmente indisponible después de los reintentos.",
+      "en": "The service remains temporarily unavailable after retries."
+    },
+    {
+      "es": "Idioma",
+      "en": "Language"
+    },
+    {
+      "es": "Castellano",
+      "en": "Spanish"
+    },
+    {
+      "es": "Inglés",
+      "en": "English"
+    },
+    {
+      "es": "En línea",
+      "en": "Online"
+    },
+    {
+      "es": "Cerrar sesión",
+      "en": "Log out"
+    },
+    {
+      "es": "Alto",
+      "en": "High"
+    },
+    {
+      "es": "Medio",
+      "en": "Medium"
+    },
+    {
+      "es": "Bajo",
+      "en": "Low"
+    },
+    {
+      "es": "Pendiente",
+      "en": "Pending"
+    },
+    {
+      "es": "No disponible",
+      "en": "Not available"
+    },
+    {
+      "es": "· Grado",
+      "en": "· Grade"
+    },
+    {
+      "es": "· Perfil",
+      "en": "· Profile"
+    },
+    {
+      "es": "· Perfil:",
+      "en": "· Profile:"
+    },
+    {
+      "es": "Interés",
+      "en": "Interest"
+    },
+    {
+      "es": "Metodología recomendada",
+      "en": "Recommended methodology"
+    },
+    {
+      "es": "Recursos recomendados",
+      "en": "Recommended resources"
+    },
+    {
+      "es": "Regenerar plan adaptativo",
+      "en": "Regenerate adaptive plan"
+    },
+    {
+      "es": "Cargando preguntas Kolb...",
+      "en": "Loading Kolb questions..."
+    },
+    {
+      "es": "Formulario Kolb real",
+      "en": "Kolb response form"
+    },
+    {
+      "es": "En cada grupo debe asignar 4, 3, 2 y 1 una sola vez. Use 4 para la frase que más lo representa y 1 para la que menos lo representa.",
+      "en": "In each group, assign 4, 3, 2 and 1 once each. Use 4 for the statement that describes you most and 1 for the statement that describes you least."
+    },
+    {
+      "es": "Registro confirmado en historial:",
+      "en": "Record confirmed in history:"
+    },
+    {
+      "es": "Grupo",
+      "en": "Group"
+    },
+    {
+      "es": "Valores usados:",
+      "en": "Values used:"
+    },
+    {
+      "es": "Consultar historial sin volver a enviar",
+      "en": "View history without resubmitting"
+    },
+    {
+      "es": "Comprobar historial sin volver a enviar",
+      "en": "Check history without resubmitting"
+    },
+    {
+      "es": "Cargando historial...",
+      "en": "Loading history..."
+    },
+    {
+      "es": "· Fecha:",
+      "en": "· Date:"
+    },
+    {
+      "es": "¿Cómo aprende mejor?",
+      "en": "How do they learn best?"
+    },
+    {
+      "es": "Recomendaciones para la familia",
+      "en": "Recommendations for families"
+    },
+    {
+      "es": "Estrategias de acompañamiento",
+      "en": "Support strategies"
+    },
+    {
+      "es": "Mantener comunicación permanente con docentes y orientadores para fortalecer el proceso educativo.",
+      "en": "Maintain regular communication with teachers and counsellors to support the educational process."
+    },
+    {
+      "es": "Estado de preparación institucional",
+      "en": "Institutional readiness status"
+    },
+    {
+      "es": "Estrategias inclusivas sugeridas",
+      "en": "Suggested inclusive strategies"
+    },
+    {
+      "es": "Acción institucional recomendada",
+      "en": "Recommended institutional action"
+    },
+    {
+      "es": "Revisar necesidad de ajustes razonables, documentar evidencia pedagógica y definir seguimiento con equipo de inclusión.",
+      "en": "Review the need for reasonable accommodations, document educational evidence and plan follow-up with the inclusion team."
+    },
+    {
+      "es": "Inicie sesión",
+      "en": "Sign in"
+    },
+    {
+      "es": "Servicios de investigación consultados por el cliente.",
+      "en": "Research endpoints queried by the client."
+    },
+    {
+      "es": "Señales construidas únicamente desde respuestas disponibles.",
+      "en": "Signals built only from available responses."
+    },
+    {
+      "es": "Servicios sin respuesta; no se aplicaron valores de sustitución.",
+      "en": "Endpoints without a response; no fallback values were used."
+    },
+    {
+      "es": "Los porcentajes de madurez y preparación se muestran como no calculados: los contratos del servidor actuales no entregan métricas cuantitativas certificadas. La interfaz no infiere ni sustituye esos valores. Evidencias del servidor visibles:",
+      "en": "Maturity and readiness percentages are not calculated: the current backend contracts do not provide certified quantitative metrics. The interface does not infer or replace these values. Visible backend evidence:"
+    },
+    {
+      "es": "Origen:",
+      "en": "Source:"
+    },
+    {
+      "es": "años",
+      "en": "years old"
+    },
+    {
+      "es": "Estrategias inclusivas",
+      "en": "Inclusive strategies"
+    },
+    {
+      "es": "Recomendaciones inteligentes",
+      "en": "Intelligent recommendations"
+    },
+    {
+      "es": "Próximas acciones",
+      "en": "Next actions"
+    },
+    {
+      "es": "Nivel de apoyo:",
+      "en": "Support level:"
+    },
+    {
+      "es": "Panorama ejecutivo de la madurez científica, ética, tecnológica y de despliegue de la plataforma ILP para investigación doctoral.",
+      "en": "Executive overview of scientific, ethical, technological and deployment maturity for the ILP doctoral research platform."
+    },
+    {
+      "es": "Avance de la investigación doctoral",
+      "en": "Doctoral Research Progress"
+    },
+    {
+      "es": "La plataforma ofrece un entorno de validación investigativa con evidencias de gobernanza, explicabilidad, equidad, seguridad, arquitectura y preparación del piloto.",
+      "en": "The platform has evolved into a research validation environment with governance, explainability, fairness, security, architecture and pilot readiness evidence."
+    },
+    {
+      "es": "Preparación institucional",
+      "en": "Institutional Readiness"
+    },
+    {
+      "es": "Backend validado con ejecución en PostgreSQL.",
+      "en": "Backend validated with PostgreSQL runtime."
+    },
+    {
+      "es": "Documentación OpenAPI y Swagger disponible.",
+      "en": "OpenAPI and Swagger documentation operational."
+    },
+    {
+      "es": "Comprobaciones de salud, actividad y disponibilidad de Actuator disponibles.",
+      "en": "Actuator health, liveness and readiness available."
+    },
+    {
+      "es": "Próximo enfoque: protocolo del piloto, documentación ética, validación por expertos e instrumentos de investigación.",
+      "en": "Next focus: pilot protocol, ethics documentation, expert validation and research instruments."
+    },
+    {
+      "es": "Plataforma de Aprendizaje Inclusivo (ILP)",
+      "en": "Inclusive Learning Platform (ILP)"
+    },
+    {
+      "es": "Entorno de validación investigativa doctoral · Tecnología educativa · IA explicable · Educación inclusiva · 2026",
+      "en": "Doctoral Research Validation Environment · Educational Technology · Explainable AI · Inclusive Education · 2026"
+    },
+    {
+      "es": "Espacio de análisis para seguir la madurez científica, ética, arquitectónica y tecnológica de la plataforma ILP de investigación doctoral.",
+      "en": "Executive analytics workspace for monitoring the scientific, ethical, architectural and technological maturity of the ILP doctoral research platform."
+    },
+    {
+      "es": "Actualizar evidencias",
+      "en": "Refresh evidence"
+    },
+    {
+      "es": "Consultando evidencias científicas y tecnológicas...",
+      "en": "Consulting scientific and technological evidence..."
+    },
+    {
+      "es": "Evidencias visibles",
+      "en": "Visible evidence"
+    },
+    {
+      "es": "Sin especificar",
+      "en": "Unspecified"
+    },
+    {
+      "es": "Riesgo adaptativo:",
+      "en": "Adaptive risk:"
+    },
+    {
+      "es": "No fue posible conectar con el servicio de investigación.",
+      "en": "Could not connect to the research service."
+    },
+    {
+      "es": "No fue posible cargar la definición del instrumento KOLB_V1.",
+      "en": "Could not load the KOLB_V1 instrument definition."
+    },
+    {
+      "es": "Dimensión:",
+      "en": "Dimension:"
+    },
+    {
+      "es": "de",
+      "en": "of"
+    },
+    {
+      "es": "% completado",
+      "en": "% complete"
+    },
+    {
+      "es": "Para continuar debe usar exactamente una vez los valores 1, 2, 3 y 4.",
+      "en": "To continue, use each value 1, 2, 3 and 4 exactly once."
+    },
+    {
+      "es": "Respuesta válida para esta pregunta.",
+      "en": "Valid response for this question."
+    },
+    {
+      "es": "Las respuestas ipsativas son válidas. En el siguiente ciclo se conectarán con el Assessment Response Engine para persistencia, histórico longitudinal y dataset ML/DL.",
+      "en": "The ipsative responses are valid. Connection to the response engine for persistence, longitudinal history and the ML/DL dataset is pending."
+    },
+    {
+      "es": "Total de respuestas generadas:",
+      "en": "Total generated responses:"
+    },
+    {
+      "es": "Asigne 4 a la opción que más lo representa y 1 a la que menos lo representa. No repita valores.",
+      "en": "Assign 4 to the option that describes you most and 1 to the option that describes you least. Do not repeat values."
+    },
+    {
+      "es": "El servicio está iniciando",
+      "en": "The service is starting"
+    },
+    {
+      "es": "Render está reactivando el servidor. Reintento",
+      "en": "Render is waking the backend. Retry"
+    },
+    {
+      "es": "; sus datos y su sesión permanecen intactos.",
+      "en": "; your data and session remain intact."
+    },
+    {
+      "es": "No fue posible establecer comunicación con el servicio de estudiantes.",
+      "en": "Could not communicate with the student service."
+    },
+    {
+      "es": "Ocurrió un error inesperado al consultar el servicio de estudiantes.",
+      "en": "An unexpected error occurred while querying the student service."
+    },
+    {
+      "es": "NO DISPONIBLE",
+      "en": "UNAVAILABLE"
+    },
+    {
+      "es": "Gobernanza de IA educativa",
+      "en": "Educational AI governance"
+    },
+    {
+      "es": "Confiabilidad institucional",
+      "en": "Institutional reliability"
+    },
+    {
+      "es": "Equidad y sesgo",
+      "en": "Fairness and bias"
+    },
+    {
+      "es": "Gobernanza arquitectónica",
+      "en": "Architecture governance"
+    },
+    {
+      "es": "Preparación Kubernetes",
+      "en": "Kubernetes readiness"
+    },
+    {
+      "es": "Ética de investigación",
+      "en": "Research ethics"
+    },
+    {
+      "es": "Validación por expertos",
+      "en": "Expert validation"
+    },
+    {
+      "es": "Instrumentos de investigación",
+      "en": "Research instruments"
+    },
+    {
+      "es": "Centro de evaluaciones",
+      "en": "Assessment center"
+    },
+    {
+      "es": "Los envíos antiguos están deshabilitados hasta aprobar la institución y el instrumento. Esta página no recoge ni envía respuestas.",
+      "en": "Legacy submissions are disabled pending institutional and instrument approval. This page does not collect or submit answers."
+    },
+    {
+      "es": "Kolb, Felder-Silverman y Kuder requieren versión aprobada, manual de puntuación, asignación institucional y consentimiento versionado. Los perfiles existentes no confirman una evaluación nueva.",
+      "en": "Kolb, Felder-Silverman and Kuder require an approved version, scoring manual, institutional assignment and versioned consent. Existing student profiles do not confirm a new assessment."
+    },
+    {
+      "es": "Historial y evidencia autorizados",
+      "en": "Authorized history and evidence"
+    },
+    {
+      "es": "El circuito autorizado requiere un servidor configurado e identificadores válidos. La visualización local no lo activa.",
+      "en": "The authorized circuit requires a configured backend and valid identifiers. Local visualization does not activate it."
+    },
+    {
+      "es": "Historial antiguo Kolb (solo lectura)",
+      "en": "Legacy Kolb history (read only)"
+    },
+    {
+      "es": "No se pudo verificar el servicio. Esto no equivale a un historial vacío.",
+      "en": "The service could not be verified. This is not an empty history."
+    },
+    {
+      "es": "No hay estudiantes disponibles.",
+      "en": "No students available."
+    },
+    {
+      "es": "Estudiante",
+      "en": "Student"
+    },
+    {
+      "es": "Consultar historial sin enviar",
+      "en": "Read history without submitting"
+    },
+    {
+      "es": "No se devolvieron evaluaciones antiguas Kolb para este estudiante.",
+      "en": "No legacy Kolb assessments were returned for this student."
+    },
+    {
+      "es": "El envío está deshabilitado hasta aprobar la institución y el instrumento. No se confirmó un envío exitoso.",
+      "en": "Submission is disabled pending institutional and instrument approval. No successful submission was confirmed."
+    },
+    {
+      "es": "No hay estudiantes disponibles en la respuesta del servicio.",
+      "en": "No students are available in the service response."
+    },
+    {
+      "es": "Acceso denegado o verificación fallida. No hay descarga disponible.",
+      "en": "Access denied or verification failed. No download is available."
+    },
+    {
+      "es": "Investigación autorizada",
+      "en": "Authorized research"
+    },
+    {
+      "es": "Identificador de asignación institucional",
+      "en": "Institutional assignment ID"
+    },
+    {
+      "es": "Consultar historial",
+      "en": "Load history"
+    },
+    {
+      "es": "Verificar dataset",
+      "en": "Verify dataset"
+    },
+    {
+      "es": "Manifiesto",
+      "en": "Manifest"
+    },
+    {
+      "es": "Retirar consentimiento",
+      "en": "Withdraw consent"
+    },
+    {
+      "es": "Use el identificador de su evidencia de aceptación. El retiro bloquea nuevos envíos, historial y exportación en este circuito.",
+      "en": "Use your acceptance evidence ID. Withdrawal blocks future submission, history and export through this circuit."
+    },
+    {
+      "es": "Identificador de evidencia de aceptación",
+      "en": "Acceptance evidence ID"
+    },
+    {
+      "es": "¿Confirma el retiro del consentimiento?",
+      "en": "Confirm consent withdrawal?"
+    },
+    {
+      "es": "Consentimiento retirado.",
+      "en": "Consent withdrawn."
+    },
+    {
+      "es": "No fue posible iniciar la configuración MFA. Puede que ya esté configurada.",
+      "en": "MFA setup could not be started. It may already be configured."
+    },
+    {
+      "es": "El código no fue válido o ya expiró.",
+      "en": "The code was invalid or expired."
+    },
+    {
+      "es": "Proteja su cuenta mediante una aplicación autenticadora compatible con TOTP.",
+      "en": "Protect your account with a TOTP-compatible authenticator application."
+    },
+    {
+      "es": "MFA quedó activada correctamente.",
+      "en": "MFA was enabled successfully."
+    },
+    {
+      "es": "Configurar MFA",
+      "en": "Set up MFA"
+    },
+    {
+      "es": "El secreto se muestra una sola vez. No lo comparta ni lo incluya en capturas.",
+      "en": "The secret is shown once. Do not share it or include it in screenshots."
+    },
+    {
+      "es": "Clave de configuración",
+      "en": "Setup key"
+    },
+    {
+      "es": "Introduzca esta clave manualmente en su aplicación autenticadora y genere un código de seis dígitos.",
+      "en": "Enter this key manually in your authenticator app and generate a six-digit code."
+    },
+    {
+      "es": "Código de verificación",
+      "en": "Verification code"
+    },
+    {
+      "es": "Ingrese seis dígitos.",
+      "en": "Enter six digits."
+    },
+    {
+      "es": "Verificar y activar",
+      "en": "Verify and enable"
+    },
+    {
+      "es": "No se sustituyó la respuesta por datos estáticos ni de demostración.",
+      "en": "The response was not replaced by static or demonstration data."
+    },
+    {
+      "es": "Sin respuesta del servicio.",
+      "en": "No response from the service."
+    }
+  ],
+  "aliases": {
+    "Institutional Inclusion Overview": 0,
+    "Panorama institucional de inclusión": 0,
+    "Inclusive Educational AI Research Center": 1,
+    "Centro de investigación en IA educativa inclusiva": 1,
+    "Multi-Factor Authentication": 2,
+    "Autenticación multifactor": 3,
+    "Generic Instrument Engine": 4,
+    "Motor genérico de instrumentos": 4,
+    "Dynamic definition provided by the backend.": 5,
+    "Definición dinámica proporcionada por el backend.": 5,
+    "Generic API": 6,
+    "API genérica": 6,
+    "Temporary compatibility": 7,
+    "Compatibilidad temporal": 7,
+    "Reload": 8,
+    "Recargar": 8,
+    "Retry": 9,
+    "Reintentar": 9,
+    "The instrument definition could not be loaded": 10,
+    "No fue posible cargar la definición del instrumento": 10,
+    "Forms and instruments": 11,
+    "Formularios e instrumentos": 11,
+    "Instrument availability": 12,
+    "Disponibilidad de instrumentos": 12,
+    "Forms are shown when their validated definition is available.": 13,
+    "Los formularios se muestran cuando está disponible su definición validada.": 13,
+    "The service is unavailable. No response has been saved.": 14,
+    "El servicio no está disponible. No se ha guardado ninguna respuesta.": 14,
+    "No students are available for assessment.": 15,
+    "No hay estudiantes disponibles para evaluación.": 15,
+    "Student selection is required for the real Kolb form.": 16,
+    "Se requiere seleccionar un estudiante para el formulario Kolb real.": 16,
+    "Real student response form": 17,
+    "Formulario real de respuestas del estudiante": 17,
+    "Controlled non-persistent demonstration": 18,
+    "Demostración controlada sin persistencia": 18,
+    "Form unavailable": 19,
+    "Formulario no disponible": 19,
+    "Students could not be loaded. The instrument catalog remains visible.": 20,
+    "No fue posible cargar estudiantes. El catálogo de instrumentos permanece visible.": 20,
+    "Grade": 21,
+    "Grado": 21,
+    "Current profile": 22,
+    "Perfil actual": 22,
+    "Support level": 23,
+    "Nivel de apoyo": 23,
+    "Adaptive risk": 24,
+    "Riesgo adaptativo": 24,
+    "Updated student profile": 25,
+    "Perfil actualizado del estudiante": 25,
+    "Vocational": 26,
+    "Vocacional": 26,
+    "Support": 27,
+    "Apoyo": 27,
+    "Plan generated": 28,
+    "Plan generado": 28,
+    "Risk": 29,
+    "Riesgo": 29,
+    "Generate updated adaptive plan": 30,
+    "Generar plan adaptativo actualizado": 30,
+    "Generating plan": 31,
+    "Generando plan": 31,
+    "Adaptive pathway": 32,
+    "Ruta adaptativa": 32,
+    "Teaching actions": 33,
+    "Acciones docentes": 33,
+    "Inclusion actions": 34,
+    "Acciones de inclusión": 34,
+    "Family actions": 35,
+    "Acciones familiares": 35,
+    "Educational monitoring": 36,
+    "Seguimiento educativo": 36,
+    "Teacher support": 37,
+    "Apoyo docente": 37,
+    "Reasonable accommodations": 38,
+    "Ajustes razonables": 38,
+    "Family participation": 39,
+    "Participación familiar": 40,
+    "Monitored students": 41,
+    "Estudiantes monitoreados": 41,
+    "Priority monitoring": 42,
+    "Seguimiento prioritario": 42,
+    "PIAR preparation": 43,
+    "Preparación PIAR": 43,
+    "Support needs identification": 44,
+    "Identificación de necesidades de apoyo": 44,
+    "Documented inclusive strategies": 45,
+    "Estrategias inclusivas documentadas": 45,
+    "Reasonable accommodation preparation": 46,
+    "Preparación de ajustes razonables": 46,
+    "Assigned students": 47,
+    "Estudiantes asignados": 47,
+    "Medium support": 48,
+    "Apoyo medio": 48,
+    "High support": 49,
+    "Apoyo alto": 49,
+    "Consulted contracts": 50,
+    "Contratos consultados": 50,
+    "Backend responses": 51,
+    "Respuestas backend": 51,
+    "Unavailable": 52,
+    "No disponibles": 52,
+    "Backend response": 53,
+    "respuesta backend": 54,
+    "No backend response": 55,
+    "sin respuesta backend": 56,
+    "Inclusive supports registered": 57,
+    "Apoyos inclusivos registrados": 57,
+    "Families involved": 58,
+    "Familias vinculadas": 58,
+    "Educational profiles prioritized for pedagogical support.": 59,
+    "Perfiles educativos priorizados para acompañamiento pedagógico.": 59,
+    "Generated educational suggestions to support teaching decisions.": 60,
+    "Sugerencias educativas generadas para apoyar decisiones docentes.": 60,
+    "Universal Design for Learning strategies, reasonable accommodations and documented classroom actions.": 61,
+    "Estrategias DUA, ajustes razonables y acciones de aula documentadas.": 61,
+    "Caregivers connected to the educational monitoring process.": 62,
+    "Acudientes conectados al proceso de seguimiento educativo.": 62,
+    "Identify educational support needs without issuing clinical diagnoses.": 63,
+    "Identificar necesidades de apoyo educativo sin emitir diagnósticos clínicos.": 63,
+    "Support teachers with understandable pedagogical recommendations.": 64,
+    "Acompañar al docente con recomendaciones pedagógicas comprensibles.": 64,
+    "Strengthen institutional monitoring of inclusion and retention.": 65,
+    "Fortalecer el seguimiento institucional de inclusión y permanencia.": 65,
+    "Loading inclusion information": 66,
+    "Cargando información de inclusión": 66,
+    "Loading student profiles": 67,
+    "Cargando perfiles estudiantiles": 67,
+    "Loading students": 68,
+    "Cargando estudiantes": 68,
+    "Generating adaptive plan": 69,
+    "Generando plan adaptativo": 69,
+    "Learning profile": 70,
+    "Perfil de aprendizaje": 70,
+    "Vocational interest": 71,
+    "Interés vocacional": 71,
+    "Educational recommendations": 72,
+    "Recomendaciones pedagógicas": 72,
+    "General administration and institutional configuration.": 73,
+    "Administración general y configuración institucional.": 73,
+    "User Management": 74,
+    "Gestión de usuarios": 74,
+    "Role Management": 75,
+    "Gestión de roles": 75,
+    "Permission Management": 76,
+    "Gestión de permisos": 76,
+    "Authentication Code": 77,
+    "Código de autenticación": 77,
+    "Enter the 6-digit code": 78,
+    "Ingrese el código de 6 dígitos": 78,
+    "MFA QR preview": 79,
+    "Vista previa del código QR de MFA": 79,
+    "Previous": 80,
+    "Anterior": 80,
+    "Next": 81,
+    "Siguiente": 81,
+    "Finish instrument": 82,
+    "Finalizar instrumento": 82,
+    "Instrument completed successfully": 83,
+    "Instrumento completado correctamente": 83,
+    "Question": 84,
+    "Pregunta": 84,
+    "completed": 85,
+    "completado": 85,
+    "Ranking": 86,
+    "Clasificación": 87,
+    "Complete": 88,
+    "Completo": 88,
+    "None": 89,
+    "ninguno": 89,
+    "Used values": 90,
+    "Valores usados": 90,
+    "Select a value that has not been repeated in this group.": 91,
+    "Seleccione un valor no repetido en este grupo.": 91,
+    "Sending": 92,
+    "Enviando": 92,
+    "Submit real Kolb responses": 93,
+    "Enviar respuestas reales Kolb": 93,
+    "Kolb assessment history": 94,
+    "Historial de evaluaciones Kolb": 94,
+    "Loading history": 95,
+    "Cargando historial": 95,
+    "This student does not yet have any registered Kolb assessments.": 96,
+    "Este estudiante aún no tiene evaluaciones Kolb registradas.": 96,
+    "Date": 97,
+    "Fecha": 97,
+    "The Kolb questions could not be loaded.": 98,
+    "No fue posible cargar las preguntas de Kolb.": 98,
+    "The Kolb form could not be submitted.": 99,
+    "No fue posible enviar el formulario Kolb.": 99,
+    "In this group, the value": 100,
+    "En este grupo, el valor": 100,
+    "has already been used.": 101,
+    "ya fue usado.": 101,
+    "You must complete all groups using the values 4, 3, 2 and 1 exactly once.": 102,
+    "Debe completar todos los grupos usando exactamente una vez los valores 4, 3, 2 y 1.": 102,
+    "Doctoral Research Validation Environment": 103,
+    "Entorno de validación de investigación doctoral": 103,
+    "Inclusive Learning Platform": 104,
+    "Plataforma de Aprendizaje Inclusivo": 104,
+    "Artificial Intelligence for Inclusive Education": 105,
+    "Inteligencia artificial para la educación inclusiva": 105,
+    "Inclusive Education": 106,
+    "Educación inclusiva": 106,
+    "Explainable Artificial Intelligence": 107,
+    "Inteligencia artificial explicable": 107,
+    "Security, Privacy & Governance": 108,
+    "Seguridad, privacidad y gobernanza": 108,
+    "Research Validation & Evidence": 109,
+    "Validación y evidencia de investigación": 109,
+    "Research Platform Access": 110,
+    "Acceso a la plataforma de investigación": 110,
+    "Secure authentication for researchers, educators and institutional stakeholders.": 111,
+    "Autenticación segura para investigadores, educadores y actores institucionales.": 111,
+    "Authentication successful.": 112,
+    "Autenticación correcta.": 112,
+    "Multi-factor authentication required.": 113,
+    "Se requiere autenticación multifactor.": 113,
+    "Institutional Email": 114,
+    "Correo institucional": 114,
+    "Password": 115,
+    "Contraseña": 115,
+    "MFA Verification Code": 116,
+    "Código de verificación MFA": 116,
+    "Verify Authentication": 117,
+    "Verificar autenticación": 117,
+    "Access Platform": 118,
+    "Acceder a la plataforma": 118,
+    "Administration": 119,
+    "Administración": 119,
+    "Adaptive Educational Intelligence": 120,
+    "Inteligencia educativa adaptativa": 120,
+    "Adaptive Intelligence": 121,
+    "Inteligencia adaptativa": 121,
+    "Assessment Center": 122,
+    "Centro de evaluación": 122,
+    "Educational Assessment Engine": 123,
+    "Motor de evaluación educativa": 123,
+    "Educational Community View": 124,
+    "Panorama de la comunidad educativa": 124,
+    "Teacher Decision Support": 125,
+    "Apoyo a decisiones docentes": 125,
+    "Teacher Workspace": 126,
+    "Espacio docente": 126,
+    "Student Educational Support": 127,
+    "Apoyo educativo estudiantil": 127,
+    "Student Support": 128,
+    "Apoyo estudiantil": 128,
+    "Inclusive Education Support": 129,
+    "Apoyo a la educación inclusiva": 129,
+    "Institutional Overview": 130,
+    "Panorama institucional": 130,
+    "Family Educational Support": 131,
+    "Apoyo educativo familiar": 131,
+    "Family Engagement": 40,
+    "Family Engagement Center": 132,
+    "Centro de participación familiar": 132,
+    "Adaptive Intelligence Center": 133,
+    "Centro de inteligencia adaptativa": 133,
+    "Student Support Profile": 134,
+    "Perfil de apoyo estudiantil": 134,
+    "Inclusion & PIAR Center": 135,
+    "Centro de inclusión y PIAR": 135,
+    "Security & Research Access Center": 136,
+    "Centro de seguridad y acceso a la investigación": 136,
+    "Doctoral Research Analytics": 137,
+    "Analítica de investigación doctoral": 137,
+    "Doctoral Research Executive View": 138,
+    "Panorama ejecutivo de investigación doctoral": 138,
+    "Research & Evaluation": 139,
+    "Investigación y evaluación": 139,
+    "Secure Research Access": 140,
+    "Acceso seguro a la investigación": 140,
+    "Security & Privacy": 141,
+    "Seguridad y privacidad": 141,
+    "Form Engine Preview": 142,
+    "Vista previa del motor de formularios": 142,
+    "Loading students…": 143,
+    "Cargando estudiantes...": 143,
+    "Loading student profiles…": 144,
+    "Cargando perfiles estudiantiles...": 144,
+    "Loading inclusion information…": 145,
+    "Cargando información de inclusión...": 145,
+    "Generating adaptive plan…": 146,
+    "Generando plan adaptativo...": 146,
+    "Generating plan…": 147,
+    "Generando plan...": 147,
+    "Students": 148,
+    "Estudiantes": 148,
+    "Students with active monitoring": 149,
+    "Estudiantes con seguimiento activo": 149,
+    "Clear information for families and caregivers about students' educational support process.": 150,
+    "Información comprensible para familias y acudientes sobre el acompañamiento educativo de los estudiantes.": 150,
+    "Support center for inclusion teams, counselors and school leaders. It identifies students who require monitoring, inclusive strategies, reasonable accommodations and PIAR-related actions.": 151,
+    "Centro de apoyo para equipos de inclusión, orientación y directivos. Permite identificar estudiantes que requieren seguimiento, estrategias inclusivas, ajustes razonables y acciones asociadas al PIAR.": 151,
+    "Teacher workspace for reviewing students, learning profiles, support levels, inclusive strategies and educational recommendations.": 152,
+    "Espacio docente para consultar estudiantes, perfiles de aprendizaje, niveles de apoyo, estrategias inclusivas y recomendaciones pedagógicas.": 152,
+    "Multidimensional learning strategies and supports.": 153,
+    "Estrategias multidimensionales y apoyos para el aprendizaje.": 153,
+    "Activity interests and preferences for vocational reflection.": 154,
+    "Intereses y preferencias de actividad para reflexión vocacional.": 154,
+    "Identifies experiential learning style.": 155,
+    "Identifica el estilo de aprendizaje experiencial.": 155,
+    "Students could not be loaded from the backend.": 156,
+    "No fue posible cargar estudiantes desde el backend.": 157,
+    "The adaptive plan could not be generated.": 158,
+    "No fue posible generar el plan adaptativo.": 159,
+    "Inclusion information could not be loaded from the backend.": 160,
+    "No fue posible cargar información de inclusión desde el backend.": 160,
+    "Family information could not be loaded.": 161,
+    "No fue posible cargar la información para familias.": 162,
+    "Student profiles could not be loaded from the backend.": 163,
+    "No fue posible cargar los perfiles estudiantiles desde el backend.": 164,
+    "Authentication required": 165,
+    "Autenticación requerida": 165,
+    "Service unavailable": 166,
+    "Servicio no disponible": 166,
+    "The student route is unavailable in this backend version.": 167,
+    "La ruta de estudiantes no está disponible en esta versión del backend.": 168,
+    "Your account is not authorized to view students.": 169,
+    "Su cuenta no tiene autorización para consultar estudiantes.": 169,
+    "The service did not accept the session. Please sign in again.": 170,
+    "La sesión no fue aceptada por el servicio. Vuelva a autenticarse.": 171,
+    "The session was preserved and inconsistent data was not displayed.": 172,
+    "Se preservó la sesión y no se mostraron datos inconsistentes.": 172,
+    "The service remains temporarily unavailable after retries.": 173,
+    "El servicio continúa temporalmente indisponible después de los reintentos.": 173,
+    "Language": 174,
+    "Idioma": 174,
+    "Spanish": 175,
+    "Castellano": 175,
+    "English": 176,
+    "Inglés": 176,
+    "Online": 177,
+    "En línea": 177,
+    "Log out": 178,
+    "Cerrar sesión": 178,
+    "High": 179,
+    "Alto": 179,
+    "Medium": 180,
+    "Medio": 180,
+    "Low": 181,
+    "Bajo": 181,
+    "Pending": 182,
+    "Pendiente": 182,
+    "Not available": 183,
+    "No disponible": 183,
+    "· Grado": 184,
+    "· Perfil": 185,
+    "· Perfil:": 186,
+    "Interés": 187,
+    "Metodología recomendada": 188,
+    "Recursos recomendados": 189,
+    "Regenerar plan adaptativo": 190,
+    "Cargando preguntas Kolb...": 191,
+    "Formulario Kolb real": 192,
+    "En cada grupo debe asignar 4, 3, 2 y 1 una sola vez. Use 4 para la frase que más lo representa y 1 para la que menos lo representa.": 193,
+    "Registro confirmado en historial:": 194,
+    "Grupo": 195,
+    "Valores usados:": 196,
+    "Consultar historial sin volver a enviar": 197,
+    "Comprobar historial sin volver a enviar": 198,
+    "Cargando historial...": 199,
+    "· Fecha:": 200,
+    "¿Cómo aprende mejor?": 201,
+    "Recomendaciones para la familia": 202,
+    "Estrategias de acompañamiento": 203,
+    "Mantener comunicación permanente con docentes y orientadores para fortalecer el proceso educativo.": 204,
+    "Estado de preparación institucional": 205,
+    "Estrategias inclusivas sugeridas": 206,
+    "Acción institucional recomendada": 207,
+    "Revisar necesidad de ajustes razonables, documentar evidencia pedagógica y definir seguimiento con equipo de inclusión.": 208,
+    "Inicie sesión / Sign in": 209,
+    "Endpoints de Research consultados por el cliente.": 210,
+    "Señales construidas únicamente desde respuestas disponibles.": 211,
+    "Endpoints sin respuesta; no se aplicaron valores fallback.": 212,
+    "Los porcentajes de madurez y readiness se muestran como no calculados: los contratos backend actuales no entregan métricas cuantitativas certificadas. La interfaz no infiere ni sustituye esos valores. Evidencias backend visibles:": 213,
+    "Origen:": 214,
+    "años": 215,
+    "Estrategias inclusivas": 216,
+    "Recomendaciones inteligentes": 217,
+    "Próximas acciones": 218,
+    "Nivel de apoyo:": 219,
+    "Executive overview of scientific, ethical, technological and deployment maturity for the ILP doctoral research platform.": 220,
+    "Doctoral Research Progress": 221,
+    "The platform has evolved into a research validation environment with governance, explainability, fairness, security, architecture and pilot readiness evidence.": 222,
+    "Institutional Readiness": 223,
+    "Backend validated with PostgreSQL runtime.": 224,
+    "OpenAPI and Swagger documentation operational.": 225,
+    "Actuator health, liveness and readiness available.": 226,
+    "Next focus: pilot protocol, ethics documentation, expert validation and research instruments.": 227,
+    "Inclusive Learning Platform (ILP)": 228,
+    "Doctoral Research Validation Environment · Educational Technology · Explainable AI · Inclusive Education · 2026": 229,
+    "Executive analytics workspace for monitoring the scientific, ethical, architectural and technological maturity of the ILP doctoral research platform.": 230,
+    "Refresh evidence": 231,
+    "Consulting scientific and technological evidence...": 232,
+    "Visible evidence": 233,
+    "HIGH": 179,
+    "MEDIUM": 180,
+    "LOW": 181,
+    "UNSPECIFIED": 234,
+    "Riesgo adaptativo:": 235,
+    "No fue posible conectar con el backend. Verifique que el servicio esté activo en https://ilp-adaptive-education-service.onrender.com.": 236,
+    "No fue posible cargar la definición del instrumento KOLB_V1.": 237,
+    "Dimensión:": 238,
+    "de": 239,
+    "% completado": 240,
+    "Para continuar debe usar exactamente una vez los valores 1, 2, 3 y 4.": 241,
+    "Respuesta válida para esta pregunta.": 242,
+    "Las respuestas ipsativas son válidas. En el siguiente ciclo se conectarán con el Assessment Response Engine para persistencia, histórico longitudinal y dataset ML/DL.": 243,
+    "Total de respuestas generadas:": 244,
+    "Asigne 4 a la opción que más lo representa y 1 a la que menos lo representa. No repita valores.": 245,
+    "El servicio está iniciando": 246,
+    "Render está reactivando el backend. Reintento": 247,
+    "; sus datos y su sesión permanecen intactos.": 248,
+    "No fue posible establecer comunicación con el servicio de estudiantes.": 249,
+    "Ocurrió un error inesperado al consultar el servicio de estudiantes.": 250,
+    "NO DISPONIBLE": 251,
+    "Gobernanza de IA educativa": 252,
+    "Confiabilidad institucional": 253,
+    "Equidad y sesgo": 254,
+    "Gobernanza arquitectónica": 255,
+    "Preparación Kubernetes": 256,
+    "Ética de investigación": 257,
+    "Validación por expertos": 258,
+    "Instrumentos de investigación": 259,
+    "Assessment center": 260,
+    "Centro de evaluaciones": 260,
+    "Legacy submissions are disabled pending institutional and instrument approval. This page does not collect or submit answers.": 261,
+    "Los envíos antiguos están deshabilitados hasta aprobar la institución y el instrumento. Esta página no recoge ni envía respuestas.": 261,
+    "Kolb, Felder-Silverman and Kuder require an approved version, scoring manual, institutional assignment and versioned consent. Existing student profiles do not confirm a new assessment.": 262,
+    "Kolb, Felder-Silverman y Kuder requieren versión aprobada, manual de puntuación, asignación institucional y consentimiento versionado. Los perfiles existentes no confirman una evaluación nueva.": 262,
+    "Authorized history and evidence": 263,
+    "Historial y evidencia autorizados": 263,
+    "The authorized circuit requires a configured backend and valid identifiers. Local visualization does not activate it.": 264,
+    "El circuito autorizado requiere un backend configurado e identificadores válidos. La visualización local no lo activa.": 264,
+    "Legacy Kolb history (read only)": 265,
+    "Historial antiguo Kolb (solo lectura)": 265,
+    "The service could not be verified. This is not an empty history.": 266,
+    "No se pudo verificar el servicio. Esto no equivale a un historial vacío.": 266,
+    "No students available.": 267,
+    "No hay estudiantes disponibles.": 267,
+    "Student": 268,
+    "Estudiante": 268,
+    "Read history without submitting": 269,
+    "Consultar historial sin enviar": 269,
+    "No legacy Kolb assessments were returned for this student.": 270,
+    "No se devolvieron evaluaciones antiguas Kolb para este estudiante.": 270,
+    "Submission is disabled pending institutional and instrument approval. No successful submission was confirmed.": 271,
+    "El envío está deshabilitado hasta aprobar la institución y el instrumento. No se confirmó un envío exitoso.": 271,
+    "No hay estudiantes disponibles en la respuesta del servicio.": 272,
+    "No students are available in the service response.": 272,
+    "Access denied or verification failed. No download is available.": 273,
+    "Acceso denegado o verificación fallida. No hay descarga disponible.": 273,
+    "Authorized research": 274,
+    "Investigación autorizada": 274,
+    "Institutional assignment ID": 275,
+    "Identificador de asignación institucional": 275,
+    "Load history": 276,
+    "Consultar historial": 276,
+    "Verify dataset": 277,
+    "Verificar dataset": 277,
+    "Manifest": 278,
+    "Manifiesto": 278,
+    "Withdraw consent": 279,
+    "Retirar consentimiento": 279,
+    "Use your acceptance evidence ID. Withdrawal blocks future submission, history and export through this circuit.": 280,
+    "Use el identificador de su evidencia de aceptación. El retiro bloquea nuevos envíos, historial y exportación en este circuito.": 280,
+    "Acceptance evidence ID": 281,
+    "Identificador de evidencia de aceptación": 281,
+    "Confirm consent withdrawal?": 282,
+    "¿Confirma el retiro del consentimiento?": 282,
+    "Consent withdrawn.": 283,
+    "Consentimiento retirado.": 283,
+    "No fue posible iniciar la configuración MFA. Puede que ya esté configurada.": 284,
+    "MFA setup could not be started. It may already be configured.": 284,
+    "El código no fue válido o ya expiró.": 285,
+    "The code was invalid or expired.": 285,
+    "Multi-factor authentication": 3,
+    "Proteja su cuenta mediante una aplicación autenticadora compatible con TOTP.": 286,
+    "Protect your account with a TOTP-compatible authenticator application.": 286,
+    "MFA quedó activada correctamente.": 287,
+    "MFA was enabled successfully.": 287,
+    "Configurar MFA": 288,
+    "Set up MFA": 288,
+    "El secreto se muestra una sola vez. No lo comparta ni lo incluya en capturas.": 289,
+    "The secret is shown once. Do not share it or include it in screenshots.": 289,
+    "Clave de configuración": 290,
+    "Setup key": 290,
+    "Introduzca esta clave manualmente en su aplicación autenticadora y genere un código de seis dígitos.": 291,
+    "Enter this key manually in your authenticator app and generate a six-digit code.": 291,
+    "Código de verificación": 292,
+    "Verification code": 292,
+    "Ingrese seis dígitos.": 293,
+    "Enter six digits.": 293,
+    "Verificar y activar": 294,
+    "Verify and enable": 294,
+    "No se sustituyó la respuesta por datos estáticos ni de demostración.": 295,
+    "Sin respuesta del servicio.": 296
+  }
+}
