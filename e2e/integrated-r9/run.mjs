@@ -71,7 +71,7 @@ try {
   await ready(preview, 15179);
   await run(process.execPath, ['node_modules/@playwright/test/cli.js', 'test', '--config', 'playwright.integrated-r9.config.ts'], frontend);
   const xml = await readFile(join(frontend, 'test-results/integrated-r9-results.xml'), 'utf8');
-  if ((xml.match(/<testcase\b/g) ?? []).length !== 6 || /<(failure|error|skipped)\b/.test(xml)) throw new Error('Expected six passing browser cases');
+  if ((xml.match(/<testcase\b/g) ?? []).length !== 10 || /<(failure|error|skipped)\b/.test(xml)) throw new Error('Expected ten passing browser cases');
   console.log('REAL_LOCAL_AUTHORIZATION_AND_UI_HISTORY_VERIFIED=True\nORIGINAL_INSTRUMENT_VALIDATED=False');
 } finally {
   for (const { child, completed } of owned.reverse()) {

@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: jamartinezv2023/ilp_backend
-          ref: e9fe737d146663a3f7ccc4640fee358446a8aeba
+          ref: ff0c37497e53bf519eb6215498240e48699426c7
           path: backend
       - uses: actions/checkout@v4
         with:
@@ -38,7 +38,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
         working-directory: frontend
       - name: Auth error boundary regression
-        run: ./gradlew --no-daemon --no-configuration-cache :auth-service:test --tests '*LoginBoundaryExceptionHandlerTest'
+        run: ./gradlew --no-daemon --no-configuration-cache :auth-service:test --tests '*LoginBoundaryExceptionHandlerTest' --tests '*SessionIdentityControllerTest'
         working-directory: backend
       - name: Real login, authorization, UI submission and history
         run: node e2e/integrated-r9/run.mjs ../backend

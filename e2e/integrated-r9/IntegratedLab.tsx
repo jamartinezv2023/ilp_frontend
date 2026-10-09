@@ -4,7 +4,10 @@ import { useAppDispatch, useAppSelector } from "../../src/store/hooks";
 import { authenticationFailed } from "../../src/features/auth/store/authSlice";
 import { useI18n } from "../../src/i18n/I18nProvider";
 import { authorizedScientificApi, type AuthorizedObservation } from "../../src/features/assessment-engine/services/authorizedScientificApi";
-import { ADAPTIVE_API_BASE_URL, TENANT_ID } from "../../src/config/apiConfig";
+import { verifiedDraftScope } from "../../src/features/offline/verifiedDraftScope";
+import { createSyntheticDraftStore, type DraftScope, type SyntheticDraft } from "../../src/features/offline/syntheticDraftStore";
+import { synchronizeSyntheticDraft } from "../../src/features/offline/synchronizeSyntheticDraft";
+const draftStore = createSyntheticDraftStore();
 
 type Fixture = {
   assignmentId: string; participantId: string; researchParticipantUuid: string;
@@ -41,8 +44,10 @@ function Session({ token }: { token: string }) {
   const [answer, setAnswer] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<"" | "saved" | "error">("");
-  const [started] = useState(() => new Date());
-  const [administration] = useState(() => crypto.randomUUID());
+  const [scope, setScope] = useState<DraftScope>();
+  const [draft, setDraft] = useState<SyntheticDraft>();
+  const [localStatus, setLocalStatus] = useState<"" | "saved" | "recovered">("");
+  const [controller] = useState(() => new AbortController());
   const [submitted, setSubmitted] = useState(false);
   const [fixtureKey] = useState(() => new URLSearchParams(location.search).get("fixture") ?? "es360");
   const fixture = fixtures?.[fixtureKey];
@@ -61,40 +66,38 @@ function Session({ token }: { token: string }) {
     catch { setHistory([]); setAnswer(""); setMessage("error"); }
     finally { setBusy(false); }
   }
+  useEffect(() => {
+    if (!fixture) return;
+    let active = true;
+    verifiedDraftScope(token, fixture.assignmentId, fixture.assessmentVersion)
+      .then(async value => ({ scope: value, draft: await draftStore.load(value) }))
+      .then(value => {
+        if (!active) return;
+        setScope(value.scope); setDraft(value.draft);
+        setOption(value.draft?.answer ? `R9-${value.draft.answer}` : "");
+        setLocalStatus(value.draft ? "recovered" : "");
+      }, () => { if (active) setMessage("error"); });
+    return () => { active = false; };
+  }, [fixture, token]);
+  useEffect(() => () => controller.abort(), [controller]);
+  async function saveDraft() {
+    if (!scope || !option || busy || submitted) return;
+    setBusy(true); setMessage("");
+    try {
+      const saved = await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
+      setDraft(saved); setLocalStatus("saved");
+    } catch { setMessage("error"); }
+    finally { setBusy(false); }
+  }
   async function submit() {
-    if (!fixture || !option || busy || submitted) return;
+    if (!fixture || !scope || !option || busy || submitted) return;
+    setLocalStatus("");
     await run(async () => {
-      const time = new Date();
-      const body = {
-        administrationId: administration, participantId: fixture!.participantId,
-        researchParticipantUuid: fixture!.researchParticipantUuid,
-        assessmentCode: fixture!.assessmentCode, assessmentVersion: fixture!.assessmentVersion,
-        responses: [{ questionCode: "Q1", selectedOptionIds: [option], rankings: {}, numericValue: null, textValue: null }],
-        submittedAt: time.toISOString(), context: {
-          source: "R9_ISOLATED", fieldworkPhase: "TEST_ONLY", language: locale,
-          translationVersion: "r9-test", consentId: fixture!.consentId, consentVersion: fixture!.consentVersion,
-          startedAt: started.toISOString(), durationSeconds: String(Math.floor((time.getTime() - started.getTime()) / 1000)),
-          timingSource: "CLIENT_REPORTED",
-        },
-      };
-      const response = await fetch(`${ADAPTIVE_API_BASE_URL}/api/v1/assessment-submissions`, {
-        method: "POST", cache: "no-store", headers: {
-          "Content-Type": "application/json", Authorization: `Bearer ${token}`,
-          "X-Tenant-Id": TENANT_ID, "X-Scientific-Grant": fixture!.assignmentId,
-        }, body: JSON.stringify(body),
-      });
-      if (!response.ok) throw new Error("SUBMISSION_FAILED");
-      const result = await response.json() as { administrationId: string; status: string; persistedAnswerCount: number };
-      if (result.administrationId !== administration || result.status !== "COMPLETED" || result.persistedAnswerCount !== 1) {
-        throw new Error("PERSISTENCE_NOT_CONFIRMED");
-      }
-      // A POST acknowledgement alone is insufficient: recover the same attempt and verify its snapshot.
-      const recovered = await api.history(fixture!.assignmentId);
-      const row = recovered.find(value => value.administrationId === administration);
-      if (!row) throw new Error("HISTORY_NOT_CONFIRMED");
-      const snapshot = await api.snapshot(fixture!.assignmentId, row);
-      if (!snapshot.csv.includes(option)) throw new Error("ANSWER_NOT_CONFIRMED");
-      setHistory(recovered); setAnswer(snapshot.csv); setSubmitted(true); setMessage("saved");
+      const saved = draft?.answer === (option === "R9-A" ? "A" : "B") ? draft
+        : await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
+      setDraft(saved);
+      const result = await synchronizeSyntheticDraft(token, fixture, saved, locale, controller.signal);
+      setHistory(result.history); setAnswer(result.csv); setSubmitted(true); setLocalStatus(""); setMessage("saved");
     });
   }
   return <section aria-label={en ? "Synthetic assessment" : "Evaluación sintética"}>
@@ -102,15 +105,22 @@ function Session({ token }: { token: string }) {
     <p translate="no">Synthetic High</p>
     <p translate="no" data-testid="assignment">{fixture?.assignmentId}</p>
     <p translate="no">{fixture?.assessmentCode} · {fixture?.assessmentVersion}</p>
-    <fieldset disabled={busy || submitted || !fixture}>
+    <fieldset disabled={busy || submitted || !scope}>
       <legend>{en ? "Choose a test response" : "Seleccione una respuesta de prueba"}</legend>
       {["A", "B"].map(value => <label key={value} style={{ display: "block" }}>
         <input type="radio" name="response" value={`R9-${value}`} checked={option === `R9-${value}`}
-          onChange={event => setOption(event.target.value)} />
+          onChange={event => { setOption(event.target.value); setLocalStatus(""); }} />
         {en ? `Synthetic response ${value}` : `Respuesta sintética ${value}`}
       </label>)}
     </fieldset>
-    <button disabled={!fixture || !option || busy || submitted} onClick={() => void submit()}>
+    <p data-testid="draft-attempt" translate="no">{draft?.administrationId}</p>
+    <button disabled={!scope || !option || busy || submitted} onClick={() => void saveDraft()}>
+      {en ? "Save on this device" : "Guardar en este dispositivo"}
+    </button>
+    {localStatus && <output data-testid="local-draft-status">{localStatus === "saved"
+      ? (en ? "Saved on this device. Not submitted." : "Guardado en este dispositivo. No enviado.")
+      : (en ? "Local draft recovered. Server confirmation pending." : "Borrador local recuperado. Confirmación del servidor pendiente.")}</output>}
+    <button disabled={!scope || !option || busy || submitted} onClick={() => void submit()}>
       {en ? "Submit test response" : "Enviar respuesta de prueba"}
     </button>
     <button disabled={!fixture || busy} onClick={() => void run(async () => setHistory(await api.history(fixture!.assignmentId)))}>

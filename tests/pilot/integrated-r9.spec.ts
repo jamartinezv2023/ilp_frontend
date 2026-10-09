@@ -11,8 +11,8 @@ async function tokenFor(request: APIRequestContext, user = 1) {
   expect(typeof body.accessToken).toBe("string");
   return body.accessToken as string;
 }
-async function login(page: Page, en: boolean, wrong = false) {
-  await page.getByLabel(en ? /^Institutional Email\s*\*?$/ : /^Correo institucional\s*\*?$/).fill("synthetic1@example.invalid");
+async function login(page: Page, en: boolean, wrong = false, user = 1) {
+  await page.getByLabel(en ? /^Institutional Email\s*\*?$/ : /^Correo institucional\s*\*?$/).fill(`synthetic${user}@example.invalid`);
   await page.getByLabel(en ? /^Password\s*\*?$/ : /^Contraseña\s*\*?$/).fill(wrong ? "Wrong-R9-Password!" : password);
   const result = page.waitForResponse(response => response.url().endsWith("/auth/login") && response.request().method() === "POST");
   await page.locator('button[type="submit"]').click();
@@ -26,6 +26,16 @@ for (const locale of ["es", "en"] as const) {
     const missing = await request.post("/auth/login", { data: { email: "synthetic1@example.invalid", password } });
     expect(missing.status()).toBe(400);
     const token = await tokenFor(request);
+    const identityHeaders = { "X-Tenant-Id": tenant, Authorization: `Bearer ${token}` };
+    const identity = await request.get("/auth/session-identity", { headers: identityHeaders });
+    expect(identity.status()).toBe(200);
+    expect(identity.headers()["cache-control"]).toBe("no-store");
+    expect(await identity.json()).toEqual({ userId: "90000000-0000-4000-8000-000000000001", tenantId: tenant });
+    expect((await request.get("/auth/session-identity", { headers: { "X-Tenant-Id": tenant } })).status()).toBe(401);
+    expect((await request.get("/auth/session-identity", { headers: { ...identityHeaders, Authorization: "Bearer invalid" } })).status()).toBe(401);
+    expect((await request.get("/auth/session-identity", { headers: { ...identityHeaders,
+      "X-Tenant-Id": "22222222-2222-4222-8222-222222222222" } })).status()).toBe(403);
+
     const assignment = "90000000-0000-4000-8000-000000000021";
     const uri = `/api/v1/scientific-applications/${assignment}/history`;
     expect((await request.get(uri, { headers: { "X-Tenant-Id": tenant } })).status()).toBe(401);
@@ -101,6 +111,84 @@ for (const locale of ["es", "en"] as const) {
       await expect(page.getByRole("alert")).toBeVisible();
       await expect(page.getByTestId("history").getByRole("listitem")).toHaveCount(0);
       await expect(page.getByTestId("answers")).toHaveCount(0);
+    });
+  }
+}
+
+for (const locale of ["es", "en"] as const) {
+  for (const width of [360, 1440]) {
+    test(`offline draft reauthorization and reconciliation ${locale} ${width}`, async ({ page, context, request }) => {
+      const en = locale === "en";
+      await page.setViewportSize({ width, height: 900 });
+      await page.addInitScript(value => localStorage.setItem("ilp.locale", value), locale);
+      await page.goto(`/r9.html?fixture=p02${locale}${width}`);
+      expect((await login(page, en)).status()).toBe(200);
+      const radio = page.getByRole("radio", { name: en ? "Synthetic response B" : "Respuesta sintética B" });
+      await expect(radio).toBeEnabled();
+      let posts = 0;
+      page.on("request", event => {
+        if (event.url().endsWith("/api/v1/assessment-submissions") && event.method() === "POST") posts++;
+      });
+      await context.setOffline(true);
+      await radio.check();
+      await page.getByRole("button", { name: en ? "Save on this device" : "Guardar en este dispositivo", exact: true }).click();
+      await expect(page.getByTestId("local-draft-status")).toContainText(en ? "Not submitted" : "No enviado");
+      const administration = await page.getByTestId("draft-attempt").innerText();
+      expect(administration).toMatch(/^[a-f0-9-]{36}$/);
+      expect(posts).toBe(0);
+      await page.getByRole("button", { name: en ? "End test session" : "Cerrar sesión de prueba", exact: true }).click();
+      await expect(page.locator('button[type="submit"]')).toBeVisible();
+      await context.setOffline(false);
+      // A different valid account must not recover or submit the first account's draft.
+      expect((await login(page, en, false, 2)).status()).toBe(200);
+      await expect(radio).toBeEnabled();
+      await expect(page.getByTestId("draft-attempt")).toHaveText("");
+      await radio.check();
+      await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
+      await expect(page.getByRole("alert")).toBeVisible();
+      expect(posts).toBe(0);
+      await page.getByRole("button", { name: en ? "End test session" : "Cerrar sesión de prueba", exact: true }).click();
+      expect((await login(page, en)).status()).toBe(200);
+      await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
+      await expect(radio).toBeChecked();
+      // Lose only the response: the real server still receives and persists the POST.
+      let submitted: unknown;
+      await page.route("**/api/v1/assessment-submissions", async route => {
+        submitted = route.request().postDataJSON();
+        const response = await route.fetch();
+        expect(response.status()).toBe(201);
+        await route.abort("failed");
+      });
+      await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
+      await expect(page.getByText(en ? "Response saved and recovered." : "Respuesta guardada y recuperada.", { exact: true })).toBeVisible();
+      await expect(page.getByTestId("history")).toContainText(administration);
+      await expect(page.getByTestId("answers")).toContainText("R9-B");
+      expect(posts).toBe(1);
+      await page.unroute("**/api/v1/assessment-submissions");
+      await page.reload();
+      expect((await login(page, en)).status()).toBe(200);
+      await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
+      // A fresh session reconciles the existing attempt, without another POST.
+      await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
+      await expect(page.getByText(en ? "Response saved and recovered." : "Respuesta guardada y recuperada.", { exact: true })).toBeVisible();
+      expect(posts).toBe(1);
+      const token = await tokenFor(request);
+      const fixtures = await (await request.get("/r9-fixture.json")).json();
+      const fixture = fixtures[`p02${locale}${width}`];
+      const headers = { Authorization: `Bearer ${token}`, "X-Tenant-Id": tenant, "X-Scientific-Grant": fixture.assignmentId };
+      const history = await (await request.get(`/api/v1/scientific-applications/${fixture.assignmentId}/history`, { headers })).json();
+      expect(history).toHaveLength(1);
+      expect(history[0].administrationId).toBe(administration);
+      expect((await request.post("/api/v1/assessment-submissions", { headers, data: submitted })).status()).toBe(409);
+      expect((await request.post(`/api/v1/scientific-applications/consents/${fixture.evidenceId}/withdraw`, { headers })).status()).toBe(204);
+      await page.reload();
+      expect((await login(page, en)).status()).toBe(200);
+      await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
+      await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
+      await expect(page.getByRole("alert")).toBeVisible();
+      expect(posts).toBe(1);
+      await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     });
   }
 }
