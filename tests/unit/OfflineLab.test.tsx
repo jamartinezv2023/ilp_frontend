@@ -21,6 +21,16 @@ for (const locale of ['es', 'en'] as const) {
     localStorage.setItem('ilp.locale', locale);
     vi.mocked(prepareOfflineLab).mockResolvedValue('unavailable');
     render(<I18nProvider><OfflineLab scope={scope} /></I18nProvider>);
-    await screen.findByText(locale === 'es' ? 'No se pudo preparar la reapertura sin conexión. Mantenga la conexión.' : 'Offline reopening could not be prepared. Keep the connection available.');
+    const expected = locale === 'es' ? 'No se pudo preparar la reapertura sin conexión. Mantenga la conexión.' : 'Offline reopening could not be prepared. Keep the connection available.';
+    const message = await screen.findByText(expected);
+    expect(message.tagName).toBe('OUTPUT');
+    expect(message.textContent).toBe(expected);
   });
 }
+
+it('reports an unexpected rejected preparation instead of leaving a loading state', async () => {
+  vi.mocked(prepareOfflineLab).mockRejectedValue(new Error('unexpected storage failure'));
+  render(<I18nProvider><OfflineLab scope={scope} /></I18nProvider>);
+  const message = await screen.findByText('No se pudo preparar la reapertura sin conexión. Mantenga la conexión.');
+  expect(message.tagName).toBe('OUTPUT');
+});

@@ -13,12 +13,15 @@ export function OfflineLab({ scope }: Readonly<{ scope: DraftScope }>) {
   const [status, setStatus] = useState<PreparationStatus>('loading');
   useEffect(() => {
     let active = true;
-    prepareOfflineLab().then(value => { if (active) setStatus(value); });
+    prepareOfflineLab().then(
+      value => { if (active) setStatus(value); },
+      () => { if (active) setStatus('unavailable'); },
+    );
     return () => { active = false; };
   }, []);
   return <>
     <section aria-label={locale === 'es' ? 'Disponibilidad local' : 'Local availability'} style={{ padding: 16 }}>
-      <p role="status" data-testid="offline-preparation">{labels[locale][status]}</p>
+      <output data-testid="offline-preparation">{labels[locale][status]}</output>
       <p>{labels[locale].boundary}</p>
     </section>
     <SyntheticDraftPanel scope={scope} />
