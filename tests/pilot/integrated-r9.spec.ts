@@ -44,7 +44,7 @@ for (const locale of ["es", "en"] as const) {
     const credential = (await prepared.json()).credential;
     expect(typeof credential).toBe("string");
     expect((await request.get("/auth/session-identity", { headers: { ...identityHeaders, Authorization: `Bearer ${credential}` } })).status()).toBe(401);
-    expect((await request.post("/auth/offline-access", { data: enrollment })).status()).toBe(401);
+    expect((await request.post("/auth/offline-access", { headers: { "X-Tenant-Id": tenant }, data: enrollment })).status()).toBe(401);
     expect((await request.post("/auth/offline-access", { headers: identityHeaders, data: { ...enrollment, deviceId: "invalid" } })).status()).toBe(400);
     const assignment = "90000000-0000-4000-8000-000000000021";
     const uri = `/api/v1/scientific-applications/${assignment}/history`;
@@ -235,7 +235,7 @@ for (const locale of ["es", "en"] as const) {
       await expect(reopened.getByTestId("offline-attempt")).toHaveCount(0);
       await assertEncryptedStorage(reopened);
       expect(posts).toBe(0);
-      await reopened.clock.setFixedTime(new Date());
+      await reopened.clock.setSystemTime(new Date(Date.now() + 2000));
       await context.setOffline(false);
       expect((await login(reopened, en)).status()).toBe(200);
       await unlockOnlineDraft(reopened);
