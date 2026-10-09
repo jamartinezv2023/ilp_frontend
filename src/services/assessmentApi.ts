@@ -84,24 +84,16 @@ export class LegacyAssessmentSubmissionBlocked extends Error {
   }
 }
 
-export const submitKolbAssessment = async (
-  studentId: string
-): Promise<KolbAssessmentResponse> => {
-  void studentId;
-  throw new LegacyAssessmentSubmissionBlocked();
-};
-export const submitFelderSilvermanAssessment = async (
-  studentId: string
-): Promise<FelderSilvermanAssessmentResponse> => {
-  void studentId;
-  throw new LegacyAssessmentSubmissionBlocked();
-};
-export const submitKuderAssessment = async (
-  studentId: string
-): Promise<KuderAssessmentResponse> => {
-  void studentId;
-  throw new LegacyAssessmentSubmissionBlocked();
-};
+type BlockedSubmission<Result> = (studentId: string) => Promise<Result>;
+const rejectLegacySubmission = <Result>(): Promise<Result> =>
+  Promise.reject(new LegacyAssessmentSubmissionBlocked());
+
+export const submitKolbAssessment: BlockedSubmission<KolbAssessmentResponse> =
+  rejectLegacySubmission;
+export const submitFelderSilvermanAssessment: BlockedSubmission<FelderSilvermanAssessmentResponse> =
+  rejectLegacySubmission;
+export const submitKuderAssessment: BlockedSubmission<KuderAssessmentResponse> =
+  rejectLegacySubmission;
 export const isAssessmentSubmissionBlocked = (error: unknown): boolean =>
   error instanceof LegacyAssessmentSubmissionBlocked ||
   (axios.isAxiosError(error) && error.response?.status === 410);

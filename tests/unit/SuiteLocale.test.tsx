@@ -33,7 +33,7 @@ describe('Suite localization without DOM translation',()=>{
     if(locale!==document.documentElement.lang)fireEvent.click(screen.getByText('Switch test locale'));
     expect(screen.getByText(labels[locale])).toBeTruthy();
     expect(screen.queryByText(labels[locale==='es'?'en':'es'])).toBeNull();
-    if(hasStudents){expect(screen.getAllByText('Synthetic High').length).toBeGreaterThan(0);expect(api.fetchStudents.mock.calls.length).toBe(requests);}
+    if(hasStudents){expect(screen.getAllByText('Synthetic High').length).toBeGreaterThan(0);expect(api.fetchStudents.mock.calls).toHaveLength(requests);}
    }
   });
  }

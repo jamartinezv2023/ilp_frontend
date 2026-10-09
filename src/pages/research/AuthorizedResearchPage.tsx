@@ -13,7 +13,7 @@ function download(content: string, name: string, type: string) {
 export function AuthorizedResearchPage() {
   const ui = useSuiteText();
   const token = useAppSelector(state => state.auth.accessToken);
-  return token ? <AuthorizedResearchSession key={token} token={token} /> : <p role="status">{ui("Inicie sesión / Sign in")}</p>;
+  return token ? <AuthorizedResearchSession key={token} token={token} /> : <output>{ui("Inicie sesión / Sign in")}</output>;
 }
 function AuthorizedResearchSession({ token }: { token: string }) {
   const ui = useSuiteText();

@@ -81,6 +81,12 @@ export const AdaptiveIntelligencePage = () => {
     return () => { active = false; };
   }, [selectedStudent, previewAttempt]);
 
+  const previewError = locale === "es"
+    ? "No fue posible consultar la vista previa del plan adaptativo."
+    : "The adaptive plan preview could not be retrieved.";
+  const errorLabel = error === "No fue posible consultar la vista previa del plan adaptativo."
+    ? previewError : ui(error);
+
   return (
     <Box>
       <StudentServiceStatusAlert />
@@ -120,7 +126,7 @@ export const AdaptiveIntelligencePage = () => {
         </Stack>
       )}
 
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error === "No fue posible consultar la vista previa del plan adaptativo." ? (locale === "es" ? error : "The adaptive plan preview could not be retrieved.") : ui(error)}</Alert>}
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{errorLabel}</Alert>}
 
       {!loading && error && selectedStudent && (
         <Button disabled={generating} onClick={() => setPreviewAttempt((attempt) => attempt + 1)}>

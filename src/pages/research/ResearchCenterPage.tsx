@@ -40,6 +40,7 @@ const categories: { label: string; value: ResearchCategory }[] = [
 export const ResearchCenterPage = () => {
   const ui = useSuiteText();
   const { locale } = useI18n();
+  const unavailableLabel = locale === "es" ? "No disponible" : "Unavailable";
   const [signals, setSignals] = useState<ResearchSignal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -254,12 +255,12 @@ export const ResearchCenterPage = () => {
                         maxWidth: "100%",
                       }}
                     >
-                      {signal.status === "NO DISPONIBLE" ? `${ui("Sin respuesta del servicio.")} ${signal.summary.match(/HTTP \d+/)?.[0] ?? ""}` : <span>{researchDetails(signal.payload ?? {}, locale).slice(0, 3).join(" · ")}</span>}
+                      {signal.status === "NO DISPONIBLE" ? `${ui("Sin respuesta del servicio.")} ${/HTTP \d+/.exec(signal.summary)?.[0] ?? ""}` : <span>{researchDetails(signal.payload ?? {}, locale).slice(0, 3).join(" · ")}</span>}
                     </Typography>
                   </Box>
 
                   <Chip
-                    label={signal.status === "NO DISPONIBLE" ? (locale === "es" ? "No disponible" : "Unavailable") : researchTerm(signal.status, locale)}
+                    label={signal.status === "NO DISPONIBLE" ? unavailableLabel : researchTerm(signal.status, locale)}
                     color={
                       signal.status === "NO DISPONIBLE" ? "error" : "success"
                     }

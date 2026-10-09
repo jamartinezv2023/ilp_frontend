@@ -15,7 +15,7 @@ const client = axios.create({
 });
 
 type BackendStudent = {
-  localizedContent?: StudentProfile["localizedContent"];
+  localizedContent?: NonNullable<StudentProfile["localizedContent"]>;
   id: number | string;
   name?: string;
   fullName?: string;

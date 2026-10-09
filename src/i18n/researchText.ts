@@ -9,7 +9,10 @@ export const researchTerm = (value: string, locale: Locale): string =>
 export const researchValue = (value: unknown, locale: Locale): string => {
   if (Array.isArray(value)) return value.map(item => researchValue(item, locale)).join(", ");
   if (typeof value === "number") return String(value);
-  if (typeof value === "boolean") return locale === "es" ? (value ? "Sí" : "No") : (value ? "Yes" : "No");
+  if (typeof value === "boolean") {
+    const labels = locale === "es" ? ["No", "Sí"] : ["No", "Yes"];
+    return labels[Number(value)];
+  }
   if (typeof value === "string") return researchTerm(value, locale);
   return locale === "es" ? "No disponible" : "Unavailable";
 };

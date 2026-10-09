@@ -159,6 +159,25 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
     );
   };
 
+  const handleSubmissionError = (caught: unknown) => {
+    if (isAssessmentSubmissionBlocked(caught)) {
+      setSubmissionUncertain(false);
+      setError(locale === "en"
+        ? "Submission is disabled pending institutional and instrument approval. No successful submission was confirmed."
+        : "El envío está deshabilitado hasta aprobar la institución y el instrumento. No se confirmó un envío exitoso.");
+      return;
+    }
+    if (isAssessmentSubmissionInvalid(caught)) {
+      setSubmissionRejected(true);
+      setSubmissionUncertain(false);
+      return;
+    }
+    setSubmissionUncertain(true);
+    setError(
+      "El estado del envío es incierto. Consulte el historial y no repita el envío hasta verificarlo."
+    );
+  };
+
   const submit = async () => {
     if (submissionInFlight.current || pendingResult || submissionUncertain) return;
     if (!allQuestionsComplete) {
@@ -191,22 +210,7 @@ export const KolbRealForm = ({ studentId, onCompleted }: KolbRealFormProps) => {
       onCompleted(result);
     } catch (caught) {
       if (currentStudentId.current === submittedStudentId) {
-        if (isAssessmentSubmissionBlocked(caught)) {
-          setSubmissionUncertain(false);
-          setError(locale === "en"
-            ? "Submission is disabled pending institutional and instrument approval. No successful submission was confirmed."
-            : "El envío está deshabilitado hasta aprobar la institución y el instrumento. No se confirmó un envío exitoso.");
-          return;
-        }
-        if (isAssessmentSubmissionInvalid(caught)) {
-          setSubmissionRejected(true);
-          setSubmissionUncertain(false);
-          return;
-        }
-        setSubmissionUncertain(true);
-        setError(
-          "El estado del envío es incierto. Consulte el historial y no repita el envío hasta verificarlo."
-        );
+        handleSubmissionError(caught);
       }
     } finally {
       submissionInFlight.current = false;
