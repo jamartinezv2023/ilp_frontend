@@ -15,3 +15,10 @@ it("localizes categories and does not guess unknown codes", () => {
  expect(researchTerm("Governance", "en")).toBe("Governance");
  expect(researchTerm("UNKNOWN", "es")).toBe("Contenido sin traducción declarada");
 });
+
+it.each(['es', 'en'] as const)('formats primitive evidence and rejects undeclared content in %s', locale => {
+ const details = researchDetails({ governanceLevel: [true, false, 0, null, { personal: 'Never translate this' }, 'UNKNOWN'] }, locale);
+ expect(details).toHaveLength(1);
+ expect(details[0]).toContain(locale === 'es' ? 'Sí, No, 0, No disponible, No disponible, Contenido sin traducción declarada' : 'Yes, No, 0, Unavailable, Unavailable, Content has no declared translation');
+ expect(details[0]).not.toContain('Never translate this');
+});
