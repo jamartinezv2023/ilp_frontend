@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../src/i18n/I18nProvider';
-import { unlockPreparedDraft, saveLocallyUnlockedDraft } from '../../src/features/offline/preparedDraftAccess';
+import { unlockPreparedDraft, saveLocallyUnlockedDraft, lockPreparedDraft } from '../../src/features/offline/preparedDraftAccess';
 import { type SyntheticDraft } from '../../src/features/offline/syntheticDraftStore';
 export function OfflineDraftEditor() {
   const { locale } = useI18n();
@@ -8,6 +8,9 @@ export function OfflineDraftEditor() {
   const [passphrase, setPassphrase] = useState('');
   const [fixtureKey] = useState(() => new URLSearchParams(location.search).get('fixture') ?? 'es360');
   const [draft, setDraft] = useState<SyntheticDraft>();
+  const currentDraft = useRef<SyntheticDraft | undefined>(undefined);
+  currentDraft.current = draft;
+  useEffect(() => () => lockPreparedDraft(currentDraft.current), []);
   const [choice, setChoice] = useState<'A' | 'B'>('A');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
@@ -41,7 +44,7 @@ export function OfflineDraftEditor() {
         </label>)}
       </fieldset>
       <button disabled={busy} onClick={() => void save()}>{en ? 'Save local edit' : 'Guardar edición local'}</button>
-      <button disabled={busy} onClick={() => { setDraft(undefined); setSaved(false); setError(false); }}>{en ? 'Lock local draft' : 'Bloquear borrador local'}</button>
+      <button disabled={busy} onClick={() => { lockPreparedDraft(draft); setDraft(undefined); setSaved(false); setError(false); }}>{en ? 'Lock local draft' : 'Bloquear borrador local'}</button>
       {saved && <output>{en ? 'Local edit saved. Not submitted.' : 'Edición local guardada. No enviada.'}</output>}
     </> : <>
       <label>{en ? 'Device key' : 'Clave del dispositivo'}<input type="password" autoComplete="off" maxLength={128} value={passphrase}

@@ -43,6 +43,7 @@ async function confirm(
 async function synchronize(
   token: string, fixture: SyntheticSubmissionFixture, draft: SyntheticDraft,
   locale: "es" | "en", signal: AbortSignal,
+  loadCurrent: () => Promise<SyntheticDraft | undefined>,
 ): Promise<SynchronizationResult> {
   signal.throwIfAborted();
   const scope = await verifiedDraftScope(token, fixture.assignmentId, fixture.assessmentVersion);
@@ -54,7 +55,7 @@ async function synchronize(
   const recovered = await confirm(token, fixture, draft);
   signal.throwIfAborted();
   if (recovered) return recovered;
-  const current = await store.load(scope);
+  const current = await loadCurrent();
   if (current?.revision !== draft.revision || current.administrationId !== draft.administrationId
     || current.answer !== draft.answer) throw new Error("DRAFT_CHANGED");
   signal.throwIfAborted();
@@ -98,8 +99,9 @@ async function synchronize(
 export async function synchronizeSyntheticDraft(
   token: string, fixture: SyntheticSubmissionFixture, draft: SyntheticDraft,
   locale: "es" | "en", signal: AbortSignal,
+  loadCurrent: () => Promise<SyntheticDraft | undefined> = () => store.load(draft.scope),
 ): Promise<SynchronizationResult> {
   if (!navigator.locks) throw new Error("SYNCHRONIZATION_LOCK_UNAVAILABLE");
   return navigator.locks.request(`ilp-p02-sync:${scopeKey(draft)}`, { mode: "exclusive", signal },
-    () => synchronize(token, fixture, draft, locale, signal));
+    () => synchronize(token, fixture, draft, locale, signal, loadCurrent));
 }

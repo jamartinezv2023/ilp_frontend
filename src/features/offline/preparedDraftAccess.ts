@@ -3,8 +3,9 @@ import { createSyntheticDraftStore, type DraftScope, type SyntheticDraft, type S
 import { verifiedDraftScope } from './verifiedDraftScope';
 const PREFIX = 'ilp.r9.prepared.';
 const ITERATIONS = 600000;
-type SealedScope = { schema: 1; salt: number[]; iv: number[]; ciphertext: number[] };
+type SealedScope = { schema: 2; salt: number[]; iv: number[]; ciphertext: number[] };
 type PreparedScope = { scope: DraftScope; administrationId: string };
+const capabilities = new WeakMap<SyntheticDraft, { key: CryptoKey; salt: number[]; storage: string }>();
 function storageKey(fixtureKey: string): string {
   if (!/^[a-z0-9]{1,32}$/.test(fixtureKey)) throw new Error('INVALID_PREPARATION_CONTEXT');
   return PREFIX + fixtureKey;
@@ -37,51 +38,154 @@ function checkedScope(value: unknown): PreparedScope {
   }
   return { scope, administrationId: prepared!.administrationId! };
 }
-/** Local unlocking only; never restores a bearer token or grants server permission. */
+function checkedCompleteDraft(value: unknown): SyntheticDraft {
+  checkedScope(value);
+  const draft = value as SyntheticDraft;
+  if (draft.schema !== 1 || draft.kind !== 'SYNTHETIC_P02'
+    || !Number.isSafeInteger(draft.revision) || draft.revision < 1
+    || !['', 'A', 'B'].includes(draft.answer)
+    || !Number.isFinite(Date.parse(draft.createdAt)) || !Number.isFinite(Date.parse(draft.updatedAt))) {
+    throw new Error('INVALID_PREPARED_ACCESS');
+  }
+  return draft;
+}
+function scopeStorage(scope: DraftScope): string {
+  return JSON.stringify([scope.ownerId, scope.tenantId, scope.assignmentId, scope.instrumentVersion]);
+}
+async function database(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('ilp-p02-synthetic-drafts', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('drafts');
+    request.onerror = () => reject(new Error('STORAGE_UNAVAILABLE'));
+    let blocked = false;
+    request.onblocked = () => { blocked = true; reject(new Error('STORAGE_BLOCKED')); };
+    request.onsuccess = () => {
+      const db = request.result;
+      db.onversionchange = () => db.close();
+      if (blocked) db.close(); else resolve(db);
+    };
+  });
+}
+async function readRecord(storage: string): Promise<SealedScope | undefined> {
+  const db = await database();
+  try {
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction('drafts', 'readonly');
+      const request = tx.objectStore('drafts').get(storage);
+      tx.oncomplete = () => resolve(request.result as SealedScope | undefined);
+      tx.onabort = () => reject(new Error('STORAGE_UNAVAILABLE'));
+    });
+  } finally { db.close(); }
+}
+async function seal(storage: string, draft: SyntheticDraft, key: CryptoKey, salt: number[]): Promise<SealedScope> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv,
+    additionalData: new TextEncoder().encode(storage) }, key, new TextEncoder().encode(JSON.stringify(draft)));
+  return { schema: 2, salt, iv: [...iv], ciphertext: [...new Uint8Array(ciphertext)] };
+}
+async function decrypt(storage: string, record: SealedScope, key: CryptoKey): Promise<SyntheticDraft> {
+  if (record?.schema !== 2) throw new Error('INVALID_PREPARED_ACCESS');
+  bytes(record.salt, 16);
+  const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes(record.iv, 12),
+    additionalData: new TextEncoder().encode(storage) }, key, bytes(record.ciphertext));
+  return checkedCompleteDraft(JSON.parse(new TextDecoder().decode(plaintext)));
+}
+async function replaceRecord(storage: string, incoming: SealedScope, previous: SealedScope | undefined,
+  migrating?: SyntheticDraft): Promise<void> {
+  const db = await database();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('drafts', 'readwrite', { durability: 'strict' });
+      const store = tx.objectStore('drafts');
+      let failure: Error | undefined;
+      tx.oncomplete = () => resolve();
+      tx.onabort = () => reject(failure ?? new Error('STORAGE_WRITE_FAILED'));
+      const protect = (action: () => void) => {
+        try { action(); }
+        catch (error) { failure = error instanceof Error ? error : new Error('STORAGE_WRITE_FAILED'); tx.abort(); }
+      };
+      const request = store.get(storage);
+      request.onsuccess = () => protect(() => {
+        if (JSON.stringify(request.result) !== JSON.stringify(previous)) {
+          failure = new Error(previous ? 'DRAFT_CONFLICT' : 'PREPARED_ACCESS_EXISTS'); tx.abort(); return;
+        }
+        if (!migrating) { store.put(incoming, storage); return; }
+        const legacy = store.get(scopeStorage(migrating.scope));
+        legacy.onsuccess = () => protect(() => {
+          if (JSON.stringify(legacy.result) !== JSON.stringify(migrating)) {
+            failure = new Error('DRAFT_CONFLICT'); tx.abort(); return;
+          }
+          // Ciphertext creation and plaintext removal commit together, or neither does.
+          store.put(incoming, storage);
+          store.delete(scopeStorage(migrating.scope));
+        });
+      });
+    });
+  } finally { db.close(); }
+}
+export async function hasPreparedDraft(fixtureKey: string): Promise<boolean> {
+  return (await readRecord(storageKey(fixtureKey))) !== undefined;
+}
+/** Only synthetic drafts prepared with a device key are migrated. No bearer token is stored. */
 export async function prepareDraftAccess(token: string, fixtureKey: string, draft: SyntheticDraft, passphrase: string): Promise<void> {
   const storage = storageKey(fixtureKey);
   cryptoReady(passphrase);
+  checkedCompleteDraft(draft);
   if (!navigator.onLine || !navigator.locks) throw new Error('ONLINE_PREPARATION_REQUIRED');
+  if (await hasPreparedDraft(fixtureKey)) throw new Error('PREPARED_ACCESS_EXISTS');
   const scope = await verifiedDraftScope(token, draft.scope.assignmentId, draft.scope.instrumentVersion);
   if (JSON.stringify(scope) !== JSON.stringify(draft.scope)) throw new Error('DRAFT_OWNER_MISMATCH');
   const history = await authorizedScientificApi(token).history(scope.assignmentId);
   if (history.some(row => row.administrationId === draft.administrationId)) throw new Error('DRAFT_ALREADY_SUBMITTED');
   const current = await createSyntheticDraftStore().load(scope);
   if (current?.administrationId !== draft.administrationId || current.revision !== draft.revision) throw new Error('DRAFT_CONFLICT');
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const key = await derivedKey(passphrase, salt);
-  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode(storage) }, key,
-    new TextEncoder().encode(JSON.stringify({ scope, administrationId: draft.administrationId })));
-  const record: SealedScope = { schema: 1, salt: [...salt], iv: [...iv], ciphertext: [...new Uint8Array(ciphertext)] };
-  await navigator.locks.request(storage, () => {
-    if (localStorage.getItem(storage) !== null) throw new Error('PREPARED_ACCESS_EXISTS');
-    localStorage.setItem(storage, JSON.stringify(record));
-  });
+  const salt = [...crypto.getRandomValues(new Uint8Array(16))];
+  const key = await derivedKey(passphrase, new Uint8Array(salt));
+  const record = await seal(storage, draft, key, salt);
+  await replaceRecord(storage, record, undefined, draft);
+  capabilities.set(draft, { key, salt, storage });
+  // Old P02-E scope-only bindings are redundant after the atomic migration.
+  try { localStorage.removeItem(storage); }
+  catch { /* The obsolete binding contains no answers and cannot reopen the deleted source. */ }
 }
 export async function unlockPreparedDraft(fixtureKey: string, passphrase: string): Promise<SyntheticDraft> {
   const storage = storageKey(fixtureKey);
   cryptoReady(passphrase);
-  const text = localStorage.getItem(storage);
-  if (!text || text.length > 4096) throw new Error('PREPARED_ACCESS_UNAVAILABLE');
-  const record = JSON.parse(text) as Partial<SealedScope>;
-  if (record?.schema !== 1) throw new Error('INVALID_PREPARED_ACCESS');
-  const salt = bytes(record.salt, 16);
-  const iv = bytes(record.iv, 12);
-  const ciphertext = bytes(record.ciphertext);
-  const key = await derivedKey(passphrase, salt);
-  const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode(storage) }, key, ciphertext);
-  const prepared = checkedScope(JSON.parse(new TextDecoder().decode(plaintext)));
-  const draft = await createSyntheticDraftStore().load(prepared.scope);
-  if (draft?.administrationId !== prepared.administrationId) throw new Error('PREPARED_DRAFT_UNAVAILABLE');
+  const record = await readRecord(storage);
+  if (!record) throw new Error('PREPARED_ACCESS_UNAVAILABLE');
+  if (record.schema !== 2) throw new Error('INVALID_PREPARED_ACCESS');
+  const key = await derivedKey(passphrase, bytes(record.salt, 16));
+  const draft = await decrypt(storage, record, key);
+  capabilities.set(draft, { key, salt: record.salt, storage });
   return draft;
 }
-
-export function forgetPreparedAccess(fixtureKey: string): void {
-  localStorage.removeItem(storageKey(fixtureKey));
+export function lockPreparedDraft(draft: SyntheticDraft | undefined): void {
+  if (draft) capabilities.delete(draft);
 }
-
-export function saveLocallyUnlockedDraft(fixtureKey: string, draft: SyntheticDraft, answer: SyntheticAnswer): Promise<SyntheticDraft> {
-  if (localStorage.getItem(storageKey(fixtureKey)) === null) throw new Error('LOCAL_ACCESS_ENDED');
-  return createSyntheticDraftStore().save(draft.scope, draft.revision, answer);
+export async function loadUnlockedDraft(fixtureKey: string, draft: SyntheticDraft): Promise<SyntheticDraft> {
+  const capability = capabilities.get(draft);
+  const storage = storageKey(fixtureKey);
+  if (capability?.storage !== storage) throw new Error('LOCAL_ACCESS_ENDED');
+  const record = await readRecord(storage);
+  if (!record) throw new Error('PREPARED_ACCESS_UNAVAILABLE');
+  const current = await decrypt(storage, record, capability.key);
+  if (JSON.stringify(current.scope) !== JSON.stringify(draft.scope)
+    || current.administrationId !== draft.administrationId) throw new Error('DRAFT_OWNER_MISMATCH');
+  return current;
+}
+export async function saveLocallyUnlockedDraft(fixtureKey: string, draft: SyntheticDraft, answer: SyntheticAnswer): Promise<SyntheticDraft> {
+  if (!['', 'A', 'B'].includes(answer)) throw new Error('INVALID_DRAFT_INPUT');
+  const storage = storageKey(fixtureKey);
+  const capability = capabilities.get(draft);
+  if (capability?.storage !== storage) throw new Error('LOCAL_ACCESS_ENDED');
+  const previous = await readRecord(storage);
+  if (!previous) throw new Error('PREPARED_ACCESS_UNAVAILABLE');
+  const current = await decrypt(storage, previous, capability.key);
+  if (JSON.stringify(current) !== JSON.stringify(draft)) throw new Error('DRAFT_CONFLICT');
+  const next: SyntheticDraft = { ...current, revision: current.revision + 1, answer, updatedAt: new Date().toISOString() };
+  const sealed = await seal(storage, next, capability.key, capability.salt);
+  await replaceRecord(storage, sealed, previous);
+  capabilities.set(next, capability);
+  capabilities.delete(draft);
+  return next;
 }

@@ -166,6 +166,32 @@ for (const locale of ["es", "en"] as const) {
       reopened.on("request", event => {
         if (event.url().endsWith("/api/v1/assessment-submissions") && event.method() === "POST") posts++;
       });
+      const unlockOnlineDraft = async (target: Page) => {
+        await target.getByLabel(en ? "Device key" : "Clave del dispositivo", { exact: true }).fill(deviceKey);
+        await target.getByRole("button", { name: en ? "Unlock local draft" : "Desbloquear borrador local", exact: true }).click();
+      };
+      const assertEncryptedStorage = async (target: Page) => {
+        const records = await target.evaluate(async () => {
+          const db = await new Promise<IDBDatabase>((resolve, reject) => {
+            const request = indexedDB.open("ilp-p02-synthetic-drafts", 1);
+            request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+          });
+          try {
+            return await new Promise<unknown[]>((resolve, reject) => {
+              const tx = db.transaction("drafts", "readonly");
+              const request = tx.objectStore("drafts").getAll();
+              tx.oncomplete = () => resolve(request.result); tx.onabort = () => reject(tx.error);
+            });
+          } finally { db.close(); }
+        });
+        expect(records).toHaveLength(1);
+        const serialized = JSON.stringify(records);
+        expect(serialized).not.toContain('"answer"');
+        expect(serialized).not.toContain(administration);
+        expect(serialized).not.toContain(deviceKey);
+        expect(records[0]).toMatchObject({ schema: 2 });
+      };
+      await assertEncryptedStorage(reopened);
       const keyInput = () => reopened.getByLabel(en ? "Device key" : "Clave del dispositivo", { exact: true });
       const unlock = () => reopened.getByRole("button", { name: en ? "Unlock local draft" : "Desbloquear borrador local", exact: true });
       await keyInput().fill("Wrong-device-key-only!");
@@ -191,19 +217,22 @@ for (const locale of ["es", "en"] as const) {
       expect(posts).toBe(0);
       await context.setOffline(false);
       expect((await login(reopened, en)).status()).toBe(200);
+      await unlockOnlineDraft(reopened);
       await expect(reopened.getByTestId("draft-attempt")).toHaveText(administration);
       await expect(reopened.getByRole("radio", { name: en ? "Synthetic response B" : "Respuesta sintética B" })).toBeChecked();
       await reopened.close();
       // A different valid account must not recover or submit the first account's draft.
       expect((await login(page, en, false, 2)).status()).toBe(200);
-      await expect(radio).toBeEnabled();
+      await expect(radio).toBeDisabled();
       await expect(page.getByTestId("draft-attempt")).toHaveText("");
-      await radio.check();
-      await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
+      await unlockOnlineDraft(page);
       await expect(page.getByRole("alert")).toBeVisible();
+      await expect(radio).toBeDisabled();
+      await assertEncryptedStorage(page);
       expect(posts).toBe(0);
       await page.getByRole("button", { name: en ? "End test session" : "Cerrar sesión de prueba", exact: true }).click();
       expect((await login(page, en)).status()).toBe(200);
+      await unlockOnlineDraft(page);
       await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
       await expect(radio).toBeChecked();
       // Lose only the response: the real server still receives and persists the POST.
@@ -222,11 +251,13 @@ for (const locale of ["es", "en"] as const) {
       await page.unroute("**/api/v1/assessment-submissions");
       await page.reload();
       expect((await login(page, en)).status()).toBe(200);
+      await unlockOnlineDraft(page);
       await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
       // A fresh session reconciles the existing attempt, without another POST.
       await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
       await expect(page.getByText(en ? "Response saved and recovered." : "Respuesta guardada y recuperada.", { exact: true })).toBeVisible();
       expect(posts).toBe(1);
+      await assertEncryptedStorage(page);
       const token = await tokenFor(request);
       const fixtures = await (await request.get("/r9-fixture.json")).json();
       const fixture = fixtures[`p02${locale}${width}`];
@@ -238,6 +269,7 @@ for (const locale of ["es", "en"] as const) {
       expect((await request.post(`/api/v1/scientific-applications/consents/${fixture.evidenceId}/withdraw`, { headers })).status()).toBe(204);
       await page.reload();
       expect((await login(page, en)).status()).toBe(200);
+      await unlockOnlineDraft(page);
       await expect(page.getByTestId("draft-attempt")).toHaveText(administration);
       await page.getByRole("button", { name: en ? "Submit test response" : "Enviar respuesta de prueba", exact: true }).click();
       await expect(page.getByRole("alert")).toBeVisible();

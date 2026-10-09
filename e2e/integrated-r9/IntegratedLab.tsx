@@ -8,7 +8,7 @@ import { verifiedDraftScope } from "../../src/features/offline/verifiedDraftScop
 import { createSyntheticDraftStore, type DraftScope, type SyntheticDraft } from "../../src/features/offline/syntheticDraftStore";
 import { synchronizeSyntheticDraft } from "../../src/features/offline/synchronizeSyntheticDraft";
 import { prepareR9Shell, type OfflinePreparation } from "../../src/features/offline/prepareOfflineLab";
-import { prepareDraftAccess, forgetPreparedAccess } from "../../src/features/offline/preparedDraftAccess";
+import { prepareDraftAccess, hasPreparedDraft, unlockPreparedDraft, saveLocallyUnlockedDraft, loadUnlockedDraft, lockPreparedDraft } from "../../src/features/offline/preparedDraftAccess";
 import { OfflineDraftEditor } from "./OfflineDraftEditor";
 const draftStore = createSyntheticDraftStore();
 
@@ -82,6 +82,10 @@ function Session({ token }: { token: string }) {
   const [submitted, setSubmitted] = useState(false);
   const [deviceKey, setDeviceKey] = useState("");
   const [deviceReady, setDeviceReady] = useState(false);
+  const [encrypted, setEncrypted] = useState(false);
+  const draftRef = useRef<SyntheticDraft | undefined>(undefined);
+  draftRef.current = draft;
+  useEffect(() => () => lockPreparedDraft(draftRef.current), []);
   const [fixtureKey] = useState(() => new URLSearchParams(location.search).get("fixture") ?? "es360");
   const fixture = fixtures?.[fixtureKey];
   useEffect(() => {
@@ -103,15 +107,18 @@ function Session({ token }: { token: string }) {
     if (!fixture) return;
     let active = true;
     verifiedDraftScope(token, fixture.assignmentId, fixture.assessmentVersion)
-      .then(async value => ({ scope: value, draft: await draftStore.load(value) }))
+      .then(async value => {
+        const encrypted = await hasPreparedDraft(fixtureKey);
+        return { scope: value, encrypted, draft: encrypted ? undefined : await draftStore.load(value) };
+      })
       .then(value => {
         if (!active) return;
-        setScope(value.scope); setDraft(value.draft);
+        setScope(value.scope); setDraft(value.draft); setEncrypted(value.encrypted);
         setOption(value.draft?.answer ? `R9-${value.draft.answer}` : "");
         setLocalStatus(value.draft ? "recovered" : "");
       }, () => { if (active) setMessage("error"); });
     return () => { active = false; };
-  }, [fixture, token]);
+  }, [fixture, fixtureKey, token]);
   useEffect(() => {
     const active = new AbortController();
     controller.current = active;
@@ -121,7 +128,10 @@ function Session({ token }: { token: string }) {
     if (!scope || !option || busy || submitted) return;
     setBusy(true); setMessage("");
     try {
-      const saved = await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
+      const saved = deviceReady && draft
+        ? await saveLocallyUnlockedDraft(fixtureKey, draft, option === "R9-A" ? "A" : "B")
+        : deviceReady && draft ? await saveLocallyUnlockedDraft(fixtureKey, draft, option === "R9-A" ? "A" : "B")
+          : await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
       setDraft(saved); setLocalStatus("saved");
     } catch { setMessage("error"); }
     finally { setBusy(false); }
@@ -132,7 +142,20 @@ function Session({ token }: { token: string }) {
     try {
       if (await prepareR9Shell() !== "ready") throw new Error("SHELL_UNAVAILABLE");
       await prepareDraftAccess(token, fixtureKey, draft, deviceKey);
-      setDeviceReady(true);
+      setDeviceReady(true); setEncrypted(true);
+    } catch { setMessage("error"); }
+    finally { setDeviceKey(""); setBusy(false); }
+  }
+  async function unlockOnline() {
+    if (!scope) return;
+    setBusy(true); setMessage("");
+    try {
+      const recovered = await unlockPreparedDraft(fixtureKey, deviceKey);
+      if (JSON.stringify(recovered.scope) !== JSON.stringify(scope)) {
+        lockPreparedDraft(recovered); throw new Error("DRAFT_OWNER_MISMATCH");
+      }
+      setDraft(recovered); setOption(recovered.answer ? `R9-${recovered.answer}` : "");
+      setDeviceReady(true); setLocalStatus("recovered");
     } catch { setMessage("error"); }
     finally { setDeviceKey(""); setBusy(false); }
   }
@@ -141,10 +164,11 @@ function Session({ token }: { token: string }) {
     setLocalStatus("");
     await run(async () => {
       const saved = draft?.answer === (option === "R9-A" ? "A" : "B") ? draft
-        : await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
+        : deviceReady && draft ? await saveLocallyUnlockedDraft(fixtureKey, draft, option === "R9-A" ? "A" : "B")
+          : await draftStore.save(scope, draft?.revision ?? 0, option === "R9-A" ? "A" : "B");
       setDraft(saved);
-      const result = await synchronizeSyntheticDraft(token, fixture, saved, locale, controller.current!.signal);
-      forgetPreparedAccess(fixtureKey);
+      const result = await synchronizeSyntheticDraft(token, fixture, saved, locale, controller.current!.signal,
+        deviceReady ? () => loadUnlockedDraft(fixtureKey, saved) : undefined);
       setHistory(result.history); setAnswer(result.csv); setSubmitted(true); setLocalStatus(""); setMessage("saved");
     });
   }
@@ -153,7 +177,7 @@ function Session({ token }: { token: string }) {
     <p translate="no">Synthetic High</p>
     <p translate="no" data-testid="assignment">{fixture?.assignmentId}</p>
     <p translate="no">{fixture?.assessmentCode} · {fixture?.assessmentVersion}</p>
-    <fieldset disabled={busy || submitted || !scope}>
+    <fieldset disabled={busy || submitted || !scope || (encrypted && !deviceReady)}>
       <legend>{en ? "Choose a test response" : "Seleccione una respuesta de prueba"}</legend>
       {["A", "B"].map(value => <label key={value} style={{ display: "block" }}>
         <input type="radio" name="response" value={`R9-${value}`} checked={option === `R9-${value}`}
@@ -165,13 +189,15 @@ function Session({ token }: { token: string }) {
     <button disabled={!scope || !option || busy || submitted} onClick={() => void saveDraft()}>
       {en ? "Save on this device" : "Guardar en este dispositivo"}
     </button>
-    <p>{en ? "Use a different key from your institutional password. If forgotten, sign in online to recover the draft."
-      : "Use una clave distinta de su contraseña institucional. Si la olvida, inicie sesión en línea para recuperar el borrador."}</p>
-    <label>{en ? "Prepare device key (12+ characters)" : "Preparar clave del dispositivo (12+ caracteres)"}
+    <p>{en ? "Use a separate device key. Encrypted drafts require this key even after an online login; there is no password reset for this test."
+      : "Use una clave separada del dispositivo. El borrador cifrado requiere esta clave incluso tras iniciar sesión en línea; esta prueba no permite restablecerla."}</p>
+    <label>{encrypted ? (en ? "Device key" : "Clave del dispositivo") : (en ? "Prepare device key (12+ characters)" : "Preparar clave del dispositivo (12+ caracteres)")}
       <input type="password" autoComplete="new-password" maxLength={128} value={deviceKey} onChange={event => setDeviceKey(event.target.value)} />
     </label>
-    <button disabled={!draft || deviceKey.length < 12 || busy || submitted || deviceReady}
-      onClick={() => void prepareAccess()}>{en ? "Enable local unlocking" : "Habilitar desbloqueo local"}</button>
+    {encrypted ? <button disabled={!scope || deviceKey.length < 12 || busy || deviceReady}
+      onClick={() => void unlockOnline()}>{en ? "Unlock local draft" : "Desbloquear borrador local"}</button>
+      : <button disabled={!draft || deviceKey.length < 12 || busy || submitted}
+        onClick={() => void prepareAccess()}>{en ? "Enable local unlocking" : "Habilitar desbloqueo local"}</button> }
     {deviceReady && <output data-testid="device-ready">{en ? "Local unlocking prepared. Keep your device key." : "Desbloqueo local preparado. Conserve su clave del dispositivo."}</output>}
     {localStatus && <output data-testid="local-draft-status">{localStatus === "saved"
       ? (en ? "Saved on this device. Not submitted." : "Guardado en este dispositivo. No enviado.")
