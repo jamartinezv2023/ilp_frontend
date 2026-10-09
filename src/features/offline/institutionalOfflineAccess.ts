@@ -22,6 +22,10 @@ export async function verifyInstitutionalOfflineAccess(draft: SyntheticDraft, al
     throw new Error('OFFLINE_SIGNATURE_INVALID');
   }
   const claims = JSON.parse(new TextDecoder().decode(decode(parts[1]))) as Record<string, unknown>;
+  verifyScope(claims, draft);
+  verifyLifetime(claims, allowExpired, nowSeconds);
+}
+function verifyScope(claims: Record<string, unknown>, draft: SyntheticDraft): void {
   const audienceValid = claims?.aud === 'ilp-local-edit' ||
     (Array.isArray(claims?.aud) && claims.aud.length === 1 && claims.aud[0] === 'ilp-local-edit');
   if (claims?.iss !== 'urn:ilp:offline:v1' || !audienceValid
@@ -31,6 +35,8 @@ export async function verifyInstitutionalOfflineAccess(draft: SyntheticDraft, al
     || typeof claims.deviceId !== 'string' || !/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/.test(claims.deviceId)) {
     throw new Error('OFFLINE_IDENTITY_MISMATCH');
   }
+}
+function verifyLifetime(claims: Record<string, unknown>, allowExpired: boolean, nowSeconds: number): void {
   const { iat, exp } = claims;
   if (typeof iat !== 'number' || typeof exp !== 'number' || !Number.isSafeInteger(iat) || !Number.isSafeInteger(exp)
     || exp <= iat || exp - iat > 600 || nowSeconds < iat || (!allowExpired && nowSeconds >= exp)) {
