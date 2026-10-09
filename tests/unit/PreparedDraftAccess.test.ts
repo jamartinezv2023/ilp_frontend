@@ -155,7 +155,7 @@ it('rejects invalid fixture context', async () => {
 it.each([
   { schema: 1 }, { schema: 2, salt: [] }, { schema: 2, salt: Array(16).fill(256) },
   { schema: 2, salt: Array(16).fill(0), iv: [] },
-  { schema: 2, salt: Array(16).fill(0), iv: Array(12).fill(0), ciphertext: Array(1025).fill(0) },
+  { schema: 2, salt: Array(16).fill(0), iv: Array(12).fill(0), ciphertext: Array(8193).fill(0) },
 ])('rejects malformed sealed metadata %j', async record => {
   await createSyntheticDraftStore().load(scope); await raw(storage, record);
   await expect(unlockPreparedDraft('p02es360', passphrase)).rejects.toThrow('INVALID_PREPARED_ACCESS');

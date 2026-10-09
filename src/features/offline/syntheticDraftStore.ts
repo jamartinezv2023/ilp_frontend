@@ -3,6 +3,7 @@ export type SyntheticAnswer = '' | 'A' | 'B';
 export type SyntheticDraft = {
   schema: 1; kind: 'SYNTHETIC_P02'; scope: DraftScope; administrationId: string;
   revision: number; answer: SyntheticAnswer; createdAt: string; updatedAt: string;
+  offlineDeviceId?: string; offlineCredential?: string;
 };
 export interface DraftStore {
   load(scope: DraftScope): Promise<SyntheticDraft | undefined>;

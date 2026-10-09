@@ -1,3 +1,4 @@
+import { enrollInstitutionalOfflineAccess, institutionalOfflineConfigured, verifyInstitutionalOfflineAccess } from './institutionalOfflineAccess';
 import { authorizedScientificApi } from '../assessment-engine/services/authorizedScientificApi';
 import { createSyntheticDraftStore, type DraftScope, type SyntheticDraft, type SyntheticAnswer } from './syntheticDraftStore';
 import { verifiedDraftScope } from './verifiedDraftScope';
@@ -21,7 +22,7 @@ async function derivedKey(passphrase: string, salt: Uint8Array<ArrayBuffer>) {
     material, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
 }
 function bytes(value: unknown, length?: number): Uint8Array<ArrayBuffer> {
-  if (!Array.isArray(value) || value.length > 1024 || (length !== undefined && value.length !== length)
+  if (!Array.isArray(value) || value.length > 8192 || (length !== undefined && value.length !== length)
     || value.length === 0 || value.some(byte => !Number.isInteger(byte) || byte < 0 || byte > 255)) {
     throw new Error('INVALID_PREPARED_ACCESS');
   }
@@ -133,7 +134,7 @@ export async function hasPreparedDraft(fixtureKey: string): Promise<boolean> {
   return (await readRecord(storageKey(fixtureKey))) !== undefined;
 }
 /** Only synthetic drafts prepared with a device key are migrated. No bearer token is stored. */
-export async function prepareDraftAccess(token: string, fixtureKey: string, draft: SyntheticDraft, passphrase: string): Promise<void> {
+export async function prepareDraftAccess(token: string, fixtureKey: string, draft: SyntheticDraft, passphrase: string): Promise<SyntheticDraft> {
   const storage = storageKey(fixtureKey);
   cryptoReady(passphrase);
   checkedCompleteDraft(draft);
@@ -147,21 +148,33 @@ export async function prepareDraftAccess(token: string, fixtureKey: string, draf
   if (current?.administrationId !== draft.administrationId || current.revision !== draft.revision) throw new Error('DRAFT_CONFLICT');
   const salt = [...crypto.getRandomValues(new Uint8Array(16))];
   const key = await derivedKey(passphrase, new Uint8Array(salt));
-  const record = await seal(storage, draft, key, salt);
+  const enrolled = institutionalOfflineConfigured() ? await enrollInstitutionalOfflineAccess(token, draft) : draft;
+  const record = await seal(storage, enrolled, key, salt);
   await replaceRecord(storage, record, undefined, draft);
-  capabilities.set(draft, { key, salt, storage });
+  capabilities.set(enrolled, { key, salt, storage });
   // Old P02-E scope-only bindings are redundant after the atomic migration.
   try { localStorage.removeItem(storage); }
   catch { /* The obsolete binding contains no answers and cannot reopen the deleted source. */ }
+  return enrolled;
 }
-export async function unlockPreparedDraft(fixtureKey: string, passphrase: string): Promise<SyntheticDraft> {
+export async function unlockPreparedDraft(fixtureKey: string, passphrase: string,
+  online?: { token: string; scope: DraftScope }): Promise<SyntheticDraft> {
   const storage = storageKey(fixtureKey);
   cryptoReady(passphrase);
   const record = await readRecord(storage);
   if (!record) throw new Error('PREPARED_ACCESS_UNAVAILABLE');
   if (record.schema !== 2) throw new Error('INVALID_PREPARED_ACCESS');
   const key = await derivedKey(passphrase, bytes(record.salt, 16));
-  const draft = await decrypt(storage, record, key);
+  let draft = await decrypt(storage, record, key);
+  if (institutionalOfflineConfigured()) {
+    if (online && JSON.stringify(online.scope) !== JSON.stringify(draft.scope)) throw new Error('DRAFT_OWNER_MISMATCH');
+    await verifyInstitutionalOfflineAccess(draft, online !== undefined);
+    if (online) {
+      const renewed = await enrollInstitutionalOfflineAccess(online.token, draft);
+      draft = { ...renewed, revision: draft.revision + 1, updatedAt: new Date().toISOString() };
+      await replaceRecord(storage, await seal(storage, draft, key, record.salt), record);
+    }
+  }
   capabilities.set(draft, { key, salt: record.salt, storage });
   return draft;
 }
@@ -188,6 +201,7 @@ export async function saveLocallyUnlockedDraft(fixtureKey: string, draft: Synthe
   if (!previous) throw new Error('PREPARED_ACCESS_UNAVAILABLE');
   const current = await decrypt(storage, previous, capability.key);
   if (JSON.stringify(current) !== JSON.stringify(draft)) throw new Error('DRAFT_CONFLICT');
+  if (institutionalOfflineConfigured()) await verifyInstitutionalOfflineAccess(current);
   const next: SyntheticDraft = { ...current, revision: current.revision + 1, answer, updatedAt: new Date().toISOString() };
   const sealed = await seal(storage, next, capability.key, capability.salt);
   await replaceRecord(storage, sealed, previous);

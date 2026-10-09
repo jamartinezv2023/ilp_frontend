@@ -5,7 +5,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom', setupFiles: ['./tests/unit/setup.ts'],
     include: ['tests/unit/**/*.test.{ts,tsx}'],
-    env: { VITE_ADAPTIVE_API_BASE_URL: 'https://adaptive.example.test',
+    env: { VITE_OFFLINE_PUBLIC_KEY: '', VITE_ADAPTIVE_API_BASE_URL: 'https://adaptive.example.test',
       VITE_AUTH_API_BASE_URL: 'https://auth.example.test',
       VITE_TENANT_ID: '11111111-1111-4111-8111-111111111111' },
     coverage: { provider: 'v8', include: ['src/**/*.{ts,tsx}'],

@@ -1,3 +1,4 @@
+import { generateKeyPairSync } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
 import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
@@ -14,6 +15,9 @@ Object.assign(env, { JDK_JAVA_OPTIONS: '-Djava.net.preferIPv4Stack=true',
   VITE_AUTH_API_BASE_URL: 'http://127.0.0.1:15179', VITE_ADAPTIVE_API_BASE_URL: 'http://127.0.0.1:15179',
   VITE_TENANT_ID: '11111111-1111-4111-8111-111111111111' });
 console.log(`INTEGRATION_EVIDENCE_ROOT=${evidence}`);
+const offlineKeys = generateKeyPairSync('rsa', { modulusLength: 2048 });
+const offlinePrivateKey = offlineKeys.privateKey.export({ type: 'pkcs8', format: 'der' }).toString('base64');
+env.VITE_OFFLINE_PUBLIC_KEY = offlineKeys.publicKey.export({ type: 'spki', format: 'der' }).toString('base64');
 const owned = [];
 const delay = ms => new Promise(done => setTimeout(done, ms));
 async function free(port) {
@@ -21,8 +25,8 @@ async function free(port) {
   await new Promise((done, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', done); });
   await new Promise(done => server.close(done));
 }
-function start(command, args, cwd, name) {
-  const child = spawn(command, args, { cwd, env, stdio: name ? ['ignore', 'pipe', 'pipe'] : 'inherit' });
+function start(command, args, cwd, name, extraEnv = {}) {
+  const child = spawn(command, args, { cwd, env: { ...env, ...extraEnv }, stdio: name ? ['ignore', 'pipe', 'pipe'] : 'inherit' });
   if (name) {
     child.stdout.pipe(createWriteStream(join(evidence, `${name}.stdout.log`)));
     child.stderr.pipe(createWriteStream(join(evidence, `${name}.stderr.log`)));
@@ -57,12 +61,12 @@ try {
     ['auth-service', 18083, 'r9-isolated', 'ilp.r9.R9AuthRuntime'],
     ['adaptive-education-service', 18084, 'scientific-production', 'ilp.r9.R9AdaptiveRuntime']]) {
     const config = join(evidence, `${module}.properties`);
-    await writeFile(config, `server.address=127.0.0.1\nserver.port=${port}\nspring.profiles.active=${profile}\nspring.datasource.url=jdbc:h2:mem:r9_${port};MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1\nspring.datasource.driver-class-name=org.h2.Driver\nspring.datasource.username=sa\nspring.datasource.password=\nspring.jpa.hibernate.ddl-auto=create-drop\nspring.jpa.open-in-view=false\nspring.flyway.enabled=false\nspring.liquibase.enabled=false\nspring.sql.init.mode=never\nspring.kafka.listener.auto-startup=false\nspring.kafka.bootstrap-servers=127.0.0.1:19092\nevents.outbox.publisher-delay-ms=3600000\nsecurity.jwt.issuer=urn:ilp:r9:isolated\nsecurity.jwt.audience=ilp-scientific-api\nsecurity.jwt.access-token-minutes=30\nsecurity.jwt.refresh-token-days=1\nmanagement.endpoints.web.exposure.include=health\nlogging.level.org.springframework.security=WARN\n`);
+    await writeFile(config, `server.address=127.0.0.1\nserver.port=${port}\nspring.profiles.active=${profile}\nspring.datasource.url=jdbc:h2:mem:r9_${port};MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1\nspring.datasource.driver-class-name=org.h2.Driver\nspring.datasource.username=sa\nspring.datasource.password=\nspring.jpa.hibernate.ddl-auto=create-drop\nspring.jpa.open-in-view=false\nspring.flyway.enabled=false\nspring.liquibase.enabled=false\nspring.sql.init.mode=never\nspring.kafka.listener.auto-startup=false\nspring.kafka.bootstrap-servers=127.0.0.1:19092\nevents.outbox.publisher-delay-ms=3600000\nsecurity.offline.enabled=true\nsecurity.jwt.issuer=urn:ilp:r9:isolated\nsecurity.jwt.audience=ilp-scientific-api\nsecurity.jwt.access-token-minutes=30\nsecurity.jwt.refresh-token-days=1\nmanagement.endpoints.web.exposure.include=health\nlogging.level.org.springframework.security=WARN\n`);
     const marker = join(evidence, `${module}.ready`);
     const classpath = (await readFile(join(evidence, `${module}.classpath.txt`), 'utf8')).trim();
     const args = ['-cp', classpath, main, `--spring.config.location=file:${config}`, `--r9.ready=${marker}`];
     if (port === 18084) args.push('--r9.auth-base=http://127.0.0.1:18083', `--r9.fixture=${join(frontend, 'public/r9-fixture.json')}`);
-    const child = start('java', args, backend, module);
+    const child = start('java', args, backend, module, port === 18083 ? { SECURITY_OFFLINE_PRIVATE_KEY: offlinePrivateKey } : {});
     await ready(child, port, marker);
   }
   const identityLogin = await fetch('http://127.0.0.1:18083/auth/login', {

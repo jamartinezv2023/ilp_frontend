@@ -36,6 +36,16 @@ for (const locale of ["es", "en"] as const) {
     expect((await request.get("/auth/session-identity", { headers: { ...identityHeaders,
       "X-Tenant-Id": "22222222-2222-4222-8222-222222222222" } })).status()).toBe(403);
 
+    const enrollment = { assignmentId: "90000000-0000-4000-8000-000000000021", instrumentVersion: "r9-v1",
+      administrationId: "90000000-0000-4000-8000-000000000099", deviceId: "90000000-0000-4000-8000-000000000098" };
+    const prepared = await request.post("/auth/offline-access", { headers: identityHeaders, data: enrollment });
+    expect(prepared.status()).toBe(200);
+    expect(prepared.headers()["cache-control"]).toBe("no-store");
+    const credential = (await prepared.json()).credential;
+    expect(typeof credential).toBe("string");
+    expect((await request.get("/auth/session-identity", { headers: { ...identityHeaders, Authorization: `Bearer ${credential}` } })).status()).toBe(401);
+    expect((await request.post("/auth/offline-access", { data: enrollment })).status()).toBe(401);
+    expect((await request.post("/auth/offline-access", { headers: identityHeaders, data: { ...enrollment, deviceId: "invalid" } })).status()).toBe(400);
     const assignment = "90000000-0000-4000-8000-000000000021";
     const uri = `/api/v1/scientific-applications/${assignment}/history`;
     expect((await request.get(uri, { headers: { "X-Tenant-Id": tenant } })).status()).toBe(401);
@@ -201,6 +211,7 @@ for (const locale of ["es", "en"] as const) {
       await keyInput().fill(deviceKey);
       await unlock().click();
       await expect(reopened.getByTestId("offline-attempt")).toHaveText(administration);
+      await expect(reopened.getByTestId("institutional-offline-identity")).toBeVisible();
       await expect(reopened.getByRole("radio", { name: en ? "Local response B" : "Respuesta local B" })).toBeChecked();
       await reopened.getByRole("radio", { name: en ? "Local response A" : "Respuesta local A" }).check();
       await reopened.getByRole("button", { name: en ? "Save local edit" : "Guardar edición local", exact: true }).click();
@@ -210,11 +221,21 @@ for (const locale of ["es", "en"] as const) {
       await keyInput().fill(deviceKey);
       await unlock().click();
       await expect(reopened.getByTestId("offline-attempt")).toHaveText(administration);
+      await expect(reopened.getByTestId("institutional-offline-identity")).toBeVisible();
       await expect(reopened.getByRole("radio", { name: en ? "Local response A" : "Respuesta local A" })).toBeChecked();
       await reopened.getByRole("radio", { name: en ? "Local response B" : "Respuesta local B" }).check();
       await reopened.getByRole("button", { name: en ? "Save local edit" : "Guardar edición local", exact: true }).click();
       await expect(reopened.getByText(en ? "Local edit saved. Not submitted." : "Edición local guardada. No enviada.", { exact: true })).toBeVisible();
       expect(posts).toBe(0);
+      await reopened.clock.install({ time: new Date() });
+      await reopened.clock.setFixedTime(new Date(Date.now() + 11 * 60 * 1000));
+      await reopened.reload();
+      await keyInput().fill(deviceKey); await unlock().click();
+      await expect(reopened.getByRole("alert")).toBeVisible();
+      await expect(reopened.getByTestId("offline-attempt")).toHaveCount(0);
+      await assertEncryptedStorage(reopened);
+      expect(posts).toBe(0);
+      await reopened.clock.setFixedTime(new Date());
       await context.setOffline(false);
       expect((await login(reopened, en)).status()).toBe(200);
       await unlockOnlineDraft(reopened);

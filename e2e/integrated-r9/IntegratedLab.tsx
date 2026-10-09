@@ -141,7 +141,8 @@ function Session({ token }: { token: string }) {
     setBusy(true); setMessage("");
     try {
       if (await prepareR9Shell() !== "ready") throw new Error("SHELL_UNAVAILABLE");
-      await prepareDraftAccess(token, fixtureKey, draft, deviceKey);
+      const enrolled = await prepareDraftAccess(token, fixtureKey, draft, deviceKey);
+      setDraft(enrolled);
       setDeviceReady(true); setEncrypted(true);
     } catch { setMessage("error"); }
     finally { setDeviceKey(""); setBusy(false); }
@@ -150,7 +151,7 @@ function Session({ token }: { token: string }) {
     if (!scope) return;
     setBusy(true); setMessage("");
     try {
-      const recovered = await unlockPreparedDraft(fixtureKey, deviceKey);
+      const recovered = await unlockPreparedDraft(fixtureKey, deviceKey, { token, scope });
       if (JSON.stringify(recovered.scope) !== JSON.stringify(scope)) {
         lockPreparedDraft(recovered); throw new Error("DRAFT_OWNER_MISMATCH");
       }

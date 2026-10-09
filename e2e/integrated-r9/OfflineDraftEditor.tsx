@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../src/i18n/I18nProvider';
 import { unlockPreparedDraft, saveLocallyUnlockedDraft, lockPreparedDraft } from '../../src/features/offline/preparedDraftAccess';
+import { institutionalOfflineConfigured } from '../../src/features/offline/institutionalOfflineAccess';
 import { type SyntheticDraft } from '../../src/features/offline/syntheticDraftStore';
 export function OfflineDraftEditor() {
   const { locale } = useI18n();
@@ -34,6 +35,7 @@ export function OfflineDraftEditor() {
     <p>{en ? 'Local unlocking only. Reconnect and sign in online before synchronization.'
       : 'Solo desbloqueo local. Recupere la conexión e inicie sesión en línea antes de sincronizar.'}</p>
     {draft ? <>
+      {institutionalOfflineConfigured() && <output data-testid="institutional-offline-identity">{en ? 'Prepared institutional identity verified for local editing. Online authorization is required to submit.' : 'Identidad institucional preparada verificada para edición local. El envío requiere autorización en línea.'}</output>}
       <p data-testid="offline-attempt" translate="no">{draft.administrationId}</p>
       <p translate="no">{draft.scope.assignmentId} · {draft.scope.instrumentVersion}</p>
       <fieldset disabled={busy}>

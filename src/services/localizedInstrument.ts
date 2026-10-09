@@ -1,3 +1,4 @@
+import { requireOriginalInstrumentEvidence } from './originalInstrumentEvidence';
 import { fetchAssessmentRenderer } from "./assessmentRendererApi";
 import type { AssessmentRendererModel } from "../types/assessmentRenderer";
 export class InstrumentLocaleUnavailableError extends Error {
@@ -17,6 +18,7 @@ export const requireCompleteInstrument = (model: AssessmentRendererModel, code: 
         question.options.every(option => option.text?.trim()))) {
     throw new InstrumentLocaleUnavailableError();
   }
+  requireOriginalInstrumentEvidence(metadata);
   return model;
 };
 export const loadLocalizedInstrument = async (code: string, language: "es" | "en") =>
