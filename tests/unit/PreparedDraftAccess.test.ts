@@ -22,7 +22,7 @@ beforeEach(() => {
 async function raw(key = storage, write?: unknown) {
   const db = await new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open('ilp-p02-synthetic-drafts', 1);
-    request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result); request.onerror = () => reject(new Error('TEST_STORAGE_OPEN_FAILED', { cause: request.error }));
   });
   try {
     return await new Promise<unknown>((resolve, reject) => {
@@ -30,7 +30,7 @@ async function raw(key = storage, write?: unknown) {
       const store = tx.objectStore('drafts');
       if (write !== undefined) store.put(write, key);
       const request = store.get(key);
-      tx.oncomplete = () => resolve(request.result); tx.onabort = () => reject(tx.error);
+      tx.oncomplete = () => resolve(request.result); tx.onabort = () => reject(new Error('TEST_STORAGE_ABORTED', { cause: tx.error }));
     });
   } finally { db.close(); }
 }
@@ -176,4 +176,12 @@ it('a failed encrypted edit preserves the last ciphertext and revision', async (
   await expect(saveLocallyUnlockedDraft('p02es360', draft, 'B')).rejects.toThrow('STORAGE_WRITE_FAILED');
   expect(await raw()).toEqual(sealed);
   expect(await unlockPreparedDraft('p02es360', passphrase)).toEqual(draft);
+});
+
+it('rolls back queued ciphertext when removing the plaintext source fails', async () => {
+  const draft = await createSyntheticDraftStore().save(scope, 0, 'A');
+  vi.spyOn(IDBObjectStore.prototype, 'delete').mockImplementation(() => { throw new Error('DELETE_FAILED'); });
+  await expect(prepareDraftAccess('synthetic-token', 'p02es360', draft, passphrase)).rejects.toThrow('DELETE_FAILED');
+  expect(await hasPreparedDraft('p02es360')).toBe(false);
+  expect(await createSyntheticDraftStore().load(scope)).toEqual(draft);
 });

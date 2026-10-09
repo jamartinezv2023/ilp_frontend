@@ -90,6 +90,18 @@ async function decrypt(storage: string, record: SealedScope, key: CryptoKey): Pr
     additionalData: new TextEncoder().encode(storage) }, key, bytes(record.ciphertext));
   return checkedCompleteDraft(JSON.parse(new TextDecoder().decode(plaintext)));
 }
+function migrateRecord(store: IDBObjectStore, storage: string, incoming: SealedScope,
+  draft: SyntheticDraft, fail: (error: unknown) => void): void {
+  const request = store.get(scopeStorage(draft.scope));
+  request.onsuccess = () => {
+    try {
+      if (JSON.stringify(request.result) !== JSON.stringify(draft)) throw new Error('DRAFT_CONFLICT');
+      // Ciphertext creation and plaintext removal commit together, or neither does.
+      store.put(incoming, storage);
+      store.delete(scopeStorage(draft.scope));
+    } catch (error) { fail(error); }
+  };
+}
 async function replaceRecord(storage: string, incoming: SealedScope, previous: SealedScope | undefined,
   migrating?: SyntheticDraft): Promise<void> {
   const db = await database();
@@ -100,26 +112,20 @@ async function replaceRecord(storage: string, incoming: SealedScope, previous: S
       let failure: Error | undefined;
       tx.oncomplete = () => resolve();
       tx.onabort = () => reject(failure ?? new Error('STORAGE_WRITE_FAILED'));
-      const protect = (action: () => void) => {
-        try { action(); }
-        catch (error) { failure = error instanceof Error ? error : new Error('STORAGE_WRITE_FAILED'); tx.abort(); }
+      const fail = (error: unknown) => {
+        failure = error instanceof Error ? error : new Error('STORAGE_WRITE_FAILED', { cause: error });
+        tx.abort();
       };
       const request = store.get(storage);
-      request.onsuccess = () => protect(() => {
-        if (JSON.stringify(request.result) !== JSON.stringify(previous)) {
-          failure = new Error(previous ? 'DRAFT_CONFLICT' : 'PREPARED_ACCESS_EXISTS'); tx.abort(); return;
-        }
-        if (!migrating) { store.put(incoming, storage); return; }
-        const legacy = store.get(scopeStorage(migrating.scope));
-        legacy.onsuccess = () => protect(() => {
-          if (JSON.stringify(legacy.result) !== JSON.stringify(migrating)) {
-            failure = new Error('DRAFT_CONFLICT'); tx.abort(); return;
+      request.onsuccess = () => {
+        try {
+          if (JSON.stringify(request.result) !== JSON.stringify(previous)) {
+            throw new Error(previous ? 'DRAFT_CONFLICT' : 'PREPARED_ACCESS_EXISTS');
           }
-          // Ciphertext creation and plaintext removal commit together, or neither does.
-          store.put(incoming, storage);
-          store.delete(scopeStorage(migrating.scope));
-        });
-      });
+          if (migrating) migrateRecord(store, storage, incoming, migrating, fail);
+          else store.put(incoming, storage);
+        } catch (error) { fail(error); }
+      };
     });
   } finally { db.close(); }
 }
