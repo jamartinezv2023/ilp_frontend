@@ -26,6 +26,21 @@ describe('bilingual persistence and accessible localization', () => {
       expect(result.current.t('shell.platform')).toBe(messages[locale]['shell.platform']);
     }
   });
+  it.each(['es', 'en'] as const)('preserves Unicode and long whitespace boundaries in %s', locale => {
+    localStorage.setItem('ilp.locale', locale);
+    const { result } = renderHook(() => useI18n(), { wrapper: I18nProvider });
+    const source = locale === 'es' ? 'Reload' : 'Recargar';
+    const translated = locale === 'es' ? 'Recargar' : 'Reload';
+    for (const whitespace of ['', ' ', '\t\r\n', '\u00a0\uFEFF\u2028\u2029', ' '.repeat(100_000)]) {
+      expect(result.current.translateLegacyText(`${whitespace}${source}${whitespace}`))
+        .toBe(`${whitespace}${translated}${whitespace}`);
+      expect(result.current.translateLegacyText(whitespace)).toBe(whitespace);
+      const unknown = `${whitespace}unmapped_identifier${whitespace}`;
+      expect(result.current.translateLegacyText(unknown)).toBe(unknown);
+      expect(result.current.translateLegacyText(`${whitespace}prefix: ${source}${whitespace}`))
+        .toBe(`${whitespace}prefix: ${translated}${whitespace}`);
+    }
+  });
   it('translates text and attributes including later DOM mutations and locale changes', async () => {
     function Switch() { const {setLocale}=useI18n();return <button onClick={()=>setLocale('en')}>switch</button>; }
     const {container,getByText,unmount}=render(<I18nProvider><Switch/><LocalizedSurface><input title="Reload" placeholder="Reload" aria-label="Reload"/><span>Reload</span></LocalizedSurface></I18nProvider>);
