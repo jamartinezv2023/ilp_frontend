@@ -41,3 +41,33 @@ for (const locale of ['es', 'en'] as const) {
     await expect(page.getByTestId('attempt')).toBeEmpty();
   });
 }
+for (const locale of ['es', 'en'] as const) {
+  test(`recovers after online browser restart ${locale}`, async () => {
+    const { chromium } = await import('@playwright/test');
+    const { mkdtemp, rm } = await import('node:fs/promises');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const profile = await mkdtemp(join(tmpdir(), 'ilp-p02-'));
+    let context = await chromium.launchPersistentContext(profile, { headless: true });
+    try {
+      const page = await context.newPage();
+      await page.goto('http://127.0.0.1:5188/p02.html');
+      await page.getByRole('combobox').selectOption(locale);
+      await expect(page.getByRole('button').first()).toBeEnabled();
+      await page.getByRole('radio').first().check();
+      await page.getByRole('button').first().click();
+      await expect(page.getByText(locale === 'es' ? 'Guardado en este dispositivo. No enviado.' : 'Saved on this device. Not submitted.')).toBeVisible();
+      const attempt = await page.getByTestId('attempt').innerText();
+      await context.close();
+      context = await chromium.launchPersistentContext(profile, { headless: true });
+      const reopened = await context.newPage();
+      await reopened.goto('http://127.0.0.1:5188/p02.html');
+      await expect(reopened.locator('html')).toHaveAttribute('lang', locale);
+      await expect(reopened.getByTestId('attempt')).toHaveText(attempt);
+      await expect(reopened.getByRole('radio').first()).toBeChecked();
+    } finally {
+      await context.close();
+      await rm(profile, { recursive: true, force: true });
+    }
+  });
+}

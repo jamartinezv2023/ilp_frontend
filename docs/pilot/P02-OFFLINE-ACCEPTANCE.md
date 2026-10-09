@@ -81,6 +81,6 @@ A separate synthetic laboratory (`p02.html`) implements explicit IndexedDB draft
 
 The laboratory does not perform authentication or submission. The current login response lacks a stable user identifier, so real account binding is a prerequisite for the following phase. P02-A does not enable offline page reopening or synchronization, and browser storage can be removed by the user or browser.
 
-Validation: unit tests exercise commit confirmation, corruption, quota failure, concurrency and scope isolation. The P02 browser workflow checks native IndexedDB recovery after reload and in another tab, ES/EN at 360/768/1440 pixels, identity separation, unavailable storage and absence of POST submissions. These checks do not prove a service worker, browser restart offline or production persistence.
+Validation: unit tests exercise commit confirmation, corruption, quota failure, concurrency and scope isolation. The P02 browser workflow checks native IndexedDB recovery after reload and in another tab, ES/EN at 360/768/1440 pixels, identity separation, online browser restart, unavailable storage and absence of POST submissions. These checks do not prove a service worker, offline browser restart or production persistence.
 
 Local review: `npx vite build --config vite.p02.config.ts` then `npx vite preview --config vite.p02.config.ts --host 127.0.0.1 --port 5188 --strictPort`; open `http://127.0.0.1:5188/p02.html`. Automated browser review: `npx playwright test --config playwright.p02-draft.config.ts`.
