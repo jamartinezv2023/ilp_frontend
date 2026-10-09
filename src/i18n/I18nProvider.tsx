@@ -54,13 +54,13 @@ const backendKeys: Record<string, MessageKey> = {
 };
 
 export const I18nProvider = ({ children }: PropsWithChildren) => {
-  const [locale, updateLocale] = useState<Locale>(() => {
+  const [locale, setLocale] = useState<Locale>(() => {
     if (typeof window === "undefined") return "es";
     return normalizeLocale(window.localStorage.getItem(STORAGE_KEY));
   });
 
-  const setLocale = useCallback((nextLocale: Locale) => {
-    updateLocale(nextLocale);
+  const handleLocaleChange = useCallback((nextLocale: Locale) => {
+    setLocale(nextLocale);
     window.localStorage.setItem(STORAGE_KEY, nextLocale);
   }, []);
 
@@ -75,8 +75,8 @@ export const I18nProvider = ({ children }: PropsWithChildren) => {
 
   const translateLegacyText = useCallback(
     (value: string) => {
-      const leading = value.match(/^\s*/)?.[0] ?? "";
-      const trailing = value.match(/\s*$/)?.[0] ?? "";
+      const leading = value.slice(0, value.length - value.trimStart().length);
+      const trailing = value.slice(value.trimEnd().length);
       const core = value.trim().replace(/\s+/g, " ");
       const translation = legacyLookup.get(core);
       if (translation) return `${leading}${translation[locale]}${trailing}`;
@@ -102,8 +102,8 @@ export const I18nProvider = ({ children }: PropsWithChildren) => {
   );
 
   const context = useMemo(
-    () => ({ locale, setLocale, t, translateBackendValue, translateLegacyText }),
-    [locale, setLocale, t, translateBackendValue, translateLegacyText],
+    () => ({ locale, setLocale: handleLocaleChange, t, translateBackendValue, translateLegacyText }),
+    [locale, handleLocaleChange, t, translateBackendValue, translateLegacyText],
   );
 
   return <I18nContext.Provider value={context}>{children}</I18nContext.Provider>;
