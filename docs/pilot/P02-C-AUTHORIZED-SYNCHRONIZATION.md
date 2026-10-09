@@ -4,6 +4,8 @@
 
 This extends the isolated R9 laboratory only. The maintained application and the P02-B offline-reopening laboratory retain their existing entry points. R9 uses live auth/adaptive services and isolated in-memory H2 databases. Every person, question and answer in this laboratory is synthetic.
 
+The real-service test exposed a duplicate legacy servlet filter expecting `tenant_id` while the current JWT uses `tenantId`. Its component registration is retired; the existing `TenantValidationFilter` in the security chain remains responsible for tenant validation. No tenant check is bypassed.
+
 GET `/auth/session-identity` verifies the signed JWT through the existing resource server, request tenant, stable subject UUID and current enabled account. It returns UUIDs, uses `Cache-Control: no-store`, and does not grant permission to submit an assessment.
 
 Drafts are partitioned by that verified user, institution, assignment and instrument edition. The IndexedDB record contains synthetic answers and metadata; it contains no bearer token, refresh token, password or cookie.

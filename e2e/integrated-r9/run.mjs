@@ -65,6 +65,21 @@ try {
     const child = start('java', args, backend, module);
     await ready(child, port, marker);
   }
+  const identityLogin = await fetch('http://127.0.0.1:18083/auth/login', {
+    method: 'POST', headers: { 'Content-Type': 'application/json',
+      'X-Tenant-Id': env.VITE_TENANT_ID },
+    body: JSON.stringify({ email: 'synthetic1@example.invalid', password: 'Synthetic-R9-Only!' }),
+  });
+  if (!identityLogin.ok) throw new Error(`Identity preflight login HTTP ${identityLogin.status}`);
+  const identityToken = (await identityLogin.json()).accessToken;
+  const identityResponse = await fetch('http://127.0.0.1:18083/auth/session-identity', {
+    headers: { Authorization: `Bearer ${identityToken}`, 'X-Tenant-Id': env.VITE_TENANT_ID },
+  });
+  if (!identityResponse.ok) throw new Error(`Identity preflight HTTP ${identityResponse.status}`);
+  const identity = await identityResponse.json();
+  if (identity.userId !== '90000000-0000-4000-8000-000000000001'
+    || identity.tenantId !== env.VITE_TENANT_ID) throw new Error('Identity preflight mismatch');
+  console.log('REAL_ONLINE_SESSION_IDENTITY_VERIFIED=True');
   await run(process.execPath, ['node_modules/typescript/bin/tsc', '-p', 'tsconfig.integrated-r9.json', '--noEmit'], frontend);
   await run(process.execPath, ['node_modules/vite/bin/vite.js', 'build', '--config', 'vite.r9.config.ts'], frontend);
   const preview = start(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--config', 'vite.r9.config.ts'], frontend, 'frontend');
