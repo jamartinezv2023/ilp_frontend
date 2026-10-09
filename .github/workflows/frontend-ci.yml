@@ -36,6 +36,19 @@ jobs:
         run: npm run test:types
       - name: Build frontend
         run: npm run build
+      - name: Verify compiled JavaScript sizes
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          files = list(Path("dist/assets").glob("*.js"))
+          if not files:
+              raise SystemExit("No compiled JavaScript files found")
+          for file in files:
+              size = file.stat().st_size
+              print(f"{file.name}: {size} bytes")
+              if size > 500_000:
+                  raise SystemExit(f"JavaScript file exceeds 500 kB: {file.name}")
+          PYTHON
       - name: Unit and component coverage
         run: npm run test:coverage
       - name: Verify LCOV source mapping
