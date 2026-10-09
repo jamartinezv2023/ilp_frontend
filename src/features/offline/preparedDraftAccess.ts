@@ -47,7 +47,7 @@ export async function prepareDraftAccess(token: string, fixtureKey: string, draf
   const history = await authorizedScientificApi(token).history(scope.assignmentId);
   if (history.some(row => row.administrationId === draft.administrationId)) throw new Error('DRAFT_ALREADY_SUBMITTED');
   const current = await createSyntheticDraftStore().load(scope);
-  if (!current || current.administrationId !== draft.administrationId || current.revision !== draft.revision) throw new Error('DRAFT_CONFLICT');
+  if (current?.administrationId !== draft.administrationId || current.revision !== draft.revision) throw new Error('DRAFT_CONFLICT');
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await derivedKey(passphrase, salt);
@@ -73,7 +73,7 @@ export async function unlockPreparedDraft(fixtureKey: string, passphrase: string
   const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode(storage) }, key, ciphertext);
   const prepared = checkedScope(JSON.parse(new TextDecoder().decode(plaintext)));
   const draft = await createSyntheticDraftStore().load(prepared.scope);
-  if (!draft || draft.administrationId !== prepared.administrationId) throw new Error('PREPARED_DRAFT_UNAVAILABLE');
+  if (draft?.administrationId !== prepared.administrationId) throw new Error('PREPARED_DRAFT_UNAVAILABLE');
   return draft;
 }
 
