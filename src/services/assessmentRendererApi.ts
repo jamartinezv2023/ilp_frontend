@@ -15,7 +15,8 @@ const client = axios.create({
 });
 
 export const fetchAssessmentRenderer = async (
-  assessmentCode: string
+  assessmentCode: string,
+  language?: "es" | "en"
 ): Promise<AssessmentRendererModel> => {
   const normalizedCode = assessmentCode.trim();
 
@@ -24,7 +25,8 @@ export const fetchAssessmentRenderer = async (
   }
 
   const response = await client.get<AssessmentRendererModel>(
-    `/api/v1/assessment-renderer/${encodeURIComponent(normalizedCode)}`
+    `/api/v1/assessment-renderer/${encodeURIComponent(normalizedCode)}`,
+    { params: language ? { language } : undefined }
   );
 
   return normalizeUtf8Text(response.data);

@@ -1,3 +1,4 @@
+import { useSuiteText } from "../../../i18n/useSuiteText";
 import {
   Alert,
   Box,
@@ -38,6 +39,7 @@ export const IpsativeRankingQuestion = ({
   value,
   onChange,
 }: IpsativeRankingQuestionProps) => {
+  const ui = useSuiteText();
   const selectedValues = Object.values(value);
   const valid = isValidIpsativeAnswer(value);
 
@@ -69,8 +71,7 @@ export const IpsativeRankingQuestion = ({
           </Box>
 
           <Alert severity="info" variant="outlined">
-            Asigne 4 a la opción que más lo representa y 1 a la que menos lo
-            representa. No repita valores.
+            {ui("Asigne 4 a la opción que más lo representa y 1 a la que menos lo representa. No repita valores.")}
           </Alert>
 
           <Stack spacing={1.5}>
@@ -102,17 +103,17 @@ export const IpsativeRankingQuestion = ({
                       <Box>
                         <Typography fontWeight={900}>{option.label}</Typography>
                         <Typography variant="caption" color="text.secondary">
-                          Dimensión: {option.value}
+                          {ui("Dimensión:")} {option.value}
                         </Typography>
                       </Box>
 
                       <FormControl size="small" sx={{ minWidth: 160 }}>
                         <InputLabel id={`${option.id}-rank-label`}>
-                          Ranking
+                          {ui("Ranking")}
                         </InputLabel>
                         <Select
                           labelId={`${option.id}-rank-label`}
-                          label="Ranking"
+                          label={ui("Ranking")}
                           value={currentValue ?? ""}
                           onChange={(event) => handleChange(option.id, event)}
                         >
@@ -132,13 +133,13 @@ export const IpsativeRankingQuestion = ({
 
           {!valid && (
             <Alert severity="warning" variant="outlined">
-              Para continuar debe usar exactamente una vez los valores 1, 2, 3 y 4.
+              {ui("Para continuar debe usar exactamente una vez los valores 1, 2, 3 y 4.")}
             </Alert>
           )}
 
           {valid && (
             <Alert severity="success" variant="outlined">
-              Respuesta válida para esta pregunta.
+              {ui("Respuesta válida para esta pregunta.")}
             </Alert>
           )}
         </Stack>

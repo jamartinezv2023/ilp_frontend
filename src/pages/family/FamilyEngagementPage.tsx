@@ -1,3 +1,5 @@
+import { useApiText } from "../../i18n/useApiText";
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
 import { useEffect, useState } from "react";
 import {
@@ -17,6 +19,8 @@ import type { StudentProfile } from "../../types/student";
 import { fetchStudents } from "../../services/studentApi";
 
 export const FamilyEngagementPage = () => {
+  const ui = useSuiteText();
+  const apiText = useApiText();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,19 +59,18 @@ export const FamilyEngagementPage = () => {
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <FamilyRestroomIcon color="primary" sx={{ fontSize: 42 }} />
           <Chip
-            label="Family Educational Support"
+            label={ui("Family Educational Support")}
             color="primary"
             variant="outlined"
           />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950}>
-          Family Engagement Center
+        <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {ui("Family Engagement Center")}
         </Typography>
 
         <Typography color="text.secondary" sx={{ mt: 1 }}>
-          Información comprensible para familias y acudientes sobre el
-          acompañamiento educativo de los estudiantes.
+          {ui("Información comprensible para familias y acudientes sobre el acompañamiento educativo de los estudiantes.")}
         </Typography>
       </Box>
 
@@ -77,7 +80,7 @@ export const FamilyEngagementPage = () => {
         </Stack>
       )}
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{ui(error)}</Alert>}
 
       {!loading && !error && (
         <Box
@@ -106,16 +109,16 @@ export const FamilyEngagementPage = () => {
                 >
                   <Box>
                     <Typography variant="h6" fontWeight={950}>
-                      {student.fullName}
+                      <span translate="no">{student.fullName}</span>
                     </Typography>
 
                     <Typography color="text.secondary">
-                      Grado {student.grade}
+                      {ui("Grado")} {student.grade}
                     </Typography>
                   </Box>
 
                   <Chip
-                    label={`Apoyo ${student.supportLevel}`}
+                    label={`${ui("Apoyo")} ${ui(student.supportLevel)}`}
                     color="primary"
                   />
                 </Stack>
@@ -124,28 +127,28 @@ export const FamilyEngagementPage = () => {
                   fontWeight={900}
                   sx={{ mt: 3, mb: 1 }}
                 >
-                  ¿Cómo aprende mejor?
+                  {ui("¿Cómo aprende mejor?")}
                 </Typography>
 
                 <Alert severity="success" variant="outlined">
-                  {student.learningProfile}
+                  <span translate="no">{apiText(student.learningProfile, student)}</span>
                 </Alert>
 
                 <Typography
                   fontWeight={900}
                   sx={{ mt: 3, mb: 1 }}
                 >
-                  Recomendaciones para la familia
+                  {ui("Recomendaciones para la familia")}
                 </Typography>
 
                 <Stack spacing={1}>
                   {student.pedagogicalRecommendations.map((item) => (
                     <Alert
-                      key={item}
+                      key={apiText(item, student)}
                       severity="info"
                       variant="outlined"
                     >
-                      {item}
+                      <span translate="no">{apiText(item, student)}</span>
                     </Alert>
                   ))}
                 </Stack>
@@ -154,18 +157,18 @@ export const FamilyEngagementPage = () => {
                   fontWeight={900}
                   sx={{ mt: 3, mb: 1 }}
                 >
-                  Estrategias de acompañamiento
+                  {ui("Estrategias de acompañamiento")}
                 </Typography>
 
                 <Stack spacing={1}>
                   {student.inclusiveStrategies.map((item) => (
                     <Alert
-                      key={item}
+                      key={apiText(item, student)}
                       icon={<FavoriteIcon />}
                       severity="success"
                       variant="outlined"
                     >
-                      {item}
+                      <span translate="no">{apiText(item, student)}</span>
                     </Alert>
                   ))}
                 </Stack>
@@ -175,8 +178,7 @@ export const FamilyEngagementPage = () => {
                   severity="warning"
                   sx={{ mt: 3 }}
                 >
-                  Mantener comunicación permanente con docentes y
-                  orientadores para fortalecer el proceso educativo.
+                  {ui("Mantener comunicación permanente con docentes y orientadores para fortalecer el proceso educativo.")}
                 </Alert>
               </CardContent>
             </Card>

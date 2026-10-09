@@ -1,3 +1,5 @@
+import { useApiText } from "../../i18n/useApiText";
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { StudentServiceStatusAlert } from "../../components/StudentServiceStatusAlert";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -26,6 +28,8 @@ const supportColor = (level: string): "success" | "warning" | "error" | "default
 };
 
 export const TeacherWorkspacePage = () => {
+  const ui = useSuiteText();
+  const apiText = useApiText();
   const { t } = useI18n();
   const [students, setStudents] = useState<StudentProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,11 +42,11 @@ export const TeacherWorkspacePage = () => {
       const data = await fetchStudents();
       setStudents(data);
     } catch {
-      setError(t("teacher.studentsUnavailable"));
+      setError("STUDENTS_UNAVAILABLE");
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     void loadStudents();
@@ -66,16 +70,15 @@ export const TeacherWorkspacePage = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <GroupsIcon color="primary" sx={{ fontSize: 42 }} />
-          <Chip label="Teacher Decision Support" color="primary" variant="outlined" />
+          <Chip label={ui("Teacher Decision Support")} color="primary" variant="outlined" />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Teacher Workspace
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1, fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {ui("Teacher Workspace")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Espacio docente para consultar estudiantes, perfiles de aprendizaje,
-          niveles de apoyo, estrategias inclusivas y recomendaciones pedagógicas.
+          {ui("Espacio docente para consultar estudiantes, perfiles de aprendizaje, niveles de apoyo, estrategias inclusivas y recomendaciones pedagógicas.")}
         </Typography>
       </Box>
 
@@ -94,9 +97,9 @@ export const TeacherWorkspacePage = () => {
           <CardContent>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <SchoolIcon color="primary" />
-              <Typography fontWeight={900}>Estudiantes asignados</Typography>
+              <Typography fontWeight={900}>{ui("Estudiantes asignados")}</Typography>
             </Stack>
-            <Typography variant="h3" fontWeight={950}>
+            <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
               {loading ? "..." : students.length}
             </Typography>
           </CardContent>
@@ -106,9 +109,9 @@ export const TeacherWorkspacePage = () => {
           <CardContent>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Diversity3Icon color="warning" />
-              <Typography fontWeight={900}>Apoyo medio</Typography>
+              <Typography fontWeight={900}>{ui("Apoyo medio")}</Typography>
             </Stack>
-            <Typography variant="h3" fontWeight={950}>
+            <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
               {loading ? "..." : mediumSupport}
             </Typography>
           </CardContent>
@@ -118,9 +121,9 @@ export const TeacherWorkspacePage = () => {
           <CardContent>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <PsychologyIcon color="error" />
-              <Typography fontWeight={900}>Apoyo alto</Typography>
+              <Typography fontWeight={900}>{ui("Apoyo alto")}</Typography>
             </Stack>
-            <Typography variant="h3" fontWeight={950}>
+            <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
               {loading ? "..." : highSupport}
             </Typography>
           </CardContent>
@@ -130,11 +133,11 @@ export const TeacherWorkspacePage = () => {
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Cargando estudiantes...</Typography>
+          <Typography sx={{ mt: 2 }}>{ui("Cargando estudiantes...")}</Typography>
         </Stack>
       )}
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{t("teacher.studentsUnavailable")}</Alert>}
 
       {!loading && !error && (
         <Box
@@ -161,35 +164,35 @@ export const TeacherWorkspacePage = () => {
                 <Stack direction="row" justifyContent="space-between" spacing={2}>
                   <Box>
                     <Typography variant="h6" fontWeight={950}>
-                      {student.fullName}
+                      <span translate="no">{student.fullName}</span>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {student.id} · Grado {student.grade} · {student.age} años
+                      {student.id} {ui("· Grado")} {student.grade} · {student.age} {ui("años")}
                     </Typography>
                   </Box>
 
                   <Chip
-                    label={student.supportLevel}
+                    label={ui(student.supportLevel)}
                     color={supportColor(student.supportLevel)}
                     sx={{ fontWeight: 900 }}
                   />
                 </Stack>
 
                 <Typography fontWeight={900} sx={{ mt: 2 }}>
-                  Perfil de aprendizaje
+                  {ui("Perfil de aprendizaje")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {student.learningProfile}
+                  <span translate="no">{apiText(student.learningProfile, student)}</span>
                 </Typography>
 
                 <Typography fontWeight={900} sx={{ mt: 2 }}>
-                  Recomendaciones pedagógicas
+                  {ui("Recomendaciones pedagógicas")}
                 </Typography>
 
                 <Stack spacing={1} sx={{ mt: 1 }}>
                   {student.pedagogicalRecommendations.slice(0, 3).map((item) => (
-                    <Alert key={item} severity="info" variant="outlined">
-                      {item}
+                    <Alert key={apiText(item, student)} severity="info" variant="outlined">
+                      <span translate="no">{apiText(item, student)}</span>
                     </Alert>
                   ))}
                 </Stack>

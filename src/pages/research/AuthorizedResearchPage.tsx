@@ -1,3 +1,4 @@
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import { useI18n } from "../../i18n/I18nProvider";
@@ -10,10 +11,12 @@ function download(content: string, name: string, type: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export function AuthorizedResearchPage() {
+  const ui = useSuiteText();
   const token = useAppSelector(state => state.auth.accessToken);
-  return token ? <AuthorizedResearchSession key={token} token={token} /> : <p role="status">Inicie sesión / Sign in</p>;
+  return token ? <AuthorizedResearchSession key={token} token={token} /> : <output>{ui("Inicie sesión / Sign in")}</output>;
 }
 function AuthorizedResearchSession({ token }: { token: string }) {
+  const ui = useSuiteText();
   const { locale } = useI18n();
   const en = locale === "en";
   const [assignment, setAssignment] = useState("");
@@ -44,7 +47,7 @@ function AuthorizedResearchSession({ token }: { token: string }) {
       <input value={assignment} disabled={busy} onChange={event => { setAssignment(event.target.value.trim()); setHistory([]); setSnapshot(null); }} />
     </label>
     <button disabled={busy || !assignment} onClick={() => void run(async () => setHistory(await api.history(assignment)))}>{en ? "Load history" : "Consultar historial"}</button>
-    <p role="status" aria-live="polite">{message}</p>
+    <p role="status" aria-live="polite">{ui(message)}</p>
     <ul>{history.map(observation => <li key={observation.administrationId}>
       {observation.assessmentCode} · {observation.assessmentVersion} · {observation.submittedAt}
       <button disabled={busy} onClick={() => void run(async () => {

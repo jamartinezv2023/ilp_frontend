@@ -7,7 +7,7 @@ export const AdministrationPage = () => {
   <Box>
     <Card sx={{ borderRadius: 5 }}>
       <CardContent sx={{ p: 4 }}>
-        <Typography variant="h3" fontWeight={950}>{t("nav.administration")}</Typography>
+        <Typography variant="h3" fontWeight={950} sx={{ fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>{t("nav.administration")}</Typography>
         <Typography color="text.secondary">
           {t("administration.description")}
         </Typography>

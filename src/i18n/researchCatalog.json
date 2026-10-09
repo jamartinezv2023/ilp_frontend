@@ -1,0 +1,586 @@
+{
+  "fields": {
+    "governanceLevel": {
+      "es": "Nivel de gobernanza",
+      "en": "Governance level"
+    },
+    "ethicalPolicy": {
+      "es": "Política ética",
+      "en": "Ethical policy"
+    },
+    "traceabilityStatus": {
+      "es": "Trazabilidad",
+      "en": "Traceability status"
+    },
+    "decisionAuditability": {
+      "es": "Auditoría de decisiones",
+      "en": "Decision auditability"
+    },
+    "humanOversight": {
+      "es": "Supervisión humana",
+      "en": "Human oversight"
+    },
+    "institutionalRiskLevel": {
+      "es": "Riesgo institucional",
+      "en": "Institutional risk level"
+    },
+    "trustworthinessLevel": {
+      "es": "Nivel de confiabilidad",
+      "en": "Trustworthiness level"
+    },
+    "explainabilityCompliance": {
+      "es": "Cumplimiento de explicabilidad",
+      "en": "Explainability compliance"
+    },
+    "ethicalGovernanceStatus": {
+      "es": "Gobernanza ética",
+      "en": "Ethical governance status"
+    },
+    "humanOversightRequirement": {
+      "es": "Supervisión humana",
+      "en": "Human oversight requirement"
+    },
+    "riskContainmentLevel": {
+      "es": "Contención de riesgos",
+      "en": "Risk containment level"
+    },
+    "institutionalReliability": {
+      "es": "Confiabilidad institucional",
+      "en": "Institutional reliability"
+    },
+    "fairnessStatus": {
+      "es": "Estado de equidad",
+      "en": "Fairness status"
+    },
+    "biasRiskLevel": {
+      "es": "Riesgo de sesgo",
+      "en": "Bias risk level"
+    },
+    "protectedEducationalPrinciples": {
+      "es": "Principios educativos protegidos",
+      "en": "Protected educational principles"
+    },
+    "mitigationStrategy": {
+      "es": "Estrategia de mitigación",
+      "en": "Mitigation strategy"
+    },
+    "humanReviewRequirement": {
+      "es": "Revisión humana",
+      "en": "Human review requirement"
+    },
+    "ethicalFairnessPolicy": {
+      "es": "Política de equidad",
+      "en": "Ethical fairness policy"
+    },
+    "architectureGovernanceLevel": {
+      "es": "Gobernanza arquitectónica",
+      "en": "Architecture governance level"
+    },
+    "architecturalStyle": {
+      "es": "Estilo arquitectónico",
+      "en": "Architectural style"
+    },
+    "boundedContextStrategy": {
+      "es": "Estrategia de contextos",
+      "en": "Bounded context strategy"
+    },
+    "layerSeparationStatus": {
+      "es": "Separación de capas",
+      "en": "Layer separation status"
+    },
+    "architectureEnforcementStatus": {
+      "es": "Control arquitectónico",
+      "en": "Architecture enforcement status"
+    },
+    "enterpriseReadiness": {
+      "es": "Preparación empresarial",
+      "en": "Enterprise readiness"
+    },
+    "kubernetesReadinessStatus": {
+      "es": "Preparación Kubernetes",
+      "en": "Kubernetes readiness status"
+    },
+    "deploymentManifestStatus": {
+      "es": "Manifiesto de despliegue",
+      "en": "Deployment manifest status"
+    },
+    "serviceExposureStatus": {
+      "es": "Exposición del servicio",
+      "en": "Service exposure status"
+    },
+    "livenessProbeStatus": {
+      "es": "Prueba de vida",
+      "en": "Liveness probe status"
+    },
+    "readinessProbeStatus": {
+      "es": "Prueba de disponibilidad",
+      "en": "Readiness probe status"
+    },
+    "ethicsReadiness": {
+      "es": "Preparación ética",
+      "en": "Ethics readiness"
+    },
+    "consentManagement": {
+      "es": "Consentimiento informado",
+      "en": "Consent management"
+    },
+    "dataProtectionStatus": {
+      "es": "Protección de datos",
+      "en": "Data protection status"
+    },
+    "participantRiskLevel": {
+      "es": "Riesgo de participantes",
+      "en": "Participant risk level"
+    },
+    "sensitiveDataHandling": {
+      "es": "Manejo de datos sensibles",
+      "en": "Sensitive data handling"
+    },
+    "ethicsCommitteeSubmission": {
+      "es": "Comité de ética",
+      "en": "Ethics committee submission"
+    },
+    "expertValidationStatus": {
+      "es": "Validación por expertos",
+      "en": "Expert validation status"
+    },
+    "pedagogicalExpertiseRequired": {
+      "es": "Experticia pedagógica",
+      "en": "Pedagogical expertise required"
+    },
+    "inclusionExpertiseRequired": {
+      "es": "Experticia en inclusión",
+      "en": "Inclusion expertise required"
+    },
+    "aiEthicsExpertiseRequired": {
+      "es": "Experticia en ética de IA",
+      "en": "Required AI ethics expertise"
+    },
+    "technologyExpertiseRequired": {
+      "es": "Experticia tecnológica",
+      "en": "Technology expertise required"
+    },
+    "instrumentsValidationStatus": {
+      "es": "Validación de instrumentos",
+      "en": "Instruments validation status"
+    },
+    "teacherQuestionnaireStatus": {
+      "es": "Cuestionario docente",
+      "en": "Teacher questionnaire status"
+    },
+    "expertRubricStatus": {
+      "es": "Rúbrica de expertos",
+      "en": "Expert rubric status"
+    },
+    "interviewGuideStatus": {
+      "es": "Guía de entrevista",
+      "en": "Interview guide status"
+    },
+    "observationProtocolStatus": {
+      "es": "Protocolo de observación",
+      "en": "Observation protocol status"
+    },
+    "usabilityEvaluationStatus": {
+      "es": "Evaluación de usabilidad",
+      "en": "Usability evaluation status"
+    },
+    "governanceEvidence": {
+      "es": "Evidencias de gobernanza",
+      "en": "Governance evidence"
+    },
+    "recommendedArchitectureAction": {
+      "es": "Acción arquitectónica recomendada",
+      "en": "Recommended architecture action"
+    },
+    "kubernetesEvidence": {
+      "es": "Evidencias de Kubernetes",
+      "en": "Kubernetes evidence"
+    },
+    "recommendedKubernetesAction": {
+      "es": "Acción recomendada para Kubernetes",
+      "en": "Recommended kubernetes action"
+    },
+    "ethicsEvidence": {
+      "es": "Evidencias éticas",
+      "en": "Ethics evidence"
+    },
+    "recommendedAction": {
+      "es": "Acción recomendada",
+      "en": "Recommended action"
+    },
+    "validationCriteria": {
+      "es": "Criterios de validación",
+      "en": "Validation criteria"
+    },
+    "validationDimensions": {
+      "es": "Dimensiones de validación",
+      "en": "Validation dimensions"
+    }
+  },
+  "terms": {
+    "All": {
+      "es": "Todas",
+      "en": "All"
+    },
+    "Governance": {
+      "es": "Gobernanza",
+      "en": "Governance"
+    },
+    "Trustworthiness": {
+      "es": "Confiabilidad",
+      "en": "Trustworthiness"
+    },
+    "Ethics": {
+      "es": "Ética",
+      "en": "Ethics"
+    },
+    "Architecture": {
+      "es": "Arquitectura",
+      "en": "Architecture"
+    },
+    "Deployment": {
+      "es": "Despliegue",
+      "en": "Deployment"
+    },
+    "Research": {
+      "es": "Investigación",
+      "en": "Research"
+    },
+    "INSTITUTIONAL": {
+      "es": "Institucional",
+      "en": "Institutional"
+    },
+    "NON_CLINICAL_EDUCATIONAL_AI": {
+      "es": "IA educativa no clínica",
+      "en": "Non-clinical educational AI"
+    },
+    "ACTIVE": {
+      "es": "Activo",
+      "en": "Active"
+    },
+    "ENABLED": {
+      "es": "Habilitado",
+      "en": "Enabled"
+    },
+    "REQUIRED": {
+      "es": "Requerido",
+      "en": "Required"
+    },
+    "CONTROLLED": {
+      "es": "Controlado",
+      "en": "Controlled"
+    },
+    "HIGH": {
+      "es": "Alto",
+      "en": "High"
+    },
+    "VALIDATED": {
+      "es": "Validado",
+      "en": "Validated"
+    },
+    "MANDATORY": {
+      "es": "Obligatorio",
+      "en": "Mandatory"
+    },
+    "STABLE": {
+      "es": "Estable",
+      "en": "Stable"
+    },
+    "MONITORED": {
+      "es": "Supervisado",
+      "en": "Monitored"
+    },
+    "LOW_CONTROLLED": {
+      "es": "Bajo y controlado",
+      "en": "Low and controlled"
+    },
+    "PREPARATION": {
+      "es": "En preparación",
+      "en": "In preparation"
+    },
+    "ACTIVE_ARCHITECTURE_GOVERNANCE": {
+      "es": "Gobernanza arquitectónica activa",
+      "en": "Active architecture governance"
+    },
+    "HEXAGONAL_MODULAR_ARCHITECTURE": {
+      "es": "Arquitectura hexagonal modular",
+      "en": "Modular hexagonal architecture"
+    },
+    "BOUNDED_CONTEXTS_IDENTIFIED_BY_EDUCATIONAL_INTELLIGENCE_CAPABILITIES": {
+      "es": "Contextos delimitados por capacidades de inteligencia educativa",
+      "en": "Bounded contexts identified by educational intelligence capabilities"
+    },
+    "API_APPLICATION_DOMAIN_INFRASTRUCTURE_SEPARATION_ENFORCED": {
+      "es": "Separación aplicada entre API, aplicación, dominio e infraestructura",
+      "en": "API, application, domain and infrastructure separation enforced"
+    },
+    "ARCHITECTURE_TESTS_AND_LAYER_RULES_ACTIVE": {
+      "es": "Pruebas arquitectónicas y reglas de capas activas",
+      "en": "Architecture tests and layer rules active"
+    },
+    "ENTERPRISE_SCALE_READY_AFTER_CONTRACT_AND_DEPLOYMENT_HARDENING": {
+      "es": "Preparación empresarial condicionada al fortalecimiento de contratos y despliegue",
+      "en": "Enterprise readiness requires contract and deployment hardening"
+    },
+    "KUBERNETES_READY_AFTER_MANIFESTS": {
+      "es": "Preparación para Kubernetes condicionada a los manifiestos",
+      "en": "Kubernetes readiness requires manifests"
+    },
+    "DEPLOYMENT_MANIFEST_REQUIRED": {
+      "es": "Se requiere manifiesto de despliegue",
+      "en": "Deployment manifest required"
+    },
+    "SERVICE_MANIFEST_REQUIRED": {
+      "es": "Se requiere manifiesto de servicio",
+      "en": "Service manifest required"
+    },
+    "ACTUATOR_LIVENESS_PROBE_AVAILABLE": {
+      "es": "Prueba de actividad de Actuator disponible",
+      "en": "Actuator liveness probe available"
+    },
+    "ACTUATOR_READINESS_PROBE_AVAILABLE": {
+      "es": "Prueba de disponibilidad de Actuator disponible",
+      "en": "Actuator readiness probe available"
+    },
+    "READY_FOR_ETHICS_SUBMISSION_PREPARATION": {
+      "es": "Listo para preparar la solicitud al comité de ética",
+      "en": "Ready to prepare an ethics submission"
+    },
+    "INFORMED_CONSENT_REQUIRED": {
+      "es": "Se requiere consentimiento informado",
+      "en": "Informed consent required"
+    },
+    "DATA_PROTECTION_GOVERNANCE_REQUIRED": {
+      "es": "Se requiere gobernanza de protección de datos",
+      "en": "Data protection governance required"
+    },
+    "CONTROLLED_WITH_ANONYMIZATION_AND_MINIMIZATION": {
+      "es": "Controlado mediante anonimización y minimización",
+      "en": "Controlled through anonymization and minimization"
+    },
+    "READY_FOR_EXPERT_REVIEW_PREPARATION": {
+      "es": "Listo para preparar la revisión de expertos",
+      "en": "Ready to prepare expert review"
+    },
+    "EDUCATIONAL_RESEARCH_AND_PEDAGOGICAL_INNOVATION": {
+      "es": "Investigación educativa e innovación pedagógica",
+      "en": "Educational research and pedagogical innovation"
+    },
+    "INCLUSIVE_EDUCATION_AND_REASONABLE_ADJUSTMENTS": {
+      "es": "Educación inclusiva y ajustes razonables",
+      "en": "Inclusive education and reasonable adjustments"
+    },
+    "RESPONSIBLE_AI_ETHICS_AND_HUMAN_OVERSIGHT": {
+      "es": "Ética de IA responsable y supervisión humana",
+      "en": "Responsible AI ethics and human oversight"
+    },
+    "EDUCATIONAL_TECHNOLOGY_AND_BACKEND_ARCHITECTURE": {
+      "es": "Tecnología educativa y arquitectura del servidor",
+      "en": "Educational technology and backend architecture"
+    },
+    "READY_FOR_INSTRUMENT_DESIGN_AND_CONTENT_VALIDATION": {
+      "es": "Listo para diseñar instrumentos y validar su contenido",
+      "en": "Ready for instrument design and content validation"
+    },
+    "TEACHER_PERCEPTION_AND_USEFULNESS_SURVEY_REQUIRED": {
+      "es": "Se requiere encuesta docente de percepción y utilidad",
+      "en": "Teacher perception and usefulness survey required"
+    },
+    "EXPERT_JUDGMENT_RUBRIC_REQUIRED": {
+      "es": "Se requiere rúbrica de juicio experto",
+      "en": "Expert judgment rubric required"
+    },
+    "SEMI_STRUCTURED_INTERVIEW_GUIDE_REQUIRED": {
+      "es": "Se requiere guía de entrevista semiestructurada",
+      "en": "Semi-structured interview guide required"
+    },
+    "CLASSROOM_OBSERVATION_PROTOCOL_REQUIRED": {
+      "es": "Se requiere protocolo de observación de aula",
+      "en": "Classroom observation protocol required"
+    },
+    "USABILITY_AND_EXPLAINABILITY_EVALUATION_REQUIRED": {
+      "es": "Se requiere evaluación de usabilidad y explicabilidad",
+      "en": "Usability and explainability evaluation required"
+    },
+    "Non-discrimination": {
+      "es": "No discriminación",
+      "en": "Non-discrimination"
+    },
+    "Inclusive access": {
+      "es": "Acceso inclusivo",
+      "en": "Inclusive access"
+    },
+    "Reasonable educational adjustment": {
+      "es": "Ajuste educativo razonable",
+      "en": "Reasonable educational adjustment"
+    },
+    "Human-centered pedagogical decision": {
+      "es": "Decisión pedagógica centrada en las personas",
+      "en": "Human-centered pedagogical decision"
+    },
+    "Hexagonal architecture test enforcement": {
+      "es": "Aplicación de pruebas de arquitectura hexagonal",
+      "en": "Hexagonal architecture test enforcement"
+    },
+    "Modular Gradle multi-project structure": {
+      "es": "Estructura modular de múltiples proyectos Gradle",
+      "en": "Modular Gradle multi-project structure"
+    },
+    "API layer separated from research services": {
+      "es": "Capa API separada de los servicios de investigación",
+      "en": "API layer separated from research services"
+    },
+    "DTO-based response contracts": {
+      "es": "Contratos de respuesta basados en DTO",
+      "en": "DTO-based response contracts"
+    },
+    "Git traceability by MVP": {
+      "es": "Trazabilidad Git por MVP",
+      "en": "Git traceability by MVP"
+    },
+    "Quality intelligence endpoints available": {
+      "es": "Servicios de inteligencia de calidad disponibles",
+      "en": "Quality intelligence endpoints available"
+    },
+    "CI/CD and DevSecOps readiness evidence": {
+      "es": "Evidencias de preparación de CI/CD y DevSecOps",
+      "en": "CI/CD and DevSecOps readiness evidence"
+    },
+    "Dockerfile created": {
+      "es": "Dockerfile creado",
+      "en": "Dockerfile created"
+    },
+    "Docker Compose deployment validated": {
+      "es": "Despliegue con Docker Compose validado",
+      "en": "Docker Compose deployment validated"
+    },
+    "Actuator health endpoint validated": {
+      "es": "Endpoint de salud de Actuator validado",
+      "en": "Actuator health endpoint validated"
+    },
+    "Liveness and readiness groups exposed": {
+      "es": "Grupos de actividad y disponibilidad expuestos",
+      "en": "Liveness and readiness groups exposed"
+    },
+    "PostgreSQL dependency containerized": {
+      "es": "Dependencia PostgreSQL en contenedor",
+      "en": "PostgreSQL dependency containerized"
+    },
+    "Environment-based runtime configuration available": {
+      "es": "Configuración de ejecución mediante entorno disponible",
+      "en": "Environment-based runtime configuration available"
+    },
+    "Non-clinical educational AI boundary defined": {
+      "es": "Límite de IA educativa no clínica definido",
+      "en": "Non-clinical educational AI boundary defined"
+    },
+    "Human oversight required": {
+      "es": "Supervisión humana requerida",
+      "en": "Human oversight required"
+    },
+    "No clinical diagnosis produced": {
+      "es": "No se produce diagnóstico clínico",
+      "en": "No clinical diagnosis produced"
+    },
+    "Explainability and traceability available": {
+      "es": "Explicabilidad y trazabilidad disponibles",
+      "en": "Explainability and traceability available"
+    },
+    "Fairness and bias assessment available": {
+      "es": "Evaluación de equidad y sesgo disponible",
+      "en": "Fairness and bias assessment available"
+    },
+    "Data protection preview implemented": {
+      "es": "Vista previa de protección de datos implementada",
+      "en": "Data protection preview implemented"
+    },
+    "Pilot validation requires informed consent": {
+      "es": "La validación piloto requiere consentimiento informado",
+      "en": "Pilot validation requires informed consent"
+    },
+    "Pedagogical coherence": {
+      "es": "Coherencia pedagógica",
+      "en": "Pedagogical coherence"
+    },
+    "Inclusive education relevance": {
+      "es": "Pertinencia para la educación inclusiva",
+      "en": "Inclusive education relevance"
+    },
+    "Ethical non-clinical AI boundary": {
+      "es": "Límite ético de IA no clínica",
+      "en": "Ethical non-clinical AI boundary"
+    },
+    "Explainability and interpretability": {
+      "es": "Explicabilidad e interpretabilidad",
+      "en": "Explainability and interpretability"
+    },
+    "Teacher usability": {
+      "es": "Usabilidad para docentes",
+      "en": "Teacher usability"
+    },
+    "Research validity": {
+      "es": "Validez investigativa",
+      "en": "Research validity"
+    },
+    "Technological feasibility": {
+      "es": "Viabilidad tecnológica",
+      "en": "Technological feasibility"
+    },
+    "Pedagogical relevance": {
+      "es": "Pertinencia pedagógica",
+      "en": "Pedagogical relevance"
+    },
+    "Inclusive education alignment": {
+      "es": "Alineación con la educación inclusiva",
+      "en": "Inclusive education alignment"
+    },
+    "Teacher decision support": {
+      "es": "Apoyo a las decisiones docentes",
+      "en": "Teacher decision support"
+    },
+    "Explainability of recommendations": {
+      "es": "Explicabilidad de recomendaciones",
+      "en": "Explainability of recommendations"
+    },
+    "Perceived usefulness": {
+      "es": "Utilidad percibida",
+      "en": "Perceived usefulness"
+    },
+    "Ethical clarity": {
+      "es": "Claridad ética",
+      "en": "Ethical clarity"
+    },
+    "Usability and accessibility": {
+      "es": "Usabilidad y accesibilidad",
+      "en": "Usability and accessibility"
+    },
+    "Review adaptive recommendations for unfair educational disadvantage before institutional use.": {
+      "es": "Revisar las recomendaciones adaptativas para detectar desventajas educativas injustas antes del uso institucional.",
+      "en": "Review adaptive recommendations for unfair educational disadvantage before institutional use."
+    },
+    "Fairness assessment excludes clinical labels and protects inclusive educational decision-making.": {
+      "es": "La evaluación de equidad excluye etiquetas clínicas y protege las decisiones educativas inclusivas.",
+      "en": "Fairness assessment excludes clinical labels and protects inclusive educational decision-making."
+    },
+    "Formalize bounded context documentation, architecture decision records, OpenAPI contracts and deployment topology diagrams.": {
+      "es": "Formalizar la documentación de contextos delimitados, decisiones arquitectónicas, contratos OpenAPI y diagramas de despliegue.",
+      "en": "Formalize bounded context documentation, architecture decision records, OpenAPI contracts and deployment topology diagrams."
+    },
+    "Create Kubernetes Deployment, Service, ConfigMap and Secret manifests using actuator health probes for liveness and readiness.": {
+      "es": "Crear los manifiestos Deployment, Service, ConfigMap y Secret de Kubernetes usando las pruebas de salud de Actuator.",
+      "en": "Create Kubernetes Deployment, Service, ConfigMap and Secret manifests using actuator health probes for liveness and readiness."
+    },
+    "Prepare ethics committee documentation including informed consent, anonymization protocol, data minimization, human oversight and non-clinical AI safeguards.": {
+      "es": "Preparar la documentación del comité de ética con consentimiento informado, anonimización, minimización de datos, supervisión humana y salvaguardas de IA no clínica.",
+      "en": "Prepare ethics committee documentation including informed consent, anonymization protocol, data minimization, human oversight and non-clinical AI safeguards."
+    },
+    "Prepare expert validation rubric, select interdisciplinary reviewers and collect qualitative feedback before pilot implementation.": {
+      "es": "Preparar la rúbrica de validación experta, seleccionar revisores interdisciplinarios y recoger comentarios cualitativos antes del piloto.",
+      "en": "Prepare expert validation rubric, select interdisciplinary reviewers and collect qualitative feedback before pilot implementation."
+    },
+    "Design and validate teacher survey, expert rubric, interview guide and observation protocol before pilot deployment.": {
+      "es": "Diseñar y validar la encuesta docente, rúbrica experta, guía de entrevista y protocolo de observación antes del despliegue piloto.",
+      "en": "Design and validate teacher survey, expert rubric, interview guide and observation protocol before pilot deployment."
+    }
+  }
+}

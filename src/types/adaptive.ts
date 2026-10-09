@@ -1,5 +1,6 @@
-﻿export type AdaptiveLearningPlan = {
-  planId: string;
+import type { LocalizedContentSource } from "../i18n/useApiText";
+export type AdaptiveLearningPlan = LocalizedContentSource & {
+  planId: string | null;
   studentId: string;
   fullName: string;
   learningProfile: string;
@@ -13,6 +14,6 @@
   teacherActions: string[];
   inclusionActions: string[];
   familyActions: string[];
-  createdAt: string;
+  createdAt: string | null;
 };
 

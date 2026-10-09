@@ -1,3 +1,4 @@
+import { useSuiteText } from "../i18n/useSuiteText";
 import { useSyncExternalStore } from "react";
 import { Alert, AlertTitle } from "@mui/material";
 
@@ -16,6 +17,7 @@ const failureMessages = {
 } as const;
 
 export const StudentServiceStatusAlert = () => {
+  const ui = useSuiteText();
   const state = useSyncExternalStore(
     subscribeStudentServiceStatus,
     getStudentServiceStatus,
@@ -25,9 +27,9 @@ export const StudentServiceStatusAlert = () => {
   if (state.phase === "starting") {
     return (
       <Alert severity="info" sx={{ mb: 3 }}>
-        <AlertTitle>El servicio está iniciando</AlertTitle>
-        Render está reactivando el backend. Reintento {state.attempt + 1} de{" "}
-        {state.maxAttempts}; sus datos y su sesión permanecen intactos.
+        <AlertTitle>{ui("El servicio está iniciando")}</AlertTitle>
+        {ui("Render está reactivando el backend. Reintento")} {state.attempt + 1} {ui("de")}{" "}
+        {state.maxAttempts}{ui("; sus datos y su sesión permanecen intactos.")}
       </Alert>
     );
   }
@@ -38,9 +40,9 @@ export const StudentServiceStatusAlert = () => {
     return (
       <Alert severity={authenticationFailure ? "warning" : "error"} sx={{ mb: 3 }}>
         <AlertTitle>
-          {authenticationFailure ? "Autenticación requerida" : "Servicio no disponible"}
+          {ui(authenticationFailure ? "Autenticación requerida" : "Servicio no disponible")}
         </AlertTitle>
-        {failureMessages[state.failureKind]}
+        {ui(failureMessages[state.failureKind])}
       </Alert>
     );
   }

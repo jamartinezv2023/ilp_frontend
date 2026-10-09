@@ -3,13 +3,13 @@ import { expect, test } from "@playwright/test";
 const expected = {
   es: {
     teacherError: "No fue posible cargar los estudiantes. Verifique la conexión con el servicio.",
-    assessment: "Centro para aplicar instrumentos educativos, calcular perfiles de aprendizaje, preferencias de procesamiento e intereses vocacionales.",
+    assessment: "Los envíos antiguos están deshabilitados hasta aprobar la institución y el instrumento. Esta página no recoge ni envía respuestas.",
     administration: "Administración de usuarios, roles, permisos y configuración institucional.",
     headings: ["Gestión de usuarios", "Gestión de roles", "Gestión de permisos"],
   },
   en: {
     teacherError: "Students could not be loaded. Check the service connection.",
-    assessment: "A center for administering educational instruments and exploring learning profiles, processing preferences and vocational interests.",
+    assessment: "Legacy submissions are disabled pending institutional and instrument approval. This page does not collect or submit answers.",
     administration: "Manage users, roles, permissions and institutional settings.",
     headings: ["User management", "Role management", "Permission management"],
   },

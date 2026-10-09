@@ -1,3 +1,6 @@
+import { useI18n } from "../../i18n/I18nProvider";
+import { researchDetails, researchTerm } from "../../i18n/researchText";
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -35,6 +38,9 @@ const categories: { label: string; value: ResearchCategory }[] = [
 ];
 
 export const ResearchCenterPage = () => {
+  const ui = useSuiteText();
+  const { locale } = useI18n();
+  const unavailableLabel = locale === "es" ? "No disponible" : "Unavailable";
   const [signals, setSignals] = useState<ResearchSignal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -91,20 +97,18 @@ export const ResearchCenterPage = () => {
           <ScienceIcon color="primary" sx={{ fontSize: 40 }} />
           <Chip
             icon={<VerifiedIcon />}
-            label="Doctoral Research Analytics"
+            label={ui("Doctoral Research Analytics")}
             color="primary"
             variant="outlined"
           />
         </Stack>
 
-        <Typography variant="h3" fontWeight={950} sx={{ mb: 1 }}>
-          Inclusive Educational AI Research Center
+        <Typography variant="h3" fontWeight={950} sx={{ mb: 1, fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, overflowWrap: "anywhere" }}>
+          {ui("Inclusive Educational AI Research Center")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 980 }}>
-          Executive analytics workspace for monitoring the scientific, ethical,
-          architectural and technological maturity of the ILP doctoral research
-          platform.
+          {ui("Executive analytics workspace for monitoring the scientific, ethical, architectural and technological maturity of the ILP doctoral research platform.")}
         </Typography>
 
         <Button
@@ -113,7 +117,7 @@ export const ResearchCenterPage = () => {
           onClick={() => void loadSignals()}
           sx={{ mt: 3, borderRadius: 4, fontWeight: 900 }}
         >
-          Refresh evidence
+          {ui("Refresh evidence")}
         </Button>
       </Box>
 
@@ -132,13 +136,13 @@ export const ResearchCenterPage = () => {
           <CardContent sx={{ p: 2.5 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <PsychologyIcon color="primary" />
-              <Typography fontWeight={900}>Contratos consultados</Typography>
+              <Typography fontWeight={900}>{ui("Contratos consultados")}</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950} sx={{ mt: 1 }}>
               {loading ? "..." : totalSignals}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              Endpoints de Research consultados por el cliente.
+              {ui("Endpoints de Research consultados por el cliente.")}
             </Typography>
           </CardContent>
         </Card>
@@ -147,13 +151,13 @@ export const ResearchCenterPage = () => {
           <CardContent sx={{ p: 2.5 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <GppGoodIcon color="success" />
-              <Typography fontWeight={900}>Respuestas backend</Typography>
+              <Typography fontWeight={900}>{ui("Respuestas backend")}</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950} sx={{ mt: 1 }}>
               {loading ? "..." : availableSignals}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              Señales construidas únicamente desde respuestas disponibles.
+              {ui("Señales construidas únicamente desde respuestas disponibles.")}
             </Typography>
           </CardContent>
         </Card>
@@ -162,35 +166,32 @@ export const ResearchCenterPage = () => {
           <CardContent sx={{ p: 2.5 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <CloudDoneIcon color="info" />
-              <Typography fontWeight={900}>No disponibles</Typography>
+              <Typography fontWeight={900}>{ui("No disponibles")}</Typography>
             </Stack>
             <Typography variant="h3" fontWeight={950} sx={{ mt: 1 }}>
               {loading ? "..." : unavailableSignals}
             </Typography>
             <Typography color="text.secondary" variant="body2">
-              Endpoints sin respuesta; no se aplicaron valores fallback.
+              {ui("Endpoints sin respuesta; no se aplicaron valores fallback.")}
             </Typography>
           </CardContent>
         </Card>
       </Box>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Los porcentajes de madurez y readiness se muestran como no calculados:
-        los contratos backend actuales no entregan métricas cuantitativas
-        certificadas. La interfaz no infiere ni sustituye esos valores.
-        Evidencias backend visibles: {evidenceItems}.
+        {ui("Los porcentajes de madurez y readiness se muestran como no calculados: los contratos backend actuales no entregan métricas cuantitativas certificadas. La interfaz no infiere ni sustituye esos valores. Evidencias backend visibles:")} {evidenceItems}.
       </Alert>
 
       {loading && (
         <Stack alignItems="center" sx={{ py: 8 }}>
           <CircularProgress />
           <Typography sx={{ mt: 2 }}>
-            Consulting scientific and technological evidence...
+            {ui("Consulting scientific and technological evidence...")}
           </Typography>
         </Stack>
       )}
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error">{ui(error)}</Alert>}
 
       {!loading && !error && (
         <>
@@ -198,7 +199,7 @@ export const ResearchCenterPage = () => {
             {categories.map((category) => (
               <Chip
                 key={category.value}
-                label={category.label}
+                label={researchTerm(category.label, locale)}
                 clickable
                 color={activeCategory === category.value ? "primary" : "default"}
                 variant={activeCategory === category.value ? "filled" : "outlined"}
@@ -230,6 +231,7 @@ export const ResearchCenterPage = () => {
                     py: 1.2,
                     "& .MuiAccordionSummary-content": {
                       alignItems: "center",
+                      flexWrap: "wrap",
                       gap: 2,
                     },
                   }}
@@ -238,7 +240,7 @@ export const ResearchCenterPage = () => {
 
                   <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                     <Typography fontWeight={950}>
-                      {signal.title}
+                      {ui(signal.title)}
                     </Typography>
 
                     <Typography
@@ -248,22 +250,23 @@ export const ResearchCenterPage = () => {
                         display: "block",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
+                        whiteSpace: "normal",
+                        overflowWrap: "anywhere",
                         maxWidth: "100%",
                       }}
                     >
-                      {signal.summary}
+                      {signal.status === "NO DISPONIBLE" ? `${ui("Sin respuesta del servicio.")} ${/HTTP \d+/.exec(signal.summary)?.[0] ?? ""}` : <span>{researchDetails(signal.payload ?? {}, locale).slice(0, 3).join(" · ")}</span>}
                     </Typography>
                   </Box>
 
                   <Chip
-                    label={signal.status}
+                    label={signal.status === "NO DISPONIBLE" ? unavailableLabel : researchTerm(signal.status, locale)}
                     color={
                       signal.status === "NO DISPONIBLE" ? "error" : "success"
                     }
                     variant="outlined"
                     size="small"
-                    sx={{ fontWeight: 800 }}
+                    sx={{ fontWeight: 800, maxWidth: "100%", height: "auto", py: 0.5, "& .MuiChip-label": { whiteSpace: "normal", overflowWrap: "anywhere" } }}
                   />
                 </AccordionSummary>
 
@@ -273,11 +276,11 @@ export const ResearchCenterPage = () => {
                     fontWeight={900}
                     sx={{ mb: 1 }}
                   >
-                    Visible evidence
+                    {ui("Visible evidence")}
                   </Typography>
 
                   <Stack spacing={1}>
-                    {signal.evidence.slice(0, 5).map((item) => (
+                    {(signal.payload ? researchDetails(signal.payload, locale) : [locale === "es" ? "Sin respuesta del servicio; no se muestran evidencias sustitutivas." : "No service response; no substitute evidence is displayed."]).map((item) => (
                       <Alert severity="info" variant="outlined" key={item}>
                         {item}
                       </Alert>
@@ -289,10 +292,10 @@ export const ResearchCenterPage = () => {
                     color="text.secondary"
                     sx={{ display: "block", mt: 2 }}
                   >
-                    Origen: {signal.status === "NO DISPONIBLE"
-                      ? "sin respuesta backend"
-                      : "respuesta backend"}
-                    {" · "}Endpoint: {signal.endpoint}
+                    {ui("Origen:")} {signal.status === "NO DISPONIBLE"
+                      ? ui("sin respuesta backend")
+                      : ui("respuesta backend")}
+                    {" · "}{locale === "es" ? "Servicio" : "Endpoint"}: <code translate="no" data-technical-value>{signal.endpoint}</code>
                   </Typography>
                 </AccordionDetails>
               </Accordion>

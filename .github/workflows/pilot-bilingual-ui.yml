@@ -1,0 +1,61 @@
+name: Pilot bilingual UI CI
+on:
+  pull_request:
+    branches:
+      - feat/bootstrap-frontend
+  push:
+    branches:
+      - feat/bootstrap-frontend
+      - test/pilot-bilingual-recovery-20261005-070059930
+permissions:
+  contents: read
+concurrency:
+  group: inclusion-browser-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  pilot-bilingual:
+    name: Compiled bilingual suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Lint frontend
+        run: npm run lint
+      - name: Typecheck tests
+        run: npm run test:types
+      - name: Install Chromium
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Run bilingual API browser cases
+        run: npx --no-install playwright test --config playwright.bilingual-api.config.ts
+      - name: Run locale completion browser cases
+        run: npx --no-install playwright test --config playwright.locale-finish.config.ts
+      - name: Run responsive shell browser cases
+        run: npx --no-install playwright test --config playwright.shell.config.ts
+      - name: Verify all expected cases
+        run: |
+          python3 - <<'PYCHECK'
+          import xml.etree.ElementTree as ET
+          for name, count in [('bilingual-api',92),('locale-finish',12),('shell',6)]:
+              root = ET.parse(f'test-results/{name}-results.xml').getroot()
+              cases = list(root.iter('testcase'))
+              assert len(cases) == count, (name, len(cases))
+              assert not any(root.iter('failure')) and not any(root.iter('error')) and not any(root.iter('skipped')), name
+          PYCHECK
+      - name: Preserve browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilot-bilingual-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: error
+          retention-days: 14

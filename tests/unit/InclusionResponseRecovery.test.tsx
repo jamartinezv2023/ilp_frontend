@@ -23,12 +23,12 @@ const profiles = [
 ];
 const renderPage = () =>
   render(<I18nProvider><InclusionPiarPage /></I18nProvider>);
-const errorMessage = /No fue posible cargar/;
 beforeEach(() => {
   transport.get.mockReset();
   localStorage.setItem('ilp.locale', 'es');
 });
 describe.each(['es', 'en'])('Inclusion response boundary in %s', locale => {
+  const errorMessage = locale === 'es' ? /No fue posible cargar/ : /Inclusion information could not be loaded/;
   const emptyMessage = locale === 'es'
     ? 'No hay estudiantes disponibles en la respuesta del servicio.'
     : 'No students are available in the service response.';

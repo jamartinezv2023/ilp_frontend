@@ -8,6 +8,7 @@ const client = axios.create({
   timeout: 8000,
 });
 
+/** GET returns an unsaved preview; it never records a plan. */
 export const generateAdaptivePlan = async (
   studentId: string
 ): Promise<AdaptiveLearningPlan> => {
@@ -15,7 +16,7 @@ export const generateAdaptivePlan = async (
     `/api/v1/adaptive/students/${studentId}`
   );
 
-  return response.data;
+  return parseAdaptivePlan(response.data);
 };
 
 export const fetchAdaptivePlanHistory = async (
@@ -25,6 +26,23 @@ export const fetchAdaptivePlanHistory = async (
     `/api/v1/adaptive/students/${studentId}/history`
   );
 
-  return response.data;
+  if (!Array.isArray(response.data)) throw new Error("Invalid adaptive history");
+  return response.data.map(parseAdaptivePlan);
 };
 
+
+const planStringFields = ["studentId", "fullName", "learningProfile", "vocationalInterest",
+  "supportLevel", "riskLevel", "recommendedMethodology"] as const;
+const planListFields = ["learningPreferences", "recommendedResources", "adaptivePathway",
+  "teacherActions", "inclusionActions", "familyActions"] as const;
+export const parseAdaptivePlan = (value: unknown): AdaptiveLearningPlan => {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error("Invalid adaptive plan");
+  }
+  const record = value as Record<string, unknown>;
+  const stringsValid = planStringFields.every(key => typeof record[key] === "string" && record[key].trim().length > 0);
+  const listsValid = planListFields.every(key => Array.isArray(record[key]) && record[key].every(item => typeof item === "string" && item.trim().length > 0));
+  const identityValid = ["planId", "createdAt"].every(key => record[key] === null || (typeof record[key] === "string" && record[key].trim().length > 0));
+  if (!stringsValid || !listsValid || !identityValid) throw new Error("Invalid adaptive plan");
+  return value as AdaptiveLearningPlan;
+};

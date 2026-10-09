@@ -1,3 +1,4 @@
+import { useSuiteText } from "../../i18n/useSuiteText";
 import { useState } from "react";
 import {
   Alert,
@@ -22,6 +23,7 @@ interface SetupResponse {
 }
 
 export const MfaPage = () => {
+ const ui = useSuiteText();
   const { locale } = useI18n();
   const { accessToken, email } = useAppSelector((state) => state.auth);
   const [setup, setSetup] = useState<SetupResponse | null>(null);
@@ -81,7 +83,7 @@ export const MfaPage = () => {
 
   return (
     <Box>
-      <Typography variant="h3" fontWeight={900} sx={{ mb: 1 }}>
+      <Typography variant="h3" fontWeight={900} sx={{ mb: 1, fontSize: { xs: "2rem", md: "3rem" }, overflowWrap: "anywhere" }}>
         {locale === "es" ? "Autenticación multifactor" : "Multi-factor authentication"}
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 3, maxWidth: 820 }}>
@@ -94,7 +96,7 @@ export const MfaPage = () => {
         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
           <Stack spacing={3}>
             <SecurityIcon color="primary" sx={{ fontSize: 44 }} aria-hidden="true" />
-            {error && <Alert severity="error" role="alert">{error}</Alert>}
+            {error && <Alert severity="error" role="alert">{ui(error)}</Alert>}
             {success && (
               <Alert severity="success" role="status">
                 {locale === "es" ? "MFA quedó activada correctamente." : "MFA was enabled successfully."}

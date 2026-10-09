@@ -1,0 +1,119 @@
+[
+  {
+    "governanceLevel": "INSTITUTIONAL",
+    "ethicalPolicy": "NON_CLINICAL_EDUCATIONAL_AI",
+    "traceabilityStatus": "ACTIVE",
+    "decisionAuditability": "ENABLED",
+    "humanOversight": "REQUIRED",
+    "institutionalRiskLevel": "CONTROLLED"
+  },
+  {
+    "trustworthinessLevel": "HIGH",
+    "explainabilityCompliance": "VALIDATED",
+    "ethicalGovernanceStatus": "ACTIVE",
+    "humanOversightRequirement": "MANDATORY",
+    "riskContainmentLevel": "CONTROLLED",
+    "institutionalReliability": "STABLE"
+  },
+  {
+    "fairnessStatus": "MONITORED",
+    "biasRiskLevel": "LOW_CONTROLLED",
+    "protectedEducationalPrinciples": [
+      "Non-discrimination",
+      "Inclusive access",
+      "Reasonable educational adjustment",
+      "Human-centered pedagogical decision"
+    ],
+    "mitigationStrategy": "Review adaptive recommendations for unfair educational disadvantage before institutional use.",
+    "humanReviewRequirement": "MANDATORY",
+    "ethicalFairnessPolicy": "Fairness assessment excludes clinical labels and protects inclusive educational decision-making."
+  },
+  {
+    "architectureGovernanceLevel": "ACTIVE_ARCHITECTURE_GOVERNANCE",
+    "architecturalStyle": "HEXAGONAL_MODULAR_ARCHITECTURE",
+    "boundedContextStrategy": "BOUNDED_CONTEXTS_IDENTIFIED_BY_EDUCATIONAL_INTELLIGENCE_CAPABILITIES",
+    "layerSeparationStatus": "API_APPLICATION_DOMAIN_INFRASTRUCTURE_SEPARATION_ENFORCED",
+    "architectureEnforcementStatus": "ARCHITECTURE_TESTS_AND_LAYER_RULES_ACTIVE",
+    "enterpriseReadiness": "ENTERPRISE_SCALE_READY_AFTER_CONTRACT_AND_DEPLOYMENT_HARDENING",
+    "governanceEvidence": [
+      "Hexagonal architecture test enforcement",
+      "Modular Gradle multi-project structure",
+      "API layer separated from research services",
+      "DTO-based response contracts",
+      "Git traceability by MVP",
+      "Quality intelligence endpoints available",
+      "CI/CD and DevSecOps readiness evidence"
+    ],
+    "recommendedArchitectureAction": "Formalize bounded context documentation, architecture decision records, OpenAPI contracts and deployment topology diagrams."
+  },
+  {
+    "kubernetesReadinessStatus": "KUBERNETES_READY_AFTER_MANIFESTS",
+    "deploymentManifestStatus": "DEPLOYMENT_MANIFEST_REQUIRED",
+    "serviceExposureStatus": "SERVICE_MANIFEST_REQUIRED",
+    "livenessProbeStatus": "ACTUATOR_LIVENESS_PROBE_AVAILABLE",
+    "readinessProbeStatus": "ACTUATOR_READINESS_PROBE_AVAILABLE",
+    "kubernetesEvidence": [
+      "Dockerfile created",
+      "Docker Compose deployment validated",
+      "Actuator health endpoint validated",
+      "Liveness and readiness groups exposed",
+      "PostgreSQL dependency containerized",
+      "Environment-based runtime configuration available"
+    ],
+    "recommendedKubernetesAction": "Create Kubernetes Deployment, Service, ConfigMap and Secret manifests using actuator health probes for liveness and readiness."
+  },
+  {
+    "ethicsReadiness": "READY_FOR_ETHICS_SUBMISSION_PREPARATION",
+    "humanOversight": "MANDATORY",
+    "consentManagement": "INFORMED_CONSENT_REQUIRED",
+    "dataProtectionStatus": "DATA_PROTECTION_GOVERNANCE_REQUIRED",
+    "participantRiskLevel": "LOW_CONTROLLED",
+    "sensitiveDataHandling": "CONTROLLED_WITH_ANONYMIZATION_AND_MINIMIZATION",
+    "ethicsCommitteeSubmission": "PREPARATION",
+    "ethicsEvidence": [
+      "Non-clinical educational AI boundary defined",
+      "Human oversight required",
+      "No clinical diagnosis produced",
+      "Explainability and traceability available",
+      "Fairness and bias assessment available",
+      "Data protection preview implemented",
+      "Pilot validation requires informed consent"
+    ],
+    "recommendedAction": "Prepare ethics committee documentation including informed consent, anonymization protocol, data minimization, human oversight and non-clinical AI safeguards."
+  },
+  {
+    "expertValidationStatus": "READY_FOR_EXPERT_REVIEW_PREPARATION",
+    "pedagogicalExpertiseRequired": "EDUCATIONAL_RESEARCH_AND_PEDAGOGICAL_INNOVATION",
+    "inclusionExpertiseRequired": "INCLUSIVE_EDUCATION_AND_REASONABLE_ADJUSTMENTS",
+    "aiEthicsExpertiseRequired": "RESPONSIBLE_AI_ETHICS_AND_HUMAN_OVERSIGHT",
+    "technologyExpertiseRequired": "EDUCATIONAL_TECHNOLOGY_AND_BACKEND_ARCHITECTURE",
+    "validationCriteria": [
+      "Pedagogical coherence",
+      "Inclusive education relevance",
+      "Ethical non-clinical AI boundary",
+      "Explainability and interpretability",
+      "Teacher usability",
+      "Research validity",
+      "Technological feasibility"
+    ],
+    "recommendedAction": "Prepare expert validation rubric, select interdisciplinary reviewers and collect qualitative feedback before pilot implementation."
+  },
+  {
+    "instrumentsValidationStatus": "READY_FOR_INSTRUMENT_DESIGN_AND_CONTENT_VALIDATION",
+    "teacherQuestionnaireStatus": "TEACHER_PERCEPTION_AND_USEFULNESS_SURVEY_REQUIRED",
+    "expertRubricStatus": "EXPERT_JUDGMENT_RUBRIC_REQUIRED",
+    "interviewGuideStatus": "SEMI_STRUCTURED_INTERVIEW_GUIDE_REQUIRED",
+    "observationProtocolStatus": "CLASSROOM_OBSERVATION_PROTOCOL_REQUIRED",
+    "usabilityEvaluationStatus": "USABILITY_AND_EXPLAINABILITY_EVALUATION_REQUIRED",
+    "validationDimensions": [
+      "Pedagogical relevance",
+      "Inclusive education alignment",
+      "Teacher decision support",
+      "Explainability of recommendations",
+      "Perceived usefulness",
+      "Ethical clarity",
+      "Usability and accessibility"
+    ],
+    "recommendedAction": "Design and validate teacher survey, expert rubric, interview guide and observation protocol before pilot deployment."
+  }
+]

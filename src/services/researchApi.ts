@@ -73,7 +73,7 @@ const humanizeKey = (key: string): string =>
 const stringifyValue = (value: unknown): string => {
   if (Array.isArray(value)) return value.join(", ");
   if (typeof value === "object" && value !== null) return JSON.stringify(value);
-  return String(value ?? "No disponible").replaceAll("_", " ");
+  return String(value ?? "No disponible");
 };
 
 const normalizeSignal = (
@@ -82,6 +82,7 @@ const normalizeSignal = (
   category: ResearchSignal["category"],
   data: ApiRecord
 ): ResearchSignal => {
+  if (data === null || typeof data !== "object" || Array.isArray(data) || Object.keys(data).length === 0) throw new Error("Invalid research payload");
   const entries = Object.entries(data);
 
   const statusEntry =
@@ -96,6 +97,7 @@ const normalizeSignal = (
     entries.find(([key]) => key.toLowerCase().includes("dimensions"));
 
   return {
+    payload: data,
     title,
     endpoint,
     category,

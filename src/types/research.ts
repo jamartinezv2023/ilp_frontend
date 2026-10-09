@@ -1,4 +1,4 @@
-﻿export type ResearchCategory =
+export type ResearchCategory =
   | "all"
   | "governance"
   | "trustworthiness"
@@ -8,6 +8,7 @@
   | "research";
 
 export type ResearchSignal = {
+  payload?: ApiRecord;
   title: string;
   endpoint: string;
   status: string;

@@ -1,4 +1,5 @@
-export type StudentProfile = {
+import type { LocalizedContentSource } from "../i18n/useApiText";
+export type StudentProfile = LocalizedContentSource & {
   id: string;
   fullName: string;
   grade: string;

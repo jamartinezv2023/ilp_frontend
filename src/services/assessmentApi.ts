@@ -77,44 +77,26 @@ export const fetchKolbAssessmentHistory = async (
   return normalizeKolbHistory(response.data);
 };
 
-export const submitKolbAssessment = async (
-  studentId: string
-): Promise<KolbAssessmentResponse> => {
-  const answers = Array.from({ length: 12 }).flatMap(() => [4, 3, 2, 1]);
-  return submitKolbAssessmentWithAnswers(studentId, answers);
-};
+export class LegacyAssessmentSubmissionBlocked extends Error {
+  constructor() {
+    super("LEGACY_ASSESSMENT_SUBMISSION_BLOCKED");
+    this.name = "LegacyAssessmentSubmissionBlocked";
+  }
+}
 
-export const submitFelderSilvermanAssessment = async (
-  studentId: string
-): Promise<FelderSilvermanAssessmentResponse> => {
-  const answers = Array.from({ length: 44 }).map(() => "A");
+type BlockedSubmission<Result> = (studentId: string) => Promise<Result>;
+const rejectLegacySubmission = <Result>(): Promise<Result> =>
+  Promise.reject(new LegacyAssessmentSubmissionBlocked());
 
-  const response = await client.post<FelderSilvermanAssessmentResponse>(
-    "/api/v1/assessments/felder-silverman",
-    { studentId, answers }
-  );
-
-  return response.data;
-};
-
-export const submitKuderAssessment = async (
-  studentId: string
-): Promise<KuderAssessmentResponse> => {
-  const answers = [
-    ...Array.from({ length: 15 }).map(() => "SCIENTIFIC"),
-    ...Array.from({ length: 5 }).map(() => "SOCIAL"),
-    ...Array.from({ length: 5 }).map(() => "ARTISTIC"),
-    ...Array.from({ length: 3 }).map(() => "ADMINISTRATIVE"),
-    ...Array.from({ length: 2 }).map(() => "MECHANICAL"),
-  ];
-
-  const response = await client.post<KuderAssessmentResponse>(
-    "/api/v1/assessments/kuder",
-    { studentId, answers }
-  );
-
-  return response.data;
-};
+export const submitKolbAssessment: BlockedSubmission<KolbAssessmentResponse> =
+  rejectLegacySubmission;
+export const submitFelderSilvermanAssessment: BlockedSubmission<FelderSilvermanAssessmentResponse> =
+  rejectLegacySubmission;
+export const submitKuderAssessment: BlockedSubmission<KuderAssessmentResponse> =
+  rejectLegacySubmission;
+export const isAssessmentSubmissionBlocked = (error: unknown): boolean =>
+  error instanceof LegacyAssessmentSubmissionBlocked ||
+  (axios.isAxiosError(error) && error.response?.status === 410);
 
 export const kolbTimestampMatches = (
   left: unknown,

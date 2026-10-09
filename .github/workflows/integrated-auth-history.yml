@@ -2,14 +2,8 @@ name: Integrated real auth and UI history
 on:
   pull_request:
     branches: [feat/bootstrap-frontend]
-    paths:
-      - 'src/features/auth/**'
-      - 'e2e/integrated-r9/**'
-      - 'tests/pilot/integrated-r9.spec.ts'
-      - 'playwright.integrated-r9.config.ts'
-      - 'vite.r9.config.ts'
-      - 'r9.html'
-      - '.github/workflows/integrated-auth-history.yml'
+  push:
+    branches: [feat/bootstrap-frontend]
   workflow_dispatch:
 permissions:
   contents: read
