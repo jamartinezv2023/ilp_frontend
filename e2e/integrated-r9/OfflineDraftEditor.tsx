@@ -44,7 +44,7 @@ export function OfflineDraftEditor() {
       <button disabled={busy} onClick={() => { setDraft(undefined); setSaved(false); setError(false); }}>{en ? 'Lock local draft' : 'Bloquear borrador local'}</button>
       {saved && <output>{en ? 'Local edit saved. Not submitted.' : 'Edición local guardada. No enviada.'}</output>}
     </> : <>
-      <label>{en ? 'Device key' : 'Clave del dispositivo'}<input type="password" autoComplete="off" value={passphrase}
+      <label>{en ? 'Device key' : 'Clave del dispositivo'}<input type="password" autoComplete="off" maxLength={128} value={passphrase}
         onChange={event => setPassphrase(event.target.value)} /></label>
       <button disabled={busy || passphrase.length < 12} onClick={() => void unlock()}>{en ? 'Unlock local draft' : 'Desbloquear borrador local'}</button>
     </>}

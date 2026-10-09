@@ -51,17 +51,17 @@ export function IntegratedLab() {
       {en ? "Prepare offline screen" : "Preparar pantalla sin conexión"}
     </button>
     {preparation && <output data-testid="shell-preparation">{preparation === "ready"
-      ? (en ? "Offline screen prepared. A new online login is required after reopening."
-        : "Pantalla sin conexión preparada. Al reabrir se requiere un nuevo inicio de sesión en línea.")
+      ? (en ? "Offline screen prepared. Synchronization requires an online login."
+        : "Pantalla sin conexión preparada. Para sincronizar se requiere iniciar sesión en línea.")
       : preparation === "preparing" ? (en ? "Preparing…" : "Preparando…")
         : (en ? "Offline screen unavailable. Keep this page open." : "Pantalla sin conexión no disponible. Mantenga esta página abierta.")}</output>}
     {token ? <>
       <button onClick={() => dispatch(authenticationFailed(""))}>{en ? "End test session" : "Cerrar sesión de prueba"}</button>
       <Session key={token} token={token} />
     </> : online ? <LoginForm /> : <section aria-label={en ? "Locked offline screen" : "Pantalla sin conexión bloqueada"}>
-      <h2>{en ? "Online login required" : "Se requiere inicio de sesión en línea"}</h2>
-      <p>{en ? "Reconnect and sign in to recover your draft. Offline authentication is not available."
-        : "Recupere la conexión e inicie sesión para recuperar su borrador. La autenticación sin conexión no está disponible."}</p>
+      <h2>{en ? "No institutional session" : "Sin sesión institucional"}</h2>
+      <p>{en ? "Use your device key to unlock a previously prepared draft. Synchronization requires an online login."
+        : "Use su clave del dispositivo para desbloquear un borrador previamente preparado. Para sincronizar debe iniciar sesión en línea."}</p>
       <OfflineDraftEditor />
     </section>}
   </main>;
@@ -165,8 +165,10 @@ function Session({ token }: { token: string }) {
     <button disabled={!scope || !option || busy || submitted} onClick={() => void saveDraft()}>
       {en ? "Save on this device" : "Guardar en este dispositivo"}
     </button>
+    <p>{en ? "Use a different key from your institutional password. If forgotten, sign in online to recover the draft."
+      : "Use una clave distinta de su contraseña institucional. Si la olvida, inicie sesión en línea para recuperar el borrador."}</p>
     <label>{en ? "Prepare device key (12+ characters)" : "Preparar clave del dispositivo (12+ caracteres)"}
-      <input type="password" autoComplete="new-password" value={deviceKey} onChange={event => setDeviceKey(event.target.value)} />
+      <input type="password" autoComplete="new-password" maxLength={128} value={deviceKey} onChange={event => setDeviceKey(event.target.value)} />
     </label>
     <button disabled={!draft || deviceKey.length < 12 || busy || submitted || deviceReady}
       onClick={() => void prepareAccess()}>{en ? "Enable local unlocking" : "Habilitar desbloqueo local"}</button>
