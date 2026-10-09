@@ -45,7 +45,7 @@ describe('synthetic durable drafts', () => {
     const store = createSyntheticDraftStore('test');
     const draft = await store.save(scope, 0, 'A');
     const put = vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(() => { throw new DOMException('quota', 'QuotaExceededError'); });
-    await expect(store.save(scope, 1, 'B')).rejects.toThrow('quota');
+    await expect(store.save(scope, 1, 'B')).rejects.toMatchObject({ message: 'STORAGE_WRITE_FAILED', cause: { name: 'QuotaExceededError', message: 'quota' } });
     put.mockRestore();
     expect(await store.load(scope)).toEqual(draft);
   });
@@ -60,10 +60,10 @@ describe('synthetic durable drafts', () => {
     await expect(createSyntheticDraftStore().load({ ...scope, ownerId: '' })).rejects.toThrow('INVALID_DRAFT_SCOPE');
     await expect(createSyntheticDraftStore().save(scope, 0, 'X' as 'A')).rejects.toThrow('INVALID_DRAFT_INPUT');
   });
-  it.each([{ schema: 2 }, { kind: 'ORIGINAL' }, { answer: 'X' }, { administrationId: 'invalid' }, { revision: 0 }, { updatedAt: 'invalid' }, { scope: { ...scope, ownerId: 'other' } }])('blocks corrupted stored data %j', async change => {
+  it.each([null, { schema: 2 }, { kind: 'ORIGINAL' }, { answer: 'X' }, { administrationId: 'invalid' }, { revision: 0 }, { updatedAt: 'invalid' }, { scope: { ...scope, ownerId: 'other' } }])('blocks corrupted stored data %j', async change => {
     const store = createSyntheticDraftStore('test');
     const draft = await store.save(scope, 0, 'A');
-    await replace({ ...draft, ...change });
+    await replace(change === null ? null : { ...draft, ...change });
     await expect(store.load(scope)).rejects.toThrow('INVALID_STORED_DRAFT');
     await expect(store.save(scope, 1, 'B')).rejects.toThrow();
   });

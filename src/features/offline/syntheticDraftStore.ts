@@ -22,7 +22,7 @@ function key(scope: DraftScope): string {
 function checkedDraft(value: unknown, scope: DraftScope): SyntheticDraft | undefined {
   if (value === undefined) return undefined;
   const draft = value as SyntheticDraft;
-  if (!draft || draft.schema !== 1 || draft.kind !== 'SYNTHETIC_P02'
+  if (draft?.schema !== 1 || draft.kind !== 'SYNTHETIC_P02'
     || !draft.scope || key(draft.scope) !== key(scope)
     || !/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(draft.administrationId)
     || !Number.isSafeInteger(draft.revision) || draft.revision < 1
@@ -57,7 +57,7 @@ export function createSyntheticDraftStore(databaseName = 'ilp-p02-synthetic-draf
         const mode = write ? 'readwrite' : 'readonly';
         const tx = db.transaction('drafts', mode, { durability: 'strict' });
         let result: SyntheticDraft | undefined;
-        let failure: unknown;
+        let failure: Error | undefined;
         tx.oncomplete = () => resolve(result);
         tx.onabort = () => reject(failure ?? new Error('STORAGE_WRITE_FAILED'));
         const store = tx.objectStore('drafts');
@@ -75,7 +75,7 @@ export function createSyntheticDraftStore(databaseName = 'ilp-p02-synthetic-draf
               revision: write.revision + 1, answer: write.answer,
             };
             store.put(result, storageKey);
-          } catch (error) { failure = error; tx.abort(); }
+          } catch (error) { failure = error instanceof Error ? error : new Error('STORAGE_WRITE_FAILED', { cause: error }); tx.abort(); }
         };
       });
     } finally { db.close(); }
