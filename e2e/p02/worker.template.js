@@ -1,4 +1,4 @@
-/* global __CACHE_NAME__, __FILES__ */
+/* global __CACHE_NAME__, __FILES__, __CACHE_PREFIX__, __VERIFY_MESSAGE__ */
 const CACHE = __CACHE_NAME__;
 const FILES = __FILES__;
 self.addEventListener('install', event => {
@@ -15,13 +15,14 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(name => name.startsWith('ilp-p02-lab-') && name !== CACHE).map(name => caches.delete(name)));
+    await Promise.all(names.filter(name => name.startsWith(__CACHE_PREFIX__) && name !== CACHE).map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin || !FILES.includes(url.pathname)) return;
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin || !FILES.includes(url.pathname)
+    || event.request.headers.has('Authorization') || event.request.headers.has('X-Tenant-Id')) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(url.pathname);
@@ -30,7 +31,7 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('message', event => {
-  if (event.data?.type !== 'P02_VERIFY_CACHE' || !event.ports[0]) return;
+  if (event.data?.type !== __VERIFY_MESSAGE__ || !event.ports[0]) return;
   event.waitUntil((async () => {
     try {
       const cache = await caches.open(CACHE);

@@ -14,7 +14,7 @@ Drafts are partitioned by that verified user, institution, assignment and instru
 
 1. Log in online and retrieve a verified identity before loading a draft.
 2. Select a response and save explicitly. `Saved on this device` means the IndexedDB transaction committed; it does not mean server registration.
-3. Continue saving in the already open, prepared R9 page while disconnected. Closing a session preserves its draft. R9 reopening requires connectivity and a new login; offline reopening of the separate P02-B laboratory remains a different verified capability.
+3. Continue saving in the already open, prepared R9 page while disconnected. Closing a session preserves its draft. After explicit preparation, R9 can reopen its public shell offline, but it remains locked: no login form, identity, draft or server history is exposed. Reconnect and authenticate online to recover the draft. This is not offline authentication. Offline reopening of the separate P02-B laboratory remains a different capability.
 4. Reconnect, log in and recover the same draft under the same verified account and context.
 5. Synchronization obtains a cross-tab Web Lock, rechecks online identity, then reads the authorized history. A denied or failed history read blocks POST.
 6. If the original administration ID exists, verify its instrument, consent and exact synthetic answer in the integrity-checked authorized snapshot. Never resend that existing attempt.
@@ -32,6 +32,14 @@ A Web Lock prevents concurrent synchronization in supported browsers; if it is u
 
 ## Remaining work
 
-Offline authentication, a cached authenticated R9 shell, automatic background synchronization, full-suite offline operation, production persistence, remote deployment and real instruments are not established by this increment. Access to browser storage is not cryptographic protection from someone using the same browser profile. No school data may be inferred from this synthetic test.
+Offline authentication, an authenticated offline R9 shell, automatic background synchronization, full-suite offline operation, production persistence, remote deployment and real instruments are not established by this increment. Access to browser storage is not cryptographic protection from someone using the same browser profile. No school data may be inferred from this synthetic test.
 
 CI pins the backend candidate SHA. Approvals refer only to the exact tested commits; this document does not claim CI/Sonar success before those checks complete. Both candidates remain draft pull requests and no merge, migration, remote database operation or manual deployment is included.
+
+## P02-D: locked offline reopening
+
+The explicit preparation action registers a worker scoped to `/r9.html`, verifies that every compiled public asset is cached, and reports readiness only after that verification. The cache is versioned by worker, asset manifest and emitted HTML. Installation failure deletes the incomplete cache. Activation removes only older `ilp-r9-shell-` caches, leaving the separate P02 laboratory and other site caches untouched.
+
+The worker serves only allowlisted GET requests to `/r9.html` and generated `/assets/` resources on the same origin, with no Authorization or tenant header. It never caches login, identity, fixture, history, snapshot, POST, tokens or API errors. Synthetic drafts continue using the existing partitioned IndexedDB store; cache storage contains public application code only.
+
+The four ES/EN mobile/desktop draft cases additionally open a new page while offline, require the locked screen with no authenticated assessment, login form or draft identifiers, inspect the cache allowlist, then reconnect and require a new real login before recovering the original administration UUID and answer. Returning connectivity alone cannot authenticate the user. The browser storage limitations above still apply; this is not cryptographic storage protection or a production offline identity mechanism.

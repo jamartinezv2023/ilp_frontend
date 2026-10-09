@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { prepareOfflineLab } from '../../src/features/offline/prepareOfflineLab';
+import { prepareOfflineLab, prepareR9Shell } from '../../src/features/offline/prepareOfflineLab';
 afterEach(() => vi.useRealTimers());
 function worker(reply: boolean, active = true) {
   const channel = { port1: { onmessage: null as null | ((event: { data: boolean }) => void), close: vi.fn() }, port2: { close: vi.fn() } };
@@ -40,4 +40,11 @@ it('times out pending activation without confirming readiness', async () => {
   const result = prepareOfflineLab();
   await vi.advanceTimersByTimeAsync(10000);
   expect(await result).toBe('unavailable');
+});
+
+it('prepares the locked R9 shell under its own scope and protocol', async () => {
+  const { register } = worker(true);
+  expect(await prepareR9Shell()).toBe('ready');
+  expect(register).toHaveBeenCalledWith('/r9-worker.js', { scope: '/r9.html' });
+
 });

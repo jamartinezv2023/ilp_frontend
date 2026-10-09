@@ -129,6 +129,9 @@ for (const locale of ["es", "en"] as const) {
       page.on("request", event => {
         if (event.url().endsWith("/api/v1/assessment-submissions") && event.method() === "POST") posts++;
       });
+      await page.getByRole("button", { name: en ? "Prepare offline screen" : "Preparar pantalla sin conexión", exact: true }).click();
+      await expect(page.getByTestId("shell-preparation")).toContainText(en ? "Offline screen prepared" : "Pantalla sin conexión preparada");
+      await expect.poll(() => page.evaluate(() => navigator.serviceWorker.controller !== null)).toBe(true);
       await context.setOffline(true);
       await radio.check();
       await page.getByRole("button", { name: en ? "Save on this device" : "Guardar en este dispositivo", exact: true }).click();
@@ -137,8 +140,27 @@ for (const locale of ["es", "en"] as const) {
       expect(administration).toMatch(/^[a-f0-9-]{36}$/);
       expect(posts).toBe(0);
       await page.getByRole("button", { name: en ? "End test session" : "Cerrar sesión de prueba", exact: true }).click();
-      await expect(page.locator('button[type="submit"]')).toBeVisible();
+      const address = page.url();
+      const reopened = await context.newPage();
+      await reopened.goto(address);
+      await expect(reopened.getByRole("region", { name: en ? "Locked offline screen" : "Pantalla sin conexión bloqueada" })).toBeVisible();
+      await expect(reopened.getByRole("region", { name: en ? "Synthetic assessment" : "Evaluación sintética" })).toHaveCount(0);
+      await expect(reopened.locator('button[type="submit"]')).toHaveCount(0);
+      await expect(reopened.getByTestId("draft-attempt")).toHaveCount(0);
+      const cached = await reopened.evaluate(async () => {
+        const names = await caches.keys();
+        const urls = await Promise.all(names.filter(name => name.startsWith("ilp-r9-shell-")).map(async name =>
+          (await (await caches.open(name)).keys()).map(request => new URL(request.url).pathname)));
+        return urls.flat();
+      });
+      expect(cached).toContain("/r9.html");
+      expect(cached.every(path => path === "/r9.html" || path.startsWith("/assets/"))).toBe(true);
+      expect(posts).toBe(0);
       await context.setOffline(false);
+      expect((await login(reopened, en)).status()).toBe(200);
+      await expect(reopened.getByTestId("draft-attempt")).toHaveText(administration);
+      await expect(reopened.getByRole("radio", { name: en ? "Synthetic response B" : "Respuesta sintética B" })).toBeChecked();
+      await reopened.close();
       // A different valid account must not recover or submit the first account's draft.
       expect((await login(page, en, false, 2)).status()).toBe(200);
       await expect(radio).toBeEnabled();

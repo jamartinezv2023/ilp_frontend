@@ -7,6 +7,7 @@ import { authorizedScientificApi, type AuthorizedObservation } from "../../src/f
 import { verifiedDraftScope } from "../../src/features/offline/verifiedDraftScope";
 import { createSyntheticDraftStore, type DraftScope, type SyntheticDraft } from "../../src/features/offline/syntheticDraftStore";
 import { synchronizeSyntheticDraft } from "../../src/features/offline/synchronizeSyntheticDraft";
+import { prepareR9Shell, type OfflinePreparation } from "../../src/features/offline/prepareOfflineLab";
 const draftStore = createSyntheticDraftStore();
 
 type Fixture = {
@@ -19,6 +20,21 @@ export function IntegratedLab() {
   const token = useAppSelector(state => state.auth.accessToken);
   const dispatch = useAppDispatch();
   const en = locale === "en";
+  const [online, setOnline] = useState(() => navigator.onLine);
+  const [preparation, setPreparation] = useState<OfflinePreparation | "" | "preparing">("");
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  async function prepare() {
+    setPreparation("preparing");
+    setPreparation(await prepareR9Shell());
+  }
   return <main style={{ maxWidth: 1000, margin: "auto", padding: 16, overflowWrap: "anywhere" }}>
     <h1>{en ? "Isolated integration test" : "Prueba de integración aislada"}</h1>
     <p>{en ? "Synthetic data only. This is not Kolb, Felder–Silverman or Kuder."
@@ -29,10 +45,22 @@ export function IntegratedLab() {
         <option value="es">Español</option><option value="en">English</option>
       </select>
     </label>
+    <button disabled={!online || preparation === "preparing"} onClick={() => void prepare()}>
+      {en ? "Prepare offline screen" : "Preparar pantalla sin conexión"}
+    </button>
+    {preparation && <output data-testid="shell-preparation">{preparation === "ready"
+      ? (en ? "Offline screen prepared. A new online login is required after reopening."
+        : "Pantalla sin conexión preparada. Al reabrir se requiere un nuevo inicio de sesión en línea.")
+      : preparation === "preparing" ? (en ? "Preparing…" : "Preparando…")
+        : (en ? "Offline screen unavailable. Keep this page open." : "Pantalla sin conexión no disponible. Mantenga esta página abierta.")}</output>}
     {token ? <>
       <button onClick={() => dispatch(authenticationFailed(""))}>{en ? "End test session" : "Cerrar sesión de prueba"}</button>
       <Session key={token} token={token} />
-    </> : <LoginForm />}
+    </> : online ? <LoginForm /> : <section aria-label={en ? "Locked offline screen" : "Pantalla sin conexión bloqueada"}>
+      <h2>{en ? "Online login required" : "Se requiere inicio de sesión en línea"}</h2>
+      <p>{en ? "Reconnect and sign in to recover your draft. Offline authentication is not available."
+        : "Recupere la conexión e inicie sesión para recuperar su borrador. La autenticación sin conexión no está disponible."}</p>
+    </section>}
   </main>;
 }
 function Session({ token }: { token: string }) {
