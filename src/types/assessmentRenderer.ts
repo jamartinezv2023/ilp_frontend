@@ -1,3 +1,4 @@
+import type { OriginalInstrumentEvidence } from '../services/originalInstrumentEvidence';
 export type AssessmentInstrumentType =
   | "LEARNING_STYLE"
   | "VOCATIONAL_INTEREST"
@@ -20,6 +21,7 @@ export type AssessmentRendererMetadata = {
   contentComplete?: boolean;
   publicationStatus?: string;
   sourceEdition?: string;
+  originalEvidence?: OriginalInstrumentEvidence;
   expectedQuestionCount?: number;
   estimatedMinutes: number;
   objective: string;
